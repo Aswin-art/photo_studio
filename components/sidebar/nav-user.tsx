@@ -1,5 +1,4 @@
 "use client";
-
 import {
   BadgeCheck,
   Bell,
@@ -25,7 +24,8 @@ import {
   SidebarMenuItem,
   useSidebar
 } from "@/components/ui/sidebar";
-import { SignOutButton } from "@clerk/nextjs";
+import { Button } from "../ui/button";
+import { logout } from "@/actions/authAction";
 
 export function NavUser({
   user
@@ -37,6 +37,10 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+
+  const handleLogout = async () => {
+    logout();
+  };
 
   return (
     <SidebarMenu>
@@ -100,8 +104,10 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <LogOut />
-              <SignOutButton />
+              <Button variant={"destructive"} className="w-full" onClick={handleLogout}>
+                <LogOut />
+                Keluar
+              </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

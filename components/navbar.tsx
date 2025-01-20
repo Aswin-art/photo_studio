@@ -1,12 +1,10 @@
 "use client";
-
 import Image from "next/image";
 import React from "react";
 import { ModeToggle } from "./mode-toggle";
 import Link from "next/link";
 import Wrapper from "./wrapper";
 import { ChevronRight, GanttChart } from "lucide-react";
-import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import {
@@ -23,6 +21,7 @@ import { navItems } from "@/constants/data";
 
 const Navbar = () => {
   const pathname = usePathname();
+
   return (
     <div className="w-full fixed top-0 left-0 right-0 z-20 p-4">
       <Wrapper>
@@ -35,7 +34,7 @@ const Navbar = () => {
               width={30}
               height={30}
             />
-            <Link href={"/"} className="font-bold text-xl">
+            <Link href={"/dashboard"} className="font-bold text-xl">
               App Name
             </Link>
           </aside>
@@ -55,13 +54,13 @@ const Navbar = () => {
           <aside>
             <div className="hidden lg:flex lg:gap-2 lg:items-center">
               <Link
-                href={"/dashboard"}
+                href={"/login"}
                 className="border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md px-4 py-2 flex justify-center items-center"
               >
                 Get Started
                 <ChevronRight />
               </Link>
-              <UserButton
+              {/* <UserButton
                 appearance={{
                   elements: {
                     userButtonPopoverActionButton__manageAccount: {
@@ -69,7 +68,7 @@ const Navbar = () => {
                     }
                   }
                 }}
-              />
+              /> */}
               <ModeToggle />
             </div>
             <div className="block lg:hidden">
@@ -82,7 +81,7 @@ const Navbar = () => {
                 <SheetContent className="flex flex-col justify-between">
                   <SheetHeader>
                     <div className="flex gap-2 items-center">
-                      <UserButton
+                      {/* <UserButton
                         appearance={{
                           elements: {
                             userButtonPopoverActionButton__manageAccount: {
@@ -90,7 +89,7 @@ const Navbar = () => {
                             }
                           }
                         }}
-                      />
+                      /> */}
                       <SheetTitle>| App Name</SheetTitle>
                     </div>
                   </SheetHeader>

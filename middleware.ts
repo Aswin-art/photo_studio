@@ -1,22 +1,39 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth"
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
-const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
+export default async function middleware(request: NextRequest) {
+  const session = await auth()
 
-export default clerkMiddleware(async (auth, req) => {
-  const { userId, redirectToSignIn } = await auth();
-
-  if (!userId && isProtectedRoute(req)) {
-    // Add custom logic to run before redirecting
-
-    return redirectToSignIn();
+  if (
+    request.nextUrl.pathname.startsWith('/_next') ||
+    request.nextUrl.pathname.startsWith('/static') ||
+    request.nextUrl.pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|css|js)$/)
+  ) {
+    return NextResponse.next()
   }
-});
+
+  // Check if it's a protected route
+  const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') ||
+    request.nextUrl.pathname.startsWith('/api')
+
+  if (!session && isProtectedRoute) {
+    // const signInUrl = new URL('/api/auth/signin', request.url)
+    const signInUrl = new URL('/login', request.url)
+    signInUrl.searchParams.set('callbackUrl', request.url)
+    return NextResponse.redirect(signInUrl)
+  }
+
+  return NextResponse.next()
+}
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)"
+    // Protected paths
+    '/dashboard/:path*',
+    '/api/:path*',
+
+    // Match all routes except static files
+    '/:path*'
   ]
-};
+}

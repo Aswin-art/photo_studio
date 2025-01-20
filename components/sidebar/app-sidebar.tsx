@@ -24,7 +24,6 @@ import { TeamSwitcher } from "./team-switcher";
 import { NavMain } from "./nav-main";
 import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
-import { useUser } from "@clerk/nextjs";
 
 // This is sample data.
 const data = {
@@ -152,15 +151,19 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useUser();
-
-  if (!user) return;
-
+  // if (!user) return;
+  const user = "admin";
+  // const userData = {
+  //   name: user.firstName as string,
+  //   email: user.emailAddresses[0].emailAddress,
+  //   avatar: user.imageUrl
+  // };
   const userData = {
-    name: user.firstName as string,
-    email: user.emailAddresses[0].emailAddress,
-    avatar: user.imageUrl
+    name: "admin",
+    email: "email",
+    avatar: "user.imageUrl"
   };
+
   return (
     user && (
       <Sidebar collapsible="icon" {...props}>
