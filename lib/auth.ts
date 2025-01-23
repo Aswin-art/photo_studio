@@ -1,9 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from '@prisma/client';
-import bcryptjs from 'bcryptjs';  // Changed from bcrypt to bcryptjs
-
-const prisma = new PrismaClient();
+import bcryptjs from 'bcryptjs';  
+import { db } from "./db";
 
 export const {
   handlers: { GET, POST },
@@ -33,7 +31,7 @@ export const {
           throw new Error('Missing credentials');
         }
 
-        const user = await prisma.users.findFirst({
+        const user = await db.users.findFirst({
           where: { email: email },
         });
 
