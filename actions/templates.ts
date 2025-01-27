@@ -61,32 +61,33 @@ export const destroy = async (id: number) => {
       }
     });
 
-    if (templates) {
-      await cloudinary.uploader.destroy(
-        templates.public_id,
-        {
-          invalidate: true
-        },
-        async (error, result) => {
-          if (error) {
-            console.log(error);
-
-            return null;
-          } else {
-            await db.templates.delete({
-              where: {
-                id
-              }
-            });
-            console.log("Resource deleted successfully:", result);
-
-            return true;
-          }
-        }
-      );
+    if (!templates) {
+      return null;
     }
+    await cloudinary.uploader.destroy(
+      templates.public_id,
+      {
+        invalidate: true
+      },
+      async (error, result) => {
+        if (error) {
+          console.log(error);
 
-    return null;
+          return null;
+        } else {
+          await db.templates.delete({
+            where: {
+              id
+            }
+          });
+          console.log(result.result);
+
+          return true;
+        }
+      }
+    );
+
+    return true;
   } catch (err) {
     console.log(err);
     return null;

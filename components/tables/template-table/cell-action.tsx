@@ -36,7 +36,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loadingLabel, setLoadingLabel] = useState(false);
   const [open, setOpen] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [label, setLabel] = useState(data.label);
+  const [label, setLabel] = useState("");
   const { toast } = useToast();
 
   const { refetch } = RetrieveQuery();
