@@ -77,3 +77,42 @@ model Users {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Channels {
+  id            Int             @id @default(autoincrement())
+  code          String
+  email         String?         @db.VarChar(255)
+  phone         String?         @db.VarChar(255)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  ChannelImages ChannelImages[]
+  Results       Results[]
+}
+
+model ChannelImages {
+  id         Int      @id @default(autoincrement())
+  image_url  String   @db.VarChar(255)
+  public_id  String   @unique @db.VarChar(255)
+  channel_id Int
+  channels   Channels @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Templates {
+  id        Int       @id @default(autoincrement())
+  image_url String    @db.VarChar(255)
+  label     String?   @db.VarChar(255)
+  public_id String    @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Results   Results[]
+}
+
+model Results {
+  id          Int       @id @default(autoincrement())
+  template_id Int
+  channel_id  Int
+  templates   Templates @relation(fields: [template_id], references: [id], onDelete: Cascade)
+  channels    Channels  @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+}

@@ -15,7 +15,7 @@ export default async function middleware(request: NextRequest) {
 
   // Check if it's a protected route
   const isProtectedRoute =
-    request.nextUrl.pathname.startsWith("/dashboard") ||
+    request.nextUrl.pathname.startsWith("/dashboarda") ||
     request.nextUrl.pathname.startsWith("/api");
 
   if (!session && isProtectedRoute) {
