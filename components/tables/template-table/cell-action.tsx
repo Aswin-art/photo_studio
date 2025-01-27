@@ -1,5 +1,5 @@
 "use client";
-import { destroy } from "@/actions/channels";
+import { destroy } from "@/actions/templates";
 import { update } from "@/actions/templates";
 import {
   AlertDialog,
@@ -70,14 +70,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     if (req) {
       toast({
         title: "Success",
-        description: "Berhasil menghapus data channel."
+        description: "Berhasil menghapus data template."
       });
 
       refetch();
     } else {
       toast({
         title: "Failed",
-        description: "Gagal menghapus data channel."
+        description: "Gagal menghapus data template."
       });
     }
 
@@ -92,7 +92,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Apakah Anda Yakin?</AlertDialogTitle>
             <AlertDialogDescription>
-              Aksi tidak bisa dibatalkan, ini akan menghapus data channel dari
+              Aksi tidak bisa dibatalkan, ini akan menghapus data template dari
               server.
             </AlertDialogDescription>
           </AlertDialogHeader>
