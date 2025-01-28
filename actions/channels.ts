@@ -199,3 +199,18 @@ export const deleteChannelImage = async (public_id: string) => {
     return null;
   }
 };
+
+export const checkChannelUser = async (code: string) => {
+  try {
+    const channel = await db.channels.findFirst({
+      where: {
+        code
+      }
+    });
+
+    return channel;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
