@@ -11,20 +11,22 @@ import { Stage, Layer, Image } from "react-konva";
 import useImage from "use-image";
 import PhotoWithTransformer from "./transformer";
 import Konva from "konva";
+import { usePhotoStore } from "@/stores/usePhotoStore";
 
 type Props = {
-  photoImages: string[] | [];
   templateImage: string;
   templateOpacity: number;
 };
 
 const Canvas = forwardRef(function Canvas(
-  { photoImages, templateImage, templateOpacity }: Props,
+  { templateImage, templateOpacity }: Props,
   ref
 ) {
   const [templateUrl] = useImage(templateImage, "anonymous");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [, setPhotoAttrs] = useState<any>({});
+
+  const { photoImages, deletePhoto } = usePhotoStore();
 
   const stageRef = useRef<Konva.Stage | null>(null);
 
@@ -42,10 +44,7 @@ const Canvas = forwardRef(function Canvas(
   };
 
   const handleDeletePhoto = (id: string) => {
-    // const updatedPhotos = photoImages.filter(
-    //   (_, index) => `photo-${index}` !== id
-    // );
-    console.log(id);
+    deletePhoto(id);
     setSelectedId(null);
   };
 
@@ -66,7 +65,7 @@ const Canvas = forwardRef(function Canvas(
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Backspace" && selectedId) {
-        handleDeletePhoto(selectedId); // Delete selected photo on backspace
+        handleDeletePhoto(selectedId);
       }
     };
 
@@ -87,15 +86,14 @@ const Canvas = forwardRef(function Canvas(
       onTouchStart={checkDeselect}
     >
       <Layer>
-        {photoImages.map((image, index) => {
-          const photoId = `photo-${index}`;
+        {photoImages.map((image) => {
           return (
             <PhotoWithTransformer
-              key={photoId}
-              id={photoId}
-              imageSrc={image}
-              isSelected={selectedId === photoId}
-              onSelect={() => setSelectedId(photoId)}
+              key={image.id}
+              id={image.id}
+              imageSrc={image.src}
+              isSelected={selectedId === image.id}
+              onSelect={() => setSelectedId(image.id)}
               onChange={handlePhotoChange}
             />
           );

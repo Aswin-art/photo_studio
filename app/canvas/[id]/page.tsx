@@ -13,30 +13,20 @@ import { FindQuery as ChannelImageQuery } from "@/queries/channelQuery";
 import { Loader2 } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 import { useParams } from "next/navigation";
+import { usePhotoStore } from "@/stores/usePhotoStore";
 
 const Canvas = dynamic(() => import("@/components/canvas"), {
   ssr: false
 });
 
-// const DATA = {
-//   IMAGES: [
-//     "https://static.wixstatic.com/media/a6cc81_e0ea601ee9f64b34980199643700df50~mv2.png/v1/fill/w_640,h_388,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/a6cc81_e0ea601ee9f64b34980199643700df50~mv2.png",
-//     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6lG06WZSEsqXmv6R40Bs8xNvASc2UKMwD1g&s"
-//   ],
-//   TEMPLATES: [
-//     "/images/template1.png",
-//     "/images/template2.png",
-//     "/images/template3.png"
-//   ]
-// };
-
 const Page = () => {
   const params = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [photoImages, setPhotoImages] = useState<string[]>([]);
   const [templateOpacityValue, setTemplateOpacityValue] = useState(0.5);
   const [toggleOpacityTemplate, setToggleOpacityTemplate] = useState(false);
+
+  const { addPhoto } = usePhotoStore();
 
   const { data: templates, isLoading: templateLoading } = TemplateQuery();
   const { data: photos, isLoading: photosLoading } = ChannelImageQuery(
@@ -58,8 +48,7 @@ const Page = () => {
 
   const insertSelectedImageToPhotos = () => {
     if (selectedImage) {
-      setPhotoImages((photoImages) => [...photoImages, selectedImage]);
-
+      addPhoto(selectedImage);
       setSelectedImage(null);
     }
   };
@@ -147,13 +136,6 @@ const Page = () => {
                           }}
                         >
                           <div className="relative h-[200px]">
-                            {/* <Image
-                              src={template}
-                              alt="photo"
-                              fill
-                              sizes="100%"
-                              className="w-full h-full object-cover rounded-lg"
-                            /> */}
                             <CldImage
                               width="960"
                               height="600"
@@ -198,7 +180,6 @@ const Page = () => {
             </div>
             <Canvas
               ref={canvasRef}
-              photoImages={photoImages ?? []}
               templateImage={selectedTemplate ?? ""}
               templateOpacity={templateOpacity}
             />
