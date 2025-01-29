@@ -22,6 +22,7 @@ import { User } from "@/types";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { deleteHoliday } from "@/actions/holidayAction";
 
 interface CellActionProps {
   data: User;
@@ -33,14 +34,22 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const { toast } = useToast();
   const router = useRouter();
 
-  const onConfirm = async () => {
+  const onConfirm = async (id) => {
     setLoading(true);
-    setOpen(false);
+    try {
+      await deleteHoliday(id);
+      setOpen(false);
+      toast({
+        title: "Success",
+        type: "foreground"
+      });
+    } catch {
+      toast({
+        title: "Error",
+        type: "background"
+      });
+    }
     setLoading(false);
-
-    toast({
-      title: "Test"
-    });
   };
 
   return (
@@ -48,7 +57,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       <AlertDialog open={open}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete your
               account and remove your data from our servers.
@@ -61,12 +70,16 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             >
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction disabled={loading} onClick={onConfirm}>
+            <AlertDialogAction
+              disabled={loading}
+              onClick={() => onConfirm(data.id)}
+            >
               {loading ? "Loading..." : "Continue"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">

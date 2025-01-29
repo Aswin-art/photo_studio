@@ -37,3 +37,30 @@ export async function deleteStudio(id: number) {
         throw new Error(`failed to delete studio: ${err}`);
     }
 }
+
+export async function getStudioById(id: number) {
+    try {
+        const studio = await db.studio.findUnique({
+            where: {
+                id,
+            },
+        });
+        return studio;
+    } catch (err) {
+        throw new Error(`failed to get studio: ${err}`);
+    }
+}
+
+export async function updateStudio(id: number, data: { name: string; description: string; image: string }) {
+    try {
+        const studio = await db.studio.update({
+            where: {
+                id,
+            },
+            data,
+        });
+        return studio;
+    } catch (err) {
+        throw new Error(`failed to update studio: ${err}`);
+    }
+}

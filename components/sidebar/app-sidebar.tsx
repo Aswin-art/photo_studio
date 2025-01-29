@@ -136,7 +136,7 @@ const data = {
     },
     {
       name: "Jadwal Foto",
-      url: "#",
+      url: "/dashboard/holiday",
       icon: Calendar  // Icon kalender untuk penjadwalan
     },
     {
