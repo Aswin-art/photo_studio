@@ -110,9 +110,11 @@ model Templates {
 }
 
 model Results {
-  id          Int       @id @default(autoincrement())
-  template_id Int
-  channel_id  Int
-  templates   Templates @relation(fields: [template_id], references: [id], onDelete: Cascade)
-  channels    Channels  @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+  id          Int        @id @default(autoincrement())
+  template_id Int?
+  channel_id  Int?
+  image_url   String     @db.VarChar(255)
+  public_id   String     @db.VarChar(255)
+  templates   Templates? @relation(fields: [template_id], references: [id], onDelete: Cascade)
+  channels    Channels?  @relation(fields: [channel_id], references: [id], onDelete: Cascade)
 }

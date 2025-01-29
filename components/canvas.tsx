@@ -12,14 +12,18 @@ import useImage from "use-image";
 import PhotoWithTransformer from "./transformer";
 import Konva from "konva";
 import { usePhotoStore } from "@/stores/usePhotoStore";
+import { create } from "@/actions/results";
+import { useRouter } from "next/navigation";
 
 type Props = {
   templateImage: string;
   templateOpacity: number;
+  channelId: number;
+  templateId: number;
 };
 
 const Canvas = forwardRef(function Canvas(
-  { templateImage, templateOpacity }: Props,
+  { templateImage, templateOpacity, channelId, templateId }: Props,
   ref
 ) {
   const [templateUrl] = useImage(templateImage, "anonymous");
@@ -29,6 +33,8 @@ const Canvas = forwardRef(function Canvas(
   const { photoImages, deletePhoto } = usePhotoStore();
 
   const stageRef = useRef<Konva.Stage | null>(null);
+
+  const router = useRouter();
 
   const checkDeselect = (e: any) => {
     if (e.target === e.target.getStage()) {
@@ -49,15 +55,50 @@ const Canvas = forwardRef(function Canvas(
   };
 
   useImperativeHandle(ref, () => ({
-    downloadImage: () => {
+    uploadImage: async () => {
       if (stageRef.current) {
         const uri = stageRef.current.toDataURL({
           pixelRatio: 3
         });
-        const link = document.createElement("a");
-        link.href = uri;
-        link.download = "result.png";
-        link.click();
+
+        const base64Response = await fetch(uri);
+        const blob = await base64Response.blob();
+
+        const formData = new FormData();
+        formData.append("file", blob);
+        formData.append("upload_preset", "results");
+        formData.append("folder", "results");
+        formData.append(
+          "api_key",
+          process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ?? ""
+        );
+
+        try {
+          const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+            {
+              method: "POST",
+              body: formData
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`Cloudinary upload failed: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          const res = await create(
+            data.public_id,
+            data.url,
+            templateId,
+            channelId
+          );
+
+          router.push("/results/" + res?.id);
+        } catch (error) {
+          console.error("Upload failed:", error);
+          return null;
+        }
       }
     }
   }));

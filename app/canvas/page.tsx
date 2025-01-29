@@ -49,37 +49,41 @@ const Page = () => {
     setIsLoading(false);
   };
   return (
-    <Dialog open={true}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Masukkan Kode</DialogTitle>
-          <DialogDescription>
-            Harap masukkan kode dari channel anda!
-          </DialogDescription>
-        </DialogHeader>
-        <Input
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          disabled={isLoading}
-          placeholder="Masukkan kode..."
-          required
-        />
-        <Button disabled={isLoading} onClick={handleCheckChannelCode}>
-          {isLoading ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            <>
-              Submit <ArrowRight />
-            </>
-          )}
-        </Button>
-        <DialogFooter>
-          <p className="text-muted-foreground text-sm">
-            Minta kepada admin jika anda tidak memiliki kode channel
-          </p>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <div className="h-[100vh] w-full bg-[url('https://idseducation.com/wp-content/uploads/2017/06/Studio.jpg')] bg-cover bg-center bg-bottom">
+      <Dialog open={true}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Masukkan Kode</DialogTitle>
+            <DialogDescription>
+              Harap masukkan kode dari channel anda!
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            disabled={isLoading}
+            placeholder="Masukkan kode..."
+            required
+          />
+          <Button disabled={isLoading} onClick={handleCheckChannelCode}>
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin" /> Loading...
+              </>
+            ) : (
+              <>
+                Submit <ArrowRight />
+              </>
+            )}
+          </Button>
+          <DialogFooter>
+            <p className="text-muted-foreground text-sm">
+              Minta kepada admin jika anda tidak memiliki kode channel
+            </p>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 

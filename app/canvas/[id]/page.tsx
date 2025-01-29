@@ -22,9 +22,13 @@ const Canvas = dynamic(() => import("@/components/canvas"), {
 const Page = () => {
   const params = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<any>({
+    id: null,
+    url: null
+  });
   const [templateOpacityValue, setTemplateOpacityValue] = useState(0.5);
   const [toggleOpacityTemplate, setToggleOpacityTemplate] = useState(false);
+  const [loadingUpload, setLoadingUpload] = useState(false);
 
   const { addPhoto } = usePhotoStore();
 
@@ -35,9 +39,11 @@ const Page = () => {
 
   const canvasRef = useRef<any>(null);
 
-  const handleDownload = () => {
+  const handleUpload = () => {
     if (canvasRef.current) {
-      canvasRef.current.downloadImage();
+      setLoadingUpload(true);
+      canvasRef.current.uploadImage();
+      setLoadingUpload(false);
     }
   };
 
@@ -68,13 +74,18 @@ const Page = () => {
               </TabsList>
               <TabsContent value="photo" className="h-full">
                 {photosLoading ? (
-                  <Loader2 className="animate-spin" />
+                  <div className="flex flex-col justify-center items-center gap-4 h-full">
+                    <Loader2 className="animate-spin" />
+                    <div className="text-muted-foreground">
+                      Mencari daftar foto kamu...
+                    </div>
+                  </div>
                 ) : (
                   <ScrollArea className="h-full">
                     <div className="grid grid-cols-2 gap-2">
-                      {photos?.ChannelImages.map((photo, id) => (
+                      {photos?.ChannelImages.map((photo) => (
                         <Card
-                          key={id}
+                          key={photo.id}
                           className={`cursor-pointer hover:border-primary transition-all p-1 ${
                             selectedImage === photo.image_url
                               ? "border-2 border-primary"
@@ -115,23 +126,34 @@ const Page = () => {
               </TabsContent>
               <TabsContent value="template" className="h-full">
                 {templateLoading ? (
-                  <Loader2 className="animate-spin" />
+                  <div className="flex flex-col justify-center items-center gap-4 h-full">
+                    <Loader2 className="animate-spin" />
+                    <div className="text-muted-foreground">
+                      Mencari template yang tersedia...
+                    </div>
+                  </div>
                 ) : (
                   <ScrollArea className="h-full">
                     <div className="grid grid-cols-2 gap-2">
-                      {templates?.map((template, id) => (
+                      {templates?.map((template) => (
                         <Card
-                          key={id}
+                          key={template.id}
                           className={`cursor-pointer hover:border-primary transition-all p-1 ${
-                            selectedTemplate === template.image_url
+                            selectedTemplate.url === template.image_url
                               ? "border-2 border-primary"
                               : ""
                           }`}
                           onClick={() => {
-                            if (template.image_url === selectedTemplate) {
-                              setSelectedTemplate(null);
+                            if (template.image_url === selectedTemplate.url) {
+                              setSelectedTemplate({
+                                url: null,
+                                id: null
+                              });
                             } else {
-                              setSelectedTemplate(template.image_url);
+                              setSelectedTemplate({
+                                url: template.image_url,
+                                id: template.id
+                              });
                             }
                           }}
                         >
@@ -172,15 +194,24 @@ const Page = () => {
                 )}
               </div>
               <Button
-                onClick={handleDownload}
+                onClick={handleUpload}
+                disabled={loadingUpload}
                 className="bg-green-500 hover:bg-green-600"
               >
-                Selesai Mengedit
+                {loadingUpload ? (
+                  <p>
+                    <Loader2 className="animate-spin" /> Loading...
+                  </p>
+                ) : (
+                  <p>Selesai Mengedit</p>
+                )}
               </Button>
             </div>
             <Canvas
               ref={canvasRef}
-              templateImage={selectedTemplate ?? ""}
+              channelId={Number(params.id)}
+              templateId={selectedTemplate.id}
+              templateImage={selectedTemplate.url ?? ""}
               templateOpacity={templateOpacity}
             />
           </div>
