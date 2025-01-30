@@ -65,6 +65,7 @@ model studio {
   image               String?               @db.VarChar(255)
   createdAt           DateTime              @default(now())
   updatedAt           DateTime
+  price               Int
   customertransaction customertransaction[]
 }
 
