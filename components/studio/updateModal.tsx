@@ -8,6 +8,7 @@ import { getStudioById, updateStudio } from "@/actions/studioAction";
 import Image from "next/image";
 import Swal from "sweetalert2";
 import ReactQuill from "react-quill-new";
+import { parseRupiah, formatRupiah } from "@/utils/Rupiah";
 import "react-quill-new/dist/quill.snow.css";
 
 interface CreateStudioFormProps {
@@ -22,12 +23,18 @@ export default function UpdateStudioForm({
   const [isOpen, setIsOpen] = useState(true);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, "");
+    setPrice(formatRupiah(rawValue));
+  };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateStudio(id, { name, description, image });
+      await updateStudio(id, { name, description, image, price: parseRupiah(price) });
       Swal.fire({
         title: "Success!",
         text: "Studio updated successfully!",
@@ -64,6 +71,7 @@ export default function UpdateStudioForm({
         setName(fetchedStudio.name);
         setDescription(fetchedStudio.description ?? "");
         setImage(fetchedStudio.image ?? "");
+        setPrice(formatRupiah(fetchedStudio.price.toString()) ?? "");
       }
     }
   };
@@ -91,6 +99,17 @@ export default function UpdateStudioForm({
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Harga
+                </label>
+                <input
+                  type="text"
+                  value={price}
+                  onChange={handlePriceChange}
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

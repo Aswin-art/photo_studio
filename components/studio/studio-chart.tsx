@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Studio } from "@/types";
 import UpdateStudioForm from "./updateModal";
+import { formatRupiah } from "@/utils/Rupiah";
 
 export default function StudioCard({
   studio,
@@ -52,7 +53,8 @@ export default function StudioCard({
       )}
 
       <div className="p-4 flex flex-col">
-        <h2 className="text-lg font-semibold">{studio.name}</h2>
+        <h2 className="text-lg font-bold">{studio.name}</h2>
+        <h2 className="text-[16px] font-semibold">Rp{formatRupiah(studio.price.toString())}</h2>
         <p className="text-sm text-gray-600 mt-1" dangerouslySetInnerHTML={{ __html: studio.description || 'No description available.' }} />
 
         <div className="mt-4 flex gap-2">

@@ -11,6 +11,7 @@ export type Studio = {
   name: string;
   description: string | null;
   image: string | null;
+  price: number;
 }
 
 export type Holiday = {

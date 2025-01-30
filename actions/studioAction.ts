@@ -10,13 +10,15 @@ export async function getStudios() {
     }
 }
 
-export async function createStudio(name: string, description: string, image: string) {
+export async function createStudio(name: string, description: string, image: string, price: number) {
     try {
         const studio = await db.studio.create({
             data: {
                 name,
                 description,
                 image,
+                price,
+                updatedAt: new Date()
             },
         });
         return studio;
@@ -51,13 +53,16 @@ export async function getStudioById(id: number) {
     }
 }
 
-export async function updateStudio(id: number, data: { name: string; description: string; image: string }) {
+export async function updateStudio(id: number, data: { name: string; description: string; image: string, price: number }) {
     try {
         const studio = await db.studio.update({
             where: {
                 id,
             },
-            data,
+            data: {
+                ...data,
+                updatedAt: new Date(),
+            },
         });
         return studio;
     } catch (err) {
