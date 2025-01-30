@@ -45,6 +45,6 @@ export const holidayColumns = (refreshHolidays: () => void): ColumnDef<any>[] =>
   {
     id: "actions",
     header: "ACTIONS",
-    cell: ({ row }) => <CellAction data={row.original} updatePath="/dashboard/holiday" refreshHolidays={refreshHolidays} />
+    cell: ({ row }) => <CellAction data={row.original} updatePath="/dashboard/holiday" refresh={refreshHolidays} />
   }
 ];

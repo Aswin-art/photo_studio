@@ -18,3 +18,10 @@ export type Holiday = {
   date: Date;
   description: string | null;
 }
+
+export type Voucher = {
+  id: number;
+  name: string;
+  discount: number;
+  count: number;
+}

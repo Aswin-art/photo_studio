@@ -23,31 +23,42 @@ import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteHoliday } from "@/actions/holidayAction";
+import { deleteVoucher } from "@/actions/voucher";
 import HolidayDialog from "../holiday/HolidayDialog";
+import VoucherDialog from "../voucher/VoucherDialog";
 
 interface CellActionProps {
   data: User;
   updatePath?: string;
-  refreshHolidays: () => void;
+  refresh: () => void;
 }
 
-export const CellAction: React.FC<CellActionProps> = ({ data, updatePath = "/dashboard/user", refreshHolidays }) => {
+export const CellAction: React.FC<CellActionProps> = ({ data, updatePath = "/dashboard/user", refresh }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogHolidayOpen, setIsDialogHolidayOpen] = useState(false);
+  const [isDialogVoucherOpen, setIsVoucherOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
   const onConfirm = async (id) => {
     setLoading(true);
     try {
-      await deleteHoliday(id);
+      if(updatePath === '/dashboard/holiday') {
+        await deleteHoliday(id);
+      }
+
+      if(updatePath === '/dashboard/voucher') {
+        await deleteVoucher(id);
+      }
+      
       setOpen(false);
       toast({
         title: "Success",
-        type: "foreground"
+        type: "foreground",
+        description: "Berhasil menghapus data"
       });
-      refreshHolidays();
+      refresh();
     } catch {
       toast({
         title: "Error",
@@ -62,10 +73,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data, updatePath = "/das
       <AlertDialog open={open}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Apakah Anda Yakin?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
+              Tindakan ini tidak dapat dibatalkan. Akun Anda akan dihapus secara permanen dan data Anda akan dihapus dari server kami.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -86,10 +96,20 @@ export const CellAction: React.FC<CellActionProps> = ({ data, updatePath = "/das
       </AlertDialog>
 
       <HolidayDialog 
-        open={isDialogOpen} 
-        onClose={() => setIsDialogOpen(false)} 
+        open={isDialogHolidayOpen} 
+        onClose={() => setIsDialogHolidayOpen(false)} 
         holidayData={data} 
-        refreshHolidays={refreshHolidays}
+        refreshHolidays={refresh}
+      />
+
+      <VoucherDialog 
+        open={isDialogVoucherOpen} 
+        onClose={() => {
+          setIsVoucherOpen(false)
+          console.log("close voucher dialog")
+        }} 
+        voucherData={data} 
+        refreshVouchers={refresh} 
       />
 
       <DropdownMenu modal={false}>
@@ -111,11 +131,18 @@ export const CellAction: React.FC<CellActionProps> = ({ data, updatePath = "/das
           {updatePath === '/dashboard/holiday' && 
             <>
               <DropdownMenuItem
-                onClick={() => setIsDialogOpen(true)}
+                onClick={() => setIsDialogHolidayOpen(true)}
               >
                 <Edit className="mr-2 h-4 w-4" /> Update
               </DropdownMenuItem>
             </>
+          }
+          {updatePath === '/dashboard/voucher' &&
+            <DropdownMenuItem
+              onClick={() => setIsVoucherOpen(true)}
+            >
+              <Edit className="mr-2 h-4 w-4" /> Update
+            </DropdownMenuItem>
           }
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete

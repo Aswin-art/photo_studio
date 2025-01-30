@@ -141,7 +141,7 @@ const data = {
     },
     {
       name: "Voucher",
-      url: "#",
+      url: "/dashboard/voucher",
       icon: Ticket  // Icon tiket untuk voucher
     },
     {
