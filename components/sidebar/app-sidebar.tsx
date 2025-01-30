@@ -9,7 +9,7 @@ import {
   GalleryVerticalEnd,
   Settings2,
   SquareTerminal,
-  Camera, Calendar, Ticket, Receipt
+  Camera, Calendar, Ticket, Receipt, CopyPlus
 } from "lucide-react";
 import {
   Sidebar,
@@ -133,6 +133,11 @@ const data = {
       name: "Studio",
       url: "/dashboard/studio",
       icon: Camera  // Icon kamera untuk studio fotografi
+    },
+    {
+      name: "Layanan Tambahan",
+      url: "/dashboard/addon",
+      icon: CopyPlus  // Icon kamera untuk studio fotografi
     },
     {
       name: "Jadwal Foto",

@@ -26,3 +26,9 @@ export type Voucher = {
   discount: number;
   count: number;
 }
+
+export type Addon = {
+  id: number;
+  name: string;
+  price: number;
+}

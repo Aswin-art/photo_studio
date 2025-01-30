@@ -24,8 +24,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteHoliday } from "@/actions/holidayAction";
 import { deleteVoucher } from "@/actions/voucher";
+import { deleteAddon } from "@/actions/addonAction";
 import HolidayDialog from "../holiday/HolidayDialog";
 import VoucherDialog from "../voucher/VoucherDialog";
+import AddonDialog from "../addons/AddonDialog";
 
 interface CellActionProps {
   data: User;
@@ -38,6 +40,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data, updatePath = "/das
   const [open, setOpen] = useState(false);
   const [isDialogHolidayOpen, setIsDialogHolidayOpen] = useState(false);
   const [isDialogVoucherOpen, setIsVoucherOpen] = useState(false);
+  const [isDialogAddonOpen, setIsAddonOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -50,6 +53,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data, updatePath = "/das
 
       if(updatePath === '/dashboard/voucher') {
         await deleteVoucher(id);
+      }
+      
+      if(updatePath === '/dashboard/addon') {
+        await deleteAddon(id);
       }
       
       setOpen(false);
@@ -106,10 +113,16 @@ export const CellAction: React.FC<CellActionProps> = ({ data, updatePath = "/das
         open={isDialogVoucherOpen} 
         onClose={() => {
           setIsVoucherOpen(false)
-          console.log("close voucher dialog")
         }} 
         voucherData={data} 
         refreshVouchers={refresh} 
+      />
+
+      <AddonDialog
+        open={isDialogAddonOpen}
+        onClose={() => setIsAddonOpen(false)}
+        addonData={data}
+        refreshAddons={refresh}
       />
 
       <DropdownMenu modal={false}>
@@ -140,6 +153,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data, updatePath = "/das
           {updatePath === '/dashboard/voucher' &&
             <DropdownMenuItem
               onClick={() => setIsVoucherOpen(true)}
+            >
+              <Edit className="mr-2 h-4 w-4" /> Update
+            </DropdownMenuItem>
+          }
+          {updatePath === '/dashboard/addon' &&
+            <DropdownMenuItem
+              onClick={() => setIsAddonOpen(true)}
             >
               <Edit className="mr-2 h-4 w-4" /> Update
             </DropdownMenuItem>
