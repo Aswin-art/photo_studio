@@ -75,7 +75,14 @@ const VoucherForm: React.FC<VoucherFormProps> = ({ voucherData, onClose, refresh
                 id="discount"
                 name="discount"
                 value={discount}
-                onChange={(e) => setDiscount(e.target.value)}
+                onChange={(e) => {
+                    const value = parseFloat(e.target.value);
+                    if (value <= 100) {
+                      setDiscount(e.target.value);
+                    }
+                  }}
+                min={0}
+                step={0.1}
                 placeholder={`Persentase Diskon`}
                 className="col-span-3"
                 type="number"

@@ -41,9 +41,24 @@ export default function ListVoucher({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+  
+    if (name === "discount") {
+      let discountValue = value.replace(",", ".");
+      const parsedDiscount = parseFloat(discountValue);
+  
+      if (parsedDiscount > 100) {
+        discountValue = "100";
+      } else if (parsedDiscount < 0 || isNaN(parsedDiscount)) {
+        discountValue = "";
+      }
+  
+      setFormData({ ...formData, [name]: discountValue });
+      return;
+    }
+  
     setFormData({ ...formData, [name]: value });
-    console.log({name, value});
   };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -120,6 +135,9 @@ export default function ListVoucher({
                     placeholder={`Persentase Diskon`}
                     className="col-span-3"
                     type="number"
+                    max={100}
+                    min={0}
+                    step={0.1}
                     required
                     />
                     <Label htmlFor="discount" className="text-center p-[10px] border border-gray-200 rounded-md">
