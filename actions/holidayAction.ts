@@ -24,7 +24,8 @@ export async function createHoliday(date: Date, description: string) {
     const holiday = await db.holiday.create({
       data: {
         date,
-        description
+        description,
+        updatedAt: new Date()
       }
     });
     return holiday;
