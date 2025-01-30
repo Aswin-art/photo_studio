@@ -111,7 +111,7 @@ export default function UpdateStudioForm({
                 </label>
                 <CldUploadWidget
                   uploadPreset="foto_booth"
-                  onUpload={handleUpload}
+                  onSuccess={handleUpload}
                 >
                   {({ open }) => {
                     return (
