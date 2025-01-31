@@ -151,7 +151,7 @@ const data = {
     },
     {
       name: "Transaksi",
-      url: "#",
+      url: "/dashboard/transaction",
       icon: Receipt  // Icon kwitansi untuk transaksi
     }
   ]
