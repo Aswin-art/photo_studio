@@ -32,18 +32,19 @@ model customeraddon {
 
 model customertransaction {
   id            Int             @id @default(autoincrement())
-  studioId      Int?
+  studioId      Int
   voucherId     Int?
   customerName  String          @db.VarChar(255)
   customerEmail String          @db.VarChar(255)
   customerPhone String          @db.VarChar(15)
   totalPrice    Int
   bookingDate   DateTime        @db.Date
-  bookingTime   DateTime
   createdAt     DateTime        @default(now())
   updatedAt     DateTime
+  isApproved    Boolean?
+  bookingTime   Int
   customeraddon customeraddon[]
-  studio        studio?         @relation(fields: [studioId], references: [id], map: "CustomerTransaction_studioId_fkey")
+  studio        studio          @relation(fields: [studioId], references: [id], map: "CustomerTransaction_studioId_fkey")
   voucher       voucher?        @relation(fields: [voucherId], references: [id], map: "CustomerTransaction_voucherId_fkey")
 
   @@index([studioId], map: "CustomerTransaction_studioId_fkey")
