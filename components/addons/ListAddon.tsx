@@ -147,7 +147,7 @@ export default function ListAddon({
       <DataTable
         columns={AddonColumns(refreshAddons)}
         data={addon}
-        searchColumn="name"
+        searchColumns={["name"]}
       />
     </div>
   );

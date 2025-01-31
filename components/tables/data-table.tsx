@@ -10,7 +10,7 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
-  VisibilityState
+  VisibilityState,
 } from "@tanstack/react-table";
 
 import {
@@ -34,14 +34,14 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchColumn?: string;
+  searchColumns?: string[];
 }
 
 function DataTable<TData, TValue>({
-                                    columns,
-                                    data,
-                                    searchColumn
-                                  }: DataTableProps<TData, TValue>) {
+  columns,
+  data,
+  searchColumns
+}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -50,6 +50,7 @@ function DataTable<TData, TValue>({
     pageIndex: 0,
     pageSize: 10
   });
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const table = useReactTable({
     data,
@@ -63,8 +64,13 @@ function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
     getPaginationRowModel: getPaginationRowModel(),
+    globalFilterFn: (row, columnId, filterValue) => {
+      const value = row.getValue(columnId);
+      return String(value).toLowerCase().includes(String(filterValue).toLowerCase());
+    },
     state: {
       sorting,
+      globalFilter,
       columnFilters,
       columnVisibility,
       rowSelection,
@@ -77,10 +83,8 @@ function DataTable<TData, TValue>({
       <div className="flex items-center py-4">
         <Input
           placeholder="Search..."
-          value={(table.getColumn(searchColumn ?? "")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(searchColumn ?? "")?.setFilterValue(event.target.value)
-          }
+          value={globalFilter}
+          onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm"
         />
 
@@ -111,7 +115,7 @@ function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border max-w-[calc(100vw-32px)] md:max-w-[calc(100vw-255px)]">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -122,9 +126,9 @@ function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   );
                 })}
@@ -163,7 +167,7 @@ function DataTable<TData, TValue>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredSelectedRowModel().rows.length} of {" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
         <div className="space-x-2">

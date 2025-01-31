@@ -181,7 +181,7 @@ export default function ListVoucher({
       <DataTable
         columns={VoucherColumns(refreshVouchers)}
         data={voucher}
-        searchColumn="name"
+        searchColumns={["name"]}
       />
     </div>
   );
