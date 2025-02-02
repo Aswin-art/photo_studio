@@ -32,18 +32,36 @@ const Page = () => {
 
     const req = await checkChannelUser(code);
 
-    if (req) {
+    if (!req) {
+      setIsLoading(false);
+      return toast({
+        title: "Failed",
+        description: "Kode channel yang anda masukkan salah!"
+      });
+    }
+
+    if (req?.email == null || req?.phone == null) {
+      setIsLoading(false);
+      return toast({
+        title: "Failed",
+        description:
+          "Maaf data channel anda belum lengkap, harap hubungi admin!"
+      });
+    }
+
+    if (req?.Results.length > 1) {
+      router.push("/results/" + req.Results[0].id);
+
+      return;
+    }
+
+    if (req && req.Results.length <= 0) {
       router.push("/canvas/" + req.id);
       toast({
         title: "Success",
         description: "Kode channel berhasil diverifikasi!"
       });
       setCode("");
-    } else {
-      toast({
-        title: "Failed",
-        description: "Kode channel yang anda masukkan salah!"
-      });
     }
 
     setIsLoading(false);

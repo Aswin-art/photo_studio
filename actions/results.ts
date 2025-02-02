@@ -79,18 +79,19 @@ export const sentEmail = async (id: number) => {
       include: {
         channels: {
           include: {
-            ChannelImages: true
+            ChannelImages: true,
+            Results: true
           }
         }
       }
     });
 
-    if (!result) return null;
+    if (!result || !result.channels?.Results) return null;
 
-    // TODO: Panggil fungsi kirim email
     const mail = await sendResult(
-      result.channels?.email ?? "",
-      result.channels?.ChannelImages as any[]
+      result.channels.email ?? "",
+      result.channels.ChannelImages as any[],
+      result.channels.Results[0].image_url
     );
 
     return mail;

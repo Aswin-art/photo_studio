@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { PhotoDeliveryEmail } from "@/emails/photo-delivery";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const sendResult = async (email: string | null, photos: any[]) => {
+export const sendResult = async (
+  email: string | null,
+  photos: string[],
+  result: string
+) => {
   if (!email) return null;
 
   try {
@@ -11,7 +16,10 @@ export const sendResult = async (email: string | null, photos: any[]) => {
       from: "onboarding@resend.dev",
       to: email,
       subject: "Hasil Foto Studio",
-      html: `<p>email ${photos}.</p>`
+      react: PhotoDeliveryEmail({
+        photos,
+        result
+      })
     });
 
     return true;

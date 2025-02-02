@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsx-a11y/alt-text */
+import { usePhotoStore } from "@/stores/usePhotoStore";
 import React, { useRef } from "react";
 import { Image, Transformer } from "react-konva";
 import useImage from "use-image";
@@ -17,8 +18,8 @@ const PhotoWithTransformer = ({
   onChange: (id: string, newAttrs: any) => void;
   id: string;
 }) => {
+  const { setPhotoClicked } = usePhotoStore();
   const [photoUrl] = useImage(imageSrc, "anonymous", "origin");
-  console.log(photoUrl);
   const shapeRef = useRef<any>(null);
   const transformerRef = useRef<any>(null);
 
@@ -32,6 +33,7 @@ const PhotoWithTransformer = ({
 
   React.useEffect(() => {
     if (isSelected && shapeRef.current) {
+      setPhotoClicked(true);
       transformerRef.current.nodes([shapeRef.current]);
       transformerRef.current.getLayer().batchDraw();
     }
@@ -47,8 +49,8 @@ const PhotoWithTransformer = ({
         onTap={onSelect}
         x={100}
         y={100}
-        width={300}
-        height={300}
+        width={500}
+        height={500}
         onDragEnd={(e) => {
           onChange(id, {
             x: e.target.x(),

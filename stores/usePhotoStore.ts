@@ -7,12 +7,19 @@ type Photo = {
 
 type PhotoStore = {
   photoImages: Photo[];
+  isPhotoClicked: boolean;
+  setPhotoClicked: (value: boolean) => void;
   addPhoto: (photoSrc: string) => void;
   deletePhoto: (id: string) => void;
 };
 
 export const usePhotoStore = create<PhotoStore>((set) => ({
   photoImages: [],
+  isPhotoClicked: false,
+  setPhotoClicked: (value) =>
+    set(() => ({
+      isPhotoClicked: value
+    })),
   addPhoto: (photoSrc) =>
     set((state) => ({
       photoImages: [

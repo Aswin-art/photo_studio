@@ -14,6 +14,9 @@ import Konva from "konva";
 import { usePhotoStore } from "@/stores/usePhotoStore";
 import { create } from "@/actions/results";
 import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
+import { Trash2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 type Props = {
   templateImage: string;
@@ -29,8 +32,10 @@ const Canvas = forwardRef(function Canvas(
   const [templateUrl] = useImage(templateImage, "anonymous");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [, setPhotoAttrs] = useState<any>({});
+  const templateIdRef = useRef(templateId);
 
-  const { photoImages, deletePhoto } = usePhotoStore();
+  const { photoImages, deletePhoto, isPhotoClicked, setPhotoClicked } =
+    usePhotoStore();
 
   const stageRef = useRef<Konva.Stage | null>(null);
 
@@ -38,6 +43,7 @@ const Canvas = forwardRef(function Canvas(
 
   const checkDeselect = (e: any) => {
     if (e.target === e.target.getStage()) {
+      setPhotoClicked(false);
       setSelectedId(null);
     }
   };
@@ -51,57 +57,80 @@ const Canvas = forwardRef(function Canvas(
 
   const handleDeletePhoto = (id: string) => {
     deletePhoto(id);
+    setPhotoClicked(false);
     setSelectedId(null);
   };
 
-  useImperativeHandle(ref, () => ({
-    uploadImage: async () => {
-      if (stageRef.current) {
-        const uri = stageRef.current.toDataURL({
-          pixelRatio: 3
-        });
+  useImperativeHandle(
+    ref,
+    () => ({
+      uploadImage: async () => {
+        if (!templateIdRef.current) {
+          toast({
+            title: "Failed",
+            description: "Mohon untuk memilih template terlebih dahulu!"
+          });
 
-        const base64Response = await fetch(uri);
-        const blob = await base64Response.blob();
-
-        const formData = new FormData();
-        formData.append("file", blob);
-        formData.append("upload_preset", "results");
-        formData.append("folder", "results");
-        formData.append(
-          "api_key",
-          process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ?? ""
-        );
-
-        try {
-          const response = await fetch(
-            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-            {
-              method: "POST",
-              body: formData
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(`Cloudinary upload failed: ${response.statusText}`);
-          }
-
-          const data = await response.json();
-          const res = await create(
-            data.public_id,
-            data.url,
-            templateId,
-            channelId
-          );
-
-          router.push("/results/" + res?.id);
-        } catch (error) {
-          console.error("Upload failed:", error);
           return null;
         }
+        if (stageRef.current) {
+          const uri = stageRef.current.toDataURL({
+            pixelRatio: 3
+          });
+
+          const base64Response = await fetch(uri);
+          const blob = await base64Response.blob();
+
+          const formData = new FormData();
+          formData.append("file", blob);
+          formData.append("upload_preset", "results");
+          formData.append("folder", "results");
+          formData.append(
+            "api_key",
+            process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ?? ""
+          );
+
+          try {
+            const response = await fetch(
+              `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+              {
+                method: "POST",
+                body: formData
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(
+                `Cloudinary upload failed: ${response.statusText}`
+              );
+            }
+
+            const data = await response.json();
+            const res = await create(
+              data.public_id,
+              data.url,
+              templateIdRef.current,
+              channelId
+            );
+
+            router.push("/results/" + res?.id);
+          } catch (error) {
+            toast({
+              title: "Failed",
+              description: "Tidak bisa menyimpan foto!"
+            });
+            console.log("Upload failed:", error);
+            return null;
+          }
+        }
       }
-    }
-  }));
+    }),
+    []
+  );
+
+  useEffect(() => {
+    templateIdRef.current = templateId;
+  }, [templateId]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -118,41 +147,51 @@ const Canvas = forwardRef(function Canvas(
   }, [selectedId]);
 
   return (
-    <Stage
-      ref={stageRef}
-      width={800}
-      height={800}
-      className="bg-white shadow-lg"
-      onMouseDown={checkDeselect}
-      onTouchStart={checkDeselect}
-    >
-      <Layer>
-        {photoImages.map((image) => {
-          return (
-            <PhotoWithTransformer
-              key={image.id}
-              id={image.id}
-              imageSrc={image.src}
-              isSelected={selectedId === image.id}
-              onSelect={() => setSelectedId(image.id)}
-              onChange={handlePhotoChange}
-            />
-          );
-        })}
+    <div className="grid grid-cols-12 gap-2">
+      <Stage
+        ref={stageRef}
+        width={800}
+        height={800}
+        className="bg-gray-200 shadow-2xl col-span-11"
+        onMouseDown={checkDeselect}
+        onTouchStart={checkDeselect}
+      >
+        <Layer>
+          {photoImages.map((image) => {
+            return (
+              <PhotoWithTransformer
+                key={image.id}
+                id={image.id}
+                imageSrc={image.src}
+                isSelected={selectedId === image.id}
+                onSelect={() => setSelectedId(image.id)}
+                onChange={handlePhotoChange}
+              />
+            );
+          })}
 
-        {templateUrl && (
-          <Image
-            image={templateUrl}
-            x={0}
-            y={0}
-            width={800}
-            height={800}
-            listening={false}
-            opacity={templateOpacity}
-          />
-        )}
-      </Layer>
-    </Stage>
+          {templateUrl && (
+            <Image
+              image={templateUrl}
+              x={0}
+              y={0}
+              width={800}
+              height={800}
+              listening={false}
+              opacity={templateOpacity}
+            />
+          )}
+        </Layer>
+      </Stage>
+      {isPhotoClicked && (
+        <Button
+          onClick={() => handleDeletePhoto(selectedId as string)}
+          className="col-span-1 bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow-lg hover:bg-red-600 transition duration-200"
+        >
+          <Trash2 size={32} />
+        </Button>
+      )}
+    </div>
   );
 });
 

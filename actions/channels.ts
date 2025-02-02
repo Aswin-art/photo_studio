@@ -205,6 +205,9 @@ export const checkChannelUser = async (code: string) => {
     const channel = await db.channels.findFirst({
       where: {
         code
+      },
+      include: {
+        Results: true
       }
     });
 

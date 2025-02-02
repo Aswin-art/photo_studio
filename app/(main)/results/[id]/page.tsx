@@ -9,6 +9,8 @@ import Wrapper from "@/components/wrapper";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { sentEmail } from "@/actions/results";
+import { toast } from "@/hooks/use-toast";
 
 const Page = () => {
   const params = useParams();
@@ -26,8 +28,40 @@ const Page = () => {
   };
 
   const handleSentEmail = async () => {
+    if (!data) {
+      return toast({
+        title: "Failed",
+        description: "Data tidak tersedia, tidak dapat mengirim email!"
+      });
+    }
+
     setEmailLoading(true);
-    setEmailLoading(false);
+
+    try {
+      const req = await sentEmail(data.id);
+
+      if (req) {
+        toast({
+          title: "Success",
+          description:
+            "Foto berhasil dikirim melalui email, silahkan cek email Anda!"
+        });
+      } else {
+        toast({
+          title: "Failed",
+          description:
+            "Foto gagal dikirim melalui email, silahkan hubungi admin!"
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan saat mengirim email. Coba lagi nanti!"
+      });
+    } finally {
+      setEmailLoading(false);
+    }
   };
 
   return (
@@ -50,7 +84,15 @@ const Page = () => {
             <div className="flex justify-between">
               <h3 className="font-bold text-2xl">Hasil Foto Editan</h3>
               <Button disabled={emailLoading} onClick={handleSentEmail}>
-                <Mail /> Kirim Ke Email
+                {emailLoading ? (
+                  <>
+                    <Loader2 className="animate-spin" /> Loading...
+                  </>
+                ) : (
+                  <>
+                    <Mail /> Kirim Ke Email
+                  </>
+                )}
               </Button>
             </div>
             <div className="flex justify-center items-center mt-10">
