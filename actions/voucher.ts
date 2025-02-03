@@ -92,3 +92,22 @@ export async function updateVoucher(id: number, data: { name: string; discount: 
     }
 }
 
+export async function getVoucherByName(name: string) {
+    try {
+        const voucher = await db.voucher.findFirst({
+            where: {
+                name: name,
+                count: {
+                    gt: 0
+                }
+            },
+        });
+        
+        return voucher ? { 
+            ...voucher, 
+            discount: voucher.discount?.toNumber() 
+        } : null;
+    } catch (error) {
+        throw new Error(`Failed to get voucher by name: ${error}`);
+    }
+}

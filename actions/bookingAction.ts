@@ -1,5 +1,6 @@
 'use server';
 import { db } from "@/lib/db";
+import { startOfDay, endOfDay } from 'date-fns';
 
 export async function getTransactions() {
     try {
@@ -109,12 +110,29 @@ export async function updateTransactionApproval(transactionId: number, isApprove
     }
 }
 
-export async function createBooking(studioId: number, bookingDate: string, bookingTime: number, customerData: any) {
+export async function createBooking(
+    studioId: number,
+    bookingDate: string,
+    bookingTime: number,
+    customerData: {
+        customerName: string;
+        customerEmail: string;
+        customerPhone: string;
+    },
+    voucherId?: number,
+    addons?: { addonId: number; quantity: number }[]
+) {
     try {
+        const targetDate = new Date(bookingDate);
+        targetDate.setHours(0, 0, 0, 0);
+        
         const existingBooking = await db.customertransaction.findFirst({
             where: {
                 studioId,
-                bookingDate: new Date(bookingDate),
+                bookingDate: {
+                    gte: startOfDay(targetDate),
+                    lte: endOfDay(targetDate)
+                },
                 bookingTime,
                 OR: [
                     { isApproved: null },
@@ -127,16 +145,91 @@ export async function createBooking(studioId: number, bookingDate: string, booki
             throw new Error("Sesi ini sudah dibooking oleh orang lain!");
         }
 
+        const studio = await db.studio.findUnique({
+            where: { id: studioId },
+            select: { price: true },
+        });
+
+        if (!studio) {
+            throw new Error("Studio tidak ditemukan!");
+        }
+
+        let addonsPrice = 0;
+        if (addons && addons.length > 0) {
+            const addonPrices = await db.addon.findMany({
+                where: {
+                    id: {
+                        in: addons.map(addon => addon.addonId)
+                    }
+                },
+                select: {
+                    id: true,
+                    price: true
+                }
+            });
+
+            addonsPrice = addons.reduce((total, addon) => {
+                const addonPrice = addonPrices.find(ap => ap.id === addon.addonId)?.price || 0;
+                return total + (addonPrice * addon.quantity);
+            }, 0);
+        }
+
+        let discountPercentage = 0;
+        if (voucherId) {
+            const voucher = await db.voucher.findUnique({
+                where: { id: voucherId },
+                select: { discount: true, count: true }
+            });
+
+            if (!voucher) {
+                throw new Error("Voucher tidak ditemukan!");
+            }
+
+            if (voucher.count <= 0) {
+                throw new Error("Voucher sudah habis!");
+            }
+
+            discountPercentage = voucher.discount ? Number(voucher.discount) : 0;
+        }
+
+        const subtotal = studio.price + addonsPrice;
+        const discount = (subtotal * discountPercentage) / 100;
+        const totalPrice = subtotal - discount;
+
         const booking = await db.customertransaction.create({
             data: {
                 studioId,
                 bookingDate: new Date(bookingDate),
                 bookingTime,
+                totalPrice,
                 ...customerData,
+                voucherId,
                 isApproved: null,
                 updatedAt: new Date(),
+
+                customeraddon: addons && addons.length > 0 ? {
+                    create: addons.map((addon) => ({
+                        addonId: addon.addonId,
+                        quantity: addon.quantity,
+                        updatedAt: new Date(),
+                    })),
+                } : undefined,
             },
+            include: {
+                customeraddon: true,
+                studio: true,
+                voucher: true,
+            }
         });
+
+        if (voucherId) {
+            await db.voucher.update({
+                where: { id: voucherId },
+                data: {
+                    count: { decrement: 1 }
+                }
+            });
+        }
 
         return booking;
     } catch (err) {
@@ -146,29 +239,83 @@ export async function createBooking(studioId: number, bookingDate: string, booki
 
 export async function getDailySessions(studioId: number, bookingDate: string) {
     try {
+        const today = new Date();
+        const todayCompare = new Date();
+        todayCompare.setHours(0, 0, 0, 0);
+        
+        const targetDate = new Date(bookingDate);
+        targetDate.setHours(0, 0, 0, 0);
+
+        if (targetDate < todayCompare) {
+            return {
+                sessions: [],
+                message: "Tanggal sudah lewat, tidak bisa melakukan booking."
+            };
+        }
+
+        let relatedStudioIds = [studioId];
+
+        if (studioId === 1) {
+            relatedStudioIds.push(2);
+        } else if (studioId === 2) {
+            relatedStudioIds.push(1);
+        }
+
+        const holiday = await db.holiday.findFirst({
+            where: { 
+                date: {
+                    equals: targetDate
+                }
+            },
+            select: { description: true },
+        });
+
+        if (holiday) {
+            return {
+                sessions: [],
+                message: holiday.description
+            };
+        }
+
         const bookedSessions = await db.customertransaction.findMany({
             where: {
-                studioId,
-                bookingDate: new Date(bookingDate),
+                bookingDate: {
+                    gte: startOfDay(targetDate),
+                    lte: endOfDay(targetDate)
+                },
+                studioId: { in: relatedStudioIds },
                 OR: [
                     { isApproved: null },
                     { isApproved: true },
                 ],
             },
-            select: {
-                bookingTime: true,
-            },
+            select: { bookingTime: true },
         });
 
         const bookedTimes = new Set(bookedSessions.map(session => session.bookingTime));
 
-        const sessions = Array.from({ length: 24 }, (_, i) => ({
-            sesi: i + 1,
-            isAvailable: !bookedTimes.has(i + 1),
-        }));
+        let currentSession = 1;
+        if (targetDate.toDateString() === today.toDateString()) {
+            const currentHour = today.getHours();
+            const currentMinute = today.getMinutes();
+            currentSession = Math.ceil(((currentHour - 8) * 60 + currentMinute) / 30) + 1;
+            currentSession = Math.max(1, currentSession);
+        }
 
-        return sessions;
+        const sessions = Array.from({ length: 24 }, (_, i) => {
+            const sessionNumber = i + 1;
+            return {
+                sesi: sessionNumber,
+                isAvailable: !bookedTimes.has(sessionNumber),
+            };
+        }).filter(session => session.sesi >= currentSession);
+
+        return {
+            sessions,
+            message: null
+        };
     } catch (err) {
+        console.error('Error in getDailySessions:', err);
         throw new Error(`Failed to get daily sessions: ${err}`);
     }
 }

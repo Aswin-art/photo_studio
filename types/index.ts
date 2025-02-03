@@ -62,3 +62,27 @@ export type Transaction = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type Session = {
+  sesi: number;
+  isAvailable: boolean;
+}
+
+export type DailySession = {
+  message: string | null;
+  sessions: Session[] | [];
+}
+
+export interface AddonQuantity {
+  id: number;
+  quantity: number;
+  price: number;
+}
+
+export interface AddonCardProps {
+  id: number;
+  title: string;
+  price: number;
+  quantity: number;
+  onQuantityChange: (quantity: number) => void;
+}
