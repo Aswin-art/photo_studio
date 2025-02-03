@@ -62,7 +62,7 @@ model holiday {
 model studio {
   id                  Int                   @id @default(autoincrement())
   name                String                @db.VarChar(255)
-  description         String?               @db.VarChar(500)
+  description         String?               @db.Text
   image               String?               @db.VarChar(255)
   createdAt           DateTime              @default(now())
   updatedAt           DateTime
