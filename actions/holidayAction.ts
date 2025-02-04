@@ -1,12 +1,15 @@
 "use server";
 import { db } from "@/lib/db";
+import { startOfDay } from 'date-fns';
 
 export async function getHolidays() {
   try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const holidays = await db.holiday.findMany({
       where: {
         date: {
-          gte: new Date()
+          gte: startOfDay(today)
         }
       },
       orderBy: {
