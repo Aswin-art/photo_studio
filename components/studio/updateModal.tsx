@@ -84,7 +84,7 @@ export default function UpdateStudioForm({
     <>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-xl p-6 relative">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-xl p-6 relative max-h-[80vh] overflow-auto">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-semibold mb-2">Perbarui Studio</h2>
               <p className="text-gray-500">Isi form untuk edit studio</p>
