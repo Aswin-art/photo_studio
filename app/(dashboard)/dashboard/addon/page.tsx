@@ -12,6 +12,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import React, { useEffect, useState } from "react";
 import { getAddons } from "@/actions/addonAction";
 import ListAddon from "@/components/addons/ListAddon";
+import { Addon } from "@/types";
 
 export default function Page() {
   const [addons, setAddons] = useState<Addon[]>([]);

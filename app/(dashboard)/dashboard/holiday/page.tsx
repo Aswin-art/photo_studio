@@ -10,9 +10,9 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import React, { useEffect, useState } from "react";
-import { Holiday} from "@prisma/client";
 import { getHolidays } from "@/actions/holidayAction";
 import ListHoliday from "@/components/holiday/listHoliday";
+import { Holiday } from "@/types";
 
 export default function Page() {
   const [holiday, setHolidays] = useState<Holiday[]>([]);

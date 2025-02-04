@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import StudioList from "@/components/studio/studio-list";
 import CreateStudioForm from "@/components/studio/createModal";
 import { getStudios } from "@/actions/studioAction";
-import { Studio } from "@prisma/client";
+import { Studio } from "@/types";
 
 export default function Page() {
   const [studios, setStudios] = useState<Studio[]>([]);
