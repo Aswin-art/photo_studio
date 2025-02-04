@@ -6,7 +6,7 @@ export async function getVouchers() {
         const vouchers = await db.voucher.findMany();
         return vouchers.map((voucher) => ({
             ...voucher,
-            discount: voucher.discount?.toNumber(),
+            discount: voucher.discount ? voucher.discount.toNumber() : null,
         }));
     } catch (error) {
         throw new Error(`failed to get vouchers: ${error}`);

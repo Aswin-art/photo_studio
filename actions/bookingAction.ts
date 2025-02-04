@@ -15,7 +15,12 @@ export async function getTransactions() {
                 }
             }
         });
-        return transactions;
+        return transactions.map(transaction => ({
+            ...transaction,
+            voucher: transaction.voucher
+                ? { ...transaction.voucher, discount: transaction.voucher.discount ? Number(transaction.voucher.discount) : null }
+                : null,
+        }));
     } catch (err) {
         throw new Error(`Failed to get transactions: ${err}`);
     }
@@ -38,7 +43,15 @@ export async function getTransactionsByFilter(studioId?: number | undefined, isA
                 }
             }
         });
-        return transactions;
+        return transactions.map((transaction) => ({
+            ...transaction,
+            voucher: transaction.voucher
+                ? {
+                      ...transaction.voucher,
+                      discount: transaction.voucher.discount ? transaction.voucher.discount.toNumber() : null,
+                  }
+                : null,
+        }));
     } catch (err) {
         throw new Error(`Failed to get transactions: ${err}`);
     }

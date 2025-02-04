@@ -10,9 +10,9 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import React, { useEffect, useState } from "react";
-import { voucher } from "@prisma/client";
 import { getVouchers } from "@/actions/voucher"; 
 import ListVoucher from "@/components/voucher/ListVoucher";
+import { Voucher } from "@/types";
 
 
 export default function Page() {
@@ -23,7 +23,6 @@ export default function Page() {
     try {
       const data = await getVouchers();
       setVouchers(data);
-      console.log(data)
     } catch (error) {
       console.error("Failed to fetch vouchers:", error);
     } finally {

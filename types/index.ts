@@ -23,7 +23,7 @@ export type Holiday = {
 export type Voucher = {
   id: number;
   name: string;
-  discount: number;
+  discount: number | null;
   count: number;
 }
 
