@@ -2,6 +2,7 @@
 import { db } from "@/lib/db";
 import { startOfDay, endOfDay } from 'date-fns';
 import { pusher } from "@/lib/pusher";
+import { formatDateToWIB } from "@/utils/dateConvert";
 
 export async function getTransactions() {
     try {
@@ -140,8 +141,7 @@ export async function createBooking(
     addons?: { addonId: number; quantity: number }[]
 ) {
     try {
-        const targetDate = new Date(bookingDate);
-        targetDate.setHours(0, 0, 0, 0);
+        const targetDate = new Date(formatDateToWIB(bookingDate));
         
         const existingBooking = await db.customertransaction.findFirst({
             where: {
@@ -216,7 +216,7 @@ export async function createBooking(
         const booking = await db.customertransaction.create({
             data: {
                 studioId,
-                bookingDate: new Date(bookingDate),
+                bookingDate: targetDate,
                 bookingTime,
                 totalPrice,
                 ...customerData,

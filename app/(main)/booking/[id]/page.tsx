@@ -12,7 +12,7 @@ import { DailySession, Session } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, Clock } from "lucide-react";
-import { dateConvert } from "@/utils/dateConvert";
+import { dateConvert, dateToStorage } from "@/utils/dateConvert";
 import { formatRupiah } from "@/utils/Rupiah";
 import { cookieUtils } from "@/utils/cookies";
 
@@ -36,7 +36,7 @@ export default function Booking() {
     const router = useRouter();
 
     const handleContinue = () => {
-        cookieUtils.set('bookingDate', date?.toISOString());
+        cookieUtils.set('bookingDate', dateToStorage(date!));
         cookieUtils.set('bookingTime', selectedSession);
         router.push(`/booking/${id}/addon`);
     };
