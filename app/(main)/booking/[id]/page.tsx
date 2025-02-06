@@ -20,6 +20,7 @@ export default function Booking() {
     const { id } = useParams();
     const [studio, setStudio] = useState<Studio>();
     const [isLoading, setIsLoading] = useState(true);
+    const [isSubmit, setIsSubmit] = useState(false);
     const [date, setDate] = React.useState<Date | undefined>(
         cookieUtils.get('bookingDate') ? new Date(cookieUtils.get('bookingDate')!) : new Date()
     );
@@ -35,10 +36,12 @@ export default function Booking() {
     const INITIAL_SESSIONS_TO_SHOW = 10;
     const router = useRouter();
 
-    const handleContinue = () => {
-        cookieUtils.set('bookingDate', dateToStorage(date!));
-        cookieUtils.set('bookingTime', selectedSession);
+    const handleContinue = async() => {
+        setIsSubmit(true);
+        await cookieUtils.set('bookingDate', dateToStorage(date!));
+        await cookieUtils.set('bookingTime', selectedSession);
         router.push(`/booking/${id}/addon`);
+        setIsSubmit(false);
     };
 
     const fetchStudios = async () => {
@@ -146,7 +149,7 @@ export default function Booking() {
                                                 <p className="text-gray-800">Total Biaya</p>
                                                 <p className="text-gray-800">Rp{studio ? formatRupiah(studio.price) : "N/A"}</p>
                                             </div>
-                                            <Button className="w-full" disabled={isButtonDisabled} onClick={handleContinue}>Selanjutnya</Button>
+                                            <Button className="w-full" disabled={isButtonDisabled} onClick={handleContinue}>{isSubmit ? 'Memuat...' : 'Selanjutnya'}</Button>
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -203,7 +206,7 @@ export default function Booking() {
                     <p className="text-gray-800">Total Biaya</p>
                     <p className="text-gray-800">Rp{studio ? formatRupiah(studio.price) : "N/A"}</p>
                 </div>
-                <Button className="w-full" disabled={isButtonDisabled} onClick={handleContinue}>Selanjutnya</Button>
+                <Button className="w-full" disabled={isButtonDisabled} onClick={handleContinue}>{isSubmit ? 'Memuat...' : 'Selanjutnya'}</Button>
             </div>
         </>
     );

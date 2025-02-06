@@ -110,7 +110,7 @@ const VoucherForm: React.FC<VoucherFormProps> = ({ voucherData, onClose, refresh
             </div>
             <DialogFooter>
             <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Saving..." : "Save changes"}
+                {isSubmitting ? "Menyimpan..." : "Simpan"}
             </Button>
             </DialogFooter>
         </form>

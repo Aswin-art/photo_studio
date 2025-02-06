@@ -95,7 +95,7 @@ const HolidayForm: React.FC<HolidayFormProps> = ({ holidayData, onClose, refresh
             </div>
             <DialogFooter>
                 <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Saving..." : "Save changes"}
+                {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </Button>
             </DialogFooter>
         </form>

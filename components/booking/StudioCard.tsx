@@ -4,16 +4,20 @@ import { useRouter } from "next/navigation";
 import { Studio } from "@/types";
 import { formatRupiah } from "@/utils/Rupiah";
 import { Button } from "@/components/ui/button"
+import { useState } from "react";
 
 export default function StudioCard({
   studio,
 }: {
   studio: Studio;
 }) {
+    const [isSubmit, setIsSubmit] = useState(false);
     const router = useRouter();
 
-    const handlePilihStudio = () => {
-      router.push(`/booking/${studio.id}`);
+    const handlePilihStudio = async () => {
+        setIsSubmit(true);
+        await router.push(`/booking/${studio.id}`);
+        setIsSubmit(false);
     };
 
     return (
@@ -40,7 +44,7 @@ export default function StudioCard({
                     <p className="text-sm text-gray-600 mt-1 text-justify line-clamp-4" dangerouslySetInnerHTML={{ __html: studio.description || 'No description available.' }} />
                     <div className="mt-auto">
                         <Button className="w-full mt-4" onClick={handlePilihStudio}>
-                            Pilih Studio
+                            {isSubmit ? 'Memuat...' : 'Pilih Studio'}
                         </Button>
                     </div>
                 </div>

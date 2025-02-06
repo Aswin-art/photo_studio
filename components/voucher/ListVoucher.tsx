@@ -162,7 +162,7 @@ export default function ListVoucher({
               </div>
               <DialogFooter>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Saving..." : "Save changes"}
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </Button>
               </DialogFooter>
             </form>

@@ -465,7 +465,7 @@ export default function BookingAddon() {
                             </div>
                             <DialogFooter>
                             <Button type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? "Saving..." : "Save changes"}
+                                {isSubmitting ? "Menyimpan..." : "Simpan"}
                             </Button>
                             </DialogFooter>
                         </form>
