@@ -13,10 +13,12 @@ import React, { useEffect, useState } from "react";
 import { getTransactions } from "@/actions/bookingAction";
 import ListTransaction from "@/components/transaction/ListTransaction";
 import { Transaction } from "@/types";
+import { useTransactionContext } from "@/components/transaction/TransactionContext";
 
 export default function Page() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { triggerRefresh } = useTransactionContext();
  
   const fetchTransactions = async () => {
     try {
@@ -34,6 +36,10 @@ export default function Page() {
     setIsLoading(true);
     await fetchTransactions();
   };
+
+  useEffect(() => {
+    refreshTransactions();
+  }, [triggerRefresh]);
 
   useEffect(() => {
     fetchTransactions();

@@ -1,6 +1,7 @@
 'use server';
 import { db } from "@/lib/db";
 import { startOfDay, endOfDay } from 'date-fns';
+import { pusher } from "@/lib/pusher";
 
 export async function getTransactions() {
     try {
@@ -13,6 +14,9 @@ export async function getTransactions() {
                         addon: true
                     }
                 }
+            },
+            orderBy: {
+                createdAt: 'desc' 
             }
         });
         return transactions.map(transaction => ({
@@ -243,6 +247,8 @@ export async function createBooking(
                 }
             });
         }
+
+        await pusher.trigger("booking-channel", "new-booking", { customerName: booking.customerName });
 
         return booking;
     } catch (err) {
