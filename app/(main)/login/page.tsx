@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
-import { credentialLogin, logout } from "@/actions/authAction";
+import { useEffect, useState } from "react";
+import { signIn } from "next-auth/react";
+import {  logout } from "@/actions/authAction";
 // import {  useSession } from "next-auth/react";
 import {  useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -14,10 +15,16 @@ const LoginForm = () => {
     event.preventDefault();
     try {
       const formData = new FormData(event.currentTarget);
-      const response = await credentialLogin(formData);
-      if(response?.error){
+      const response = await signIn("credentials", {
+        email: formData.get("email"),
+        password: formData.get("password"),
+        redirect: true,
+        callbackUrl: "/dashboard"
+      });
+
+      if (response?.error) {
         setError("Check your Credentials");
-      }else{
+      } else {
         router.push("/dashboard");
       }
     } catch (e) {
@@ -30,6 +37,12 @@ const LoginForm = () => {
     console.log("clicked logout");
     logout();
   };
+
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard");
+    }
+  }, [session, router]);
 
   return (
     <>
