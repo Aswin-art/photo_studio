@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "../ui/button";
 import { logout } from "@/actions/authAction";
+import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 export function NavUser({
   user
@@ -37,9 +39,11 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const { data: session } = useSession(); 
+  const userLogin = session?.user;
 
   const handleLogout = async () => {
-    logout();
+    await signOut({ redirect: true, callbackUrl: "/login" });
   };
 
   return (
@@ -56,8 +60,8 @@ export function NavUser({
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{userLogin?.name || "Admin"}</span>
+                <span className="truncate text-xs">{userLogin?.email || "Admin@mail.com"}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
