@@ -59,11 +59,11 @@ export default function StudioCard({
 
         <div className="mt-4 flex gap-2">
           <button
-          onClick={() => setIsUpdateModalOpen(true)}
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600">
+            onClick={() => setIsUpdateModalOpen(true)}
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600 w-full">
             update
           </button>
-          <button
+          {/* <button
             onClick={() => handleDelete(studio.id)}
             className={`px-4 py-2 text-sm font-medium text-white rounded ${
               isDeleting
@@ -73,7 +73,7 @@ export default function StudioCard({
             disabled={isDeleting}
           >
             {isDeleting ? "Deleting..." : "Delete"}
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
