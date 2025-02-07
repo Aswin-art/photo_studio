@@ -2,6 +2,7 @@
 import Navbar from "@/components/navbar";
 import React from "react";
 import { usePathname } from 'next/navigation'; 
+import Foooter from "@/components/ui/footer-section";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname(); 
@@ -23,6 +24,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <>
       {showNavbar && <Navbar />}
       <>{children}</>
+      <Foooter />
     </>
   );
 };

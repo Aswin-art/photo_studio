@@ -8,8 +8,10 @@ import { useState } from "react";
 
 export default function StudioCard({
   studio,
+  buttonTitle
 }: {
   studio: Studio;
+  buttonTitle: string
 }) {
     const [isSubmit, setIsSubmit] = useState(false);
     const router = useRouter();
@@ -44,7 +46,7 @@ export default function StudioCard({
                     <p className="text-sm text-gray-600 mt-1 text-justify line-clamp-4" dangerouslySetInnerHTML={{ __html: studio.description || 'No description available.' }} />
                     <div className="mt-auto">
                         <Button className="w-full mt-4" onClick={handlePilihStudio}>
-                            {isSubmit ? 'Memuat...' : 'Pilih Studio'}
+                            {isSubmit ? 'Memuat...' : buttonTitle}
                         </Button>
                     </div>
                 </div>

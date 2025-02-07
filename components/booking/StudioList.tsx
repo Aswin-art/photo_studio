@@ -5,19 +5,21 @@ import { Studio } from "@/types";
 interface StudioListProps {
   studios: Studio[];
   isLoading: boolean;
+  buttonTitle?: string;
 }
 
 export default function StudioList({
   studios,
   isLoading,
+  buttonTitle = "Pilih Studio"
 }: StudioListProps) {
 
   if (isLoading) {
-    return <p>Loading studios...</p>;
+    return <p>Memuat Studio...</p>;
   }
 
   if (studios.length === 0) {
-    return <p>No studios available.</p>;
+    return <p>Tidak ada studio yang tersedia.</p>;
   }
 
   return (
@@ -26,6 +28,7 @@ export default function StudioList({
         <StudioCard
           key={studio.id}
           studio={studio}
+          buttonTitle={buttonTitle}
         />
       ))}
     </div>

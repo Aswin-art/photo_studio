@@ -25,7 +25,7 @@ const Navbar = () => {
   return (
     <div className="w-full fixed top-0 left-0 right-0 z-20 p-4">
       <Wrapper>
-        <div className="flex justify-between items-center gap-4 rounded-xl p-4 border bg-background border-input">
+        <div className="flex justify-between items-center gap-4 rounded-xl p-4 border bg-white/30 backdrop-blur-md border-input">
           <aside className="flex gap-2 items-center">
             {/* <Image
               src={"/logo.png"}
