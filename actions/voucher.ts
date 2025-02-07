@@ -3,7 +3,9 @@ import { db } from "@/lib/db";
 
 export async function getVouchers() {
     try {
-        const vouchers = await db.voucher.findMany();
+        const vouchers = await db.voucher.findMany({
+            where: { is_deleted: false },
+        });
         return vouchers.map((voucher) => ({
             ...voucher,
             discount: voucher.discount ? voucher.discount.toNumber() : null,
@@ -16,7 +18,7 @@ export async function getVouchers() {
 export async function createVoucher(name: string, discount: number, count: number) {
     try {
         const existingVoucher = await db.voucher.findFirst({
-            where: { name },
+            where: { name, is_deleted: false, },
         });
 
         if (existingVoucher) {
@@ -28,6 +30,7 @@ export async function createVoucher(name: string, discount: number, count: numbe
                 name,
                 discount,
                 count,
+                is_deleted: false,
                 updatedAt: new Date(),
             },
         });
@@ -42,14 +45,14 @@ export async function createVoucher(name: string, discount: number, count: numbe
 
 export async function deleteVoucher(id: number) {
     try {
-        const voucher = await db.voucher.delete({
-            where: {
-                id,
-            },
+        const voucher = await db.voucher.update({
+            where: { id },
+            data: { is_deleted: true, updatedAt: new Date() },
         });
-        return { ...voucher, discount: voucher.discount?.toNumber() }; 
+
+        return { ...voucher, discount: voucher.discount?.toNumber() };
     } catch (error) {
-        throw new Error(`failed to delete voucher: ${error}`);
+        throw new Error(`failed to soft delete voucher: ${error}`);
     }
 }
 
@@ -58,6 +61,7 @@ export async function getVoucherById(id: number) {
         const voucher = await db.voucher.findUnique({
             where: {
                 id,
+                is_deleted: false,
             },
         });
         return voucher ? { ...voucher, discount: voucher.discount?.toNumber() } : null;
@@ -72,6 +76,7 @@ export async function updateVoucher(id: number, data: { name: string; discount: 
             where: {
                 name: data.name,
                 id: { not: id },
+                is_deleted: false,
             },
         });
 
@@ -97,6 +102,7 @@ export async function getVoucherByName(name: string) {
         const voucher = await db.voucher.findFirst({
             where: {
                 name: name,
+                is_deleted: false,
                 count: {
                     gt: 0
                 }

@@ -80,10 +80,11 @@ model users {
 
 model voucher {
   id                  Int                   @id @default(autoincrement())
-  name                String                @unique @db.VarChar(255)
+  name                String                @db.VarChar(255)
   discount            Decimal?              @db.Decimal(5, 2)
   count               Int
   createdAt           DateTime              @default(now())
   updatedAt           DateTime
+  is_deleted          Boolean               @default(false)
   customertransaction customertransaction[]
 }

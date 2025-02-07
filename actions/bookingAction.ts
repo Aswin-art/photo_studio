@@ -194,7 +194,7 @@ export async function createBooking(
         let discountPercentage = 0;
         if (voucherId) {
             const voucher = await db.voucher.findUnique({
-                where: { id: voucherId },
+                where: { id: voucherId, is_deleted: false },
                 select: { discount: true, count: true }
             });
 
@@ -241,7 +241,7 @@ export async function createBooking(
 
         if (voucherId) {
             await db.voucher.update({
-                where: { id: voucherId },
+                where: { id: voucherId, is_deleted: false, },
                 data: {
                     count: { decrement: 1 }
                 }

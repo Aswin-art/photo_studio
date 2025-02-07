@@ -37,6 +37,7 @@ export default function ListVoucher({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +58,7 @@ export default function ListVoucher({
     }
   
     setFormData({ ...formData, [name]: value });
+    setErrorMessage("");
   };
   
 
@@ -80,14 +82,20 @@ export default function ListVoucher({
           type: "foreground",
         });
         setFormData({ name: "", discount: "", count: "" });
+        setErrorMessage("");
         refreshVouchers();
         setIsDialogOpen(false);
       } catch (error: any) {
-        toast({
-          title: "Error",
-          description: error.message,
-          type: "background",
-        });
+        if (error.message.includes("Voucher dengan nama ini sudah ada.")) {
+          setErrorMessage("Voucher dengan nama ini sudah ada. Gunakan nama lain.");
+        }else{
+          console.error("Error saat membuat voucher:", error.message);
+          toast({
+            title: "Terjadi Kesalahan",
+            description: "Gagal membuat voucher. Silakan coba lagi.",
+            type: "background",
+          });
+        }
       } finally {
         setIsSubmitting(false);
       }
@@ -108,7 +116,7 @@ export default function ListVoucher({
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
+              <div className="grid grid-cols-4 items-center gap-1">
                 <Label htmlFor="name" className="text-right">
                   Nama / Kode
                 </Label>
@@ -121,6 +129,9 @@ export default function ListVoucher({
                   className="col-span-3"
                   required
                 />
+                {errorMessage && (
+                    <p className="text-red-500 text-sm mt-1 col-span-4">{errorMessage}</p>
+                )}
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="discount" className="text-right">
