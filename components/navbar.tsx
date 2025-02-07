@@ -27,16 +27,16 @@ const Navbar = () => {
       <Wrapper>
         <div className="flex justify-between items-center gap-4 rounded-xl p-4 border bg-white/30 backdrop-blur-md border-input">
           <aside className="flex gap-2 items-center">
-            {/* <Image
-              src={"/logo.png"}
-              draggable={false}
-              alt="logo"
-              width={30}
-              height={30}
-            /> */}
-            <Link href={"/"} className="font-bold text-xl">
+            <Image
+              src={"/image/logo.png"}
+              alt={"Studio Kami"}
+              width={400}
+              height={200}
+              className=" rounded-md w-full h-8 flex-1 object-contain"
+            />
+            {/* <Link href={"/"} className="font-bold text-xl">
               Foto Studio
-            </Link>
+            </Link> */}
           </aside>
           <nav className="gap-4 hidden lg:flex flex-grow justify-center items-center">
             {navItems.map((nav) => (

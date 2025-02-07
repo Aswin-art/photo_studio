@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Facebook, Instagram, Linkedin, Moon, Send, Sun, Twitter } from "lucide-react"
+import Image from "next/image";
 
 export default function Foooter() {
   const [isDarkMode, setIsDarkMode] = React.useState(false)
@@ -31,11 +32,16 @@ export default function Foooter() {
       <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="relative">
-            <h2 className="mb-4 text-3xl font-bold tracking-tight">Foto Studio</h2>
+            <Image
+              src={"/image/logo.png"}
+              alt={"Studio Kami"}
+              width={400}
+              height={200}
+              className=" rounded-md w-full h-8 flex-1 object-contain mb-4"
+            />
             <p className="mb-6 text-muted-foreground">
               Capture Your Moments, Keep Them Forever.
             </p>
-            <div className="absolute -right-4 top-0 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
           </div>
           <div>
             <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
