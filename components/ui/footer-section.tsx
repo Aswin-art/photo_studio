@@ -63,16 +63,16 @@ export default function Foooter() {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Contact Us</h3>
             <address className="space-y-2 text-sm not-italic">
-              <p>123 Innovation Street</p>
-              <p>Tech City, TC 12345</p>
+              <p>Ruko Kraton Superblock, Kec. Krian</p>
+              <p>Kabupaten Sidoarjo, Jawa Timur</p>
               <p>Phone: (+62) 812-3456-789</p>
-              <p>Email: hello@example.com</p>
+              {/* <p>Email: hello@example.com</p> */}
             </address>
           </div>
           <div className="relative">
             <h3 className="mb-4 text-lg font-semibold">Follow Us</h3>
             <div className="mb-6 flex space-x-4">
-              <TooltipProvider>
+              {/* <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="outline" size="icon" className="rounded-full">
@@ -97,11 +97,13 @@ export default function Foooter() {
                     <p>Follow us on Twitter</p>
                   </TooltipContent>
                 </Tooltip>
-              </TooltipProvider>
+              </TooltipProvider> */}
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full">
+                    <Button variant="outline" size="icon" className="rounded-full"
+                      onClick={() => window.open("https://www.instagram.com/prostudio_id/", "_blank")}
+                    >
                       <Instagram className="h-4 w-4" />
                       <span className="sr-only">Instagram</span>
                     </Button>
@@ -111,7 +113,7 @@ export default function Foooter() {
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              <TooltipProvider>
+              {/* <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="outline" size="icon" className="rounded-full">
@@ -123,7 +125,7 @@ export default function Foooter() {
                     <p>Connect with us on LinkedIn</p>
                   </TooltipContent>
                 </Tooltip>
-              </TooltipProvider>
+              </TooltipProvider> */}
             </div>
           </div>
         </div>
