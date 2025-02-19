@@ -50,6 +50,7 @@ function DataTable<TData, TValue>({
     pageIndex: 0,
     pageSize
   });
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const table = useReactTable({
     data,
@@ -63,8 +64,15 @@ function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
     getPaginationRowModel: getPaginationRowModel(),
+    globalFilterFn: (row, columnId, filterValue) => {
+      const value = row.getValue(columnId);
+      return String(value)
+        .toLowerCase()
+        .includes(String(filterValue).toLowerCase());
+    },
     state: {
       sorting,
+      globalFilter,
       columnFilters,
       columnVisibility,
       rowSelection,
@@ -76,11 +84,9 @@ function DataTable<TData, TValue>({
     <>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
+          placeholder="Search..."
+          value={globalFilter}
+          onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm"
         />
 
@@ -111,7 +117,7 @@ function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border max-w-[calc(100vw-32px)] md:max-w-[calc(100vw-255px)]">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -25,18 +25,18 @@ const Navbar = () => {
   return (
     <div className="w-full fixed top-0 left-0 right-0 z-20 p-4">
       <Wrapper>
-        <div className="flex justify-between items-center gap-4 rounded-xl p-4 border bg-background border-input">
+        <div className="flex justify-between items-center gap-4 rounded-xl p-4 border bg-white/30 backdrop-blur-md border-input">
           <aside className="flex gap-2 items-center">
             <Image
-              src={"/logo.png"}
-              draggable={false}
-              alt="logo"
-              width={30}
-              height={30}
+              src={"/image/logo.png"}
+              alt={"Studio Kami"}
+              width={400}
+              height={200}
+              className=" rounded-md w-full h-8 flex-1 object-contain"
             />
-            <Link href={"/dashboard"} className="font-bold text-xl">
-              App Name
-            </Link>
+            {/* <Link href={"/"} className="font-bold text-xl">
+              Foto Studio
+            </Link> */}
           </aside>
           <nav className="gap-4 hidden lg:flex flex-grow justify-center items-center">
             {navItems.map((nav) => (
@@ -44,7 +44,7 @@ const Navbar = () => {
                 href={nav.url}
                 key={nav.name}
                 className={clsx("hover:text-blue-600 transition-all", {
-                  "text-blue-600": pathname === nav.url
+                  "text-blue-600": (pathname?.startsWith(nav.url) && nav.url !== "/") || (nav.url === "/" && pathname === "/")
                 })}
               >
                 {nav.name}
@@ -53,13 +53,13 @@ const Navbar = () => {
           </nav>
           <aside>
             <div className="hidden lg:flex lg:gap-2 lg:items-center">
-              <Link
+              {/* <Link
                 href={"/login"}
                 className="border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md px-4 py-2 flex justify-center items-center"
               >
                 Get Started
                 <ChevronRight />
-              </Link>
+              </Link> */}
               {/* <UserButton
                 appearance={{
                   elements: {
@@ -69,7 +69,7 @@ const Navbar = () => {
                   }
                 }}
               /> */}
-              <ModeToggle />
+              {/* <ModeToggle /> */}
             </div>
             <div className="block lg:hidden">
               <Sheet>
@@ -90,7 +90,7 @@ const Navbar = () => {
                           }
                         }}
                       /> */}
-                      <SheetTitle>| App Name</SheetTitle>
+                      <SheetTitle>Foto Studio</SheetTitle>
                     </div>
                   </SheetHeader>
                   <nav className="gap-4 pt-10 flex flex-col flex-grow">
@@ -101,21 +101,13 @@ const Navbar = () => {
                         className={clsx(
                           "hover:text-blue-600 hover:bg-blue-600/10 transition-all border border-input p-4 rounded-md",
                           {
-                            "text-blue-600 bg-blue-600/10": pathname === nav.url
+                            "text-blue-600 bg-blue-600/10": (pathname?.startsWith(nav.url) && nav.url !== "/") || (nav.url === "/" && pathname === "/")
                           }
                         )}
                       >
                         {nav.name}
                       </Link>
                     ))}
-                    <Link
-                      href={"/dashboard"}
-                      className={
-                        "hover:text-blue-600 hover:bg-blue-600/10 transition-all border border-input p-4 rounded-md"
-                      }
-                    >
-                      Dashboard
-                    </Link>
                   </nav>
                   <SheetFooter>
                     <SheetDescription>

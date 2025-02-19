@@ -28,15 +28,19 @@ export const users: User[] = [
 // Navbar Items
 export const navItems = [
   {
-    name: "Beranda",
+    name: "Home",
     url: "/"
   },
   {
-    name: "Komunitas",
-    url: "/communities"
+    name: "Booking",
+    url: "/booking"
   },
   {
-    name: "Event",
-    url: "/events"
-  }
+    name: "Contact US",
+    url: "/contact-us"
+  },
+  {
+    name: "Photo Access",
+    url: "/photo-access"
+  },
 ];

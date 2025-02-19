@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/providers";
 import { Toaster } from "@/components/ui/toaster";
+import SessionProviderWrapper from "@/components/session-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,15 +30,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        data-new-gr-c-s-check-loaded="14.1215.0"
-        data-gr-ext-installed=""
-      >
-        <Providers>{children}</Providers>
-        <Toaster />
-      </body>
-    </html>
+    <SessionProviderWrapper>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          data-new-gr-c-s-check-loaded="14.1215.0"
+          data-gr-ext-installed=""
+        >
+          <Providers>{children}</Providers>
+          <Toaster />
+        </body>
+      </html>
+    </SessionProviderWrapper>
   );
 }

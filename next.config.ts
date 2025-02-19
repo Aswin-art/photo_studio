@@ -1,17 +1,26 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*"
-      }
-    ]
+        hostname: "*",
+      },
+    ],
   },
 
-  reactStrictMode: false
+  reactStrictMode: false,
+
+  async redirects() {
+    return [
+      {
+        source: "/contact-us",
+        destination: "https://wa.me/628123456789",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -1,67 +1,58 @@
 import NextAuth from "next-auth";
+import { SessionStrategy } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from '@prisma/client';
-import bcryptjs from 'bcryptjs';  // Changed from bcrypt to bcryptjs
+import bcryptjs from "bcryptjs";
+import { db } from "./db";
 
-const prisma = new PrismaClient();
-
-export const {
-  handlers: { GET, POST },
-  auth,
-  signIn,
-  signOut,
-} = NextAuth({
+export const authOptions = {
+  debug: true,
   session: {
-    strategy: 'jwt',
+    strategy: "jwt" as SessionStrategy
   },
   pages: {
-    signIn: '/login',
+    signIn: "/login"
   },
   providers: [
     CredentialsProvider({
       credentials: {
         email: {},
-        password: {},
+        password: {}
       },
       async authorize(credentials) {
         if (!credentials) return null;
-        
+
         const email = credentials.email as string;
         const password = credentials.password as string;
 
         if (!email || !password) {
-          throw new Error('Missing credentials');
+          throw new Error("Missing credentials");
         }
 
-        const user = await prisma.users.findFirst({
-          where: { email: email },
+        const user = await db.users.findFirst({
+          where: { email: email }
         });
 
-        if (!user) {
-          return null;
-        }
+        if (!user) return null;
 
         const isValidPassword = await bcryptjs.compare(password, user.password);
-        
-        if (!isValidPassword) {
-          return null;
-        }
+
+        if (!isValidPassword) return null;
 
         return {
           id: user.id.toString(),
-          email: user.email,
+          email: user.email
         };
-      },
-    }),
+      }
+    })
   ],
   callbacks: {
     async session({ session, token }) {
       if (token) {
         session.user = {
-          id: token.sub || '',
-          email: token.email || '',
+          id: token.sub || "",
+          email: token.email || "",
           name: token.name,
-          emailVerified: null,
+          emailVerified: null
         };
       }
       return session;
@@ -73,7 +64,9 @@ export const {
         token.name = user.name;
       }
       return token;
-    },
+    }
   },
-  secret: process.env.AUTH_SECRET,
-});
+  secret: process.env.AUTH_SECRET
+};
+
+export default NextAuth(authOptions);

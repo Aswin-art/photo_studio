@@ -6,12 +6,10 @@ import {
   BookOpen,
   Bot,
   Command,
-  Frame,
   GalleryVerticalEnd,
-  Map,
-  PieChart,
   Settings2,
-  SquareTerminal
+  SquareTerminal,
+  Camera, Calendar, Ticket, Receipt, CopyPlus
 } from "lucide-react";
 import {
   Sidebar,
@@ -21,7 +19,6 @@ import {
   SidebarRail
 } from "@/components/ui/sidebar";
 import { TeamSwitcher } from "./team-switcher";
-import { NavMain } from "./nav-main";
 import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
 
@@ -129,19 +126,29 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame
+      name: "Studio",
+      url: "/dashboard/studio",
+      icon: Camera  // Icon kamera untuk studio fotografi
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart
+      name: "Layanan Tambahan",
+      url: "/dashboard/addon",
+      icon: CopyPlus  // Icon kamera untuk studio fotografi
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map
+      name: "Jadwal Foto",
+      url: "/dashboard/holiday",
+      icon: Calendar  // Icon kalender untuk penjadwalan
+    },
+    {
+      name: "Voucher",
+      url: "/dashboard/voucher",
+      icon: Ticket  // Icon tiket untuk voucher
+    },
+    {
+      name: "Transaksi",
+      url: "/dashboard/transaction",
+      icon: Receipt  // Icon kwitansi untuk transaksi
     }
   ]
 };
@@ -167,7 +174,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <TeamSwitcher teams={data.teams} />
         </SidebarHeader>
         <SidebarContent>
-          <NavMain items={data.navMain} />
+          {/* <NavMain items={data.navMain} /> */}
           <NavProjects projects={data.projects} />
         </SidebarContent>
         <SidebarFooter>

@@ -1,83 +1,103 @@
 "use client";
-import { useState } from "react";
-import { credentialLogin, logout } from "@/actions/authAction";
-// import {  useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { signIn } from "next-auth/react";
 import {  useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Wrapper from "@/components/wrapper";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+
 
 const LoginForm = () => {
-  const [error, setError] = useState("");
   const { data: session, status } = useSession();
+  const { toast } = useToast();
   const router = useRouter();
 
   async function onSubmit(event) {
     event.preventDefault();
     try {
       const formData = new FormData(event.currentTarget);
-      const response = await credentialLogin(formData);
-      if(response?.error){
-        setError("Check your Credentials");
-      }else{
+      const response = await signIn("credentials", {
+        email: formData.get("email"),
+        password: formData.get("password"),
+        redirect: true,
+        callbackUrl: "/dashboard"
+      });
+      if (response?.error) {
+        toast({
+            title: "Gagal",
+            description: "Email atau password yang Anda masukkan salah. Coba lagi",
+            type: "foreground"
+        });
+      } else {
         router.push("/dashboard");
       }
     } catch (e) {
       console.error(e);
-      setError("Check your Credentials");
+      toast({
+          title: "Gagal",
+          description: "Email atau password yang Anda masukkan salah. Coba lagi",
+          type: "foreground"
+      });
     }
   }
 
-  const handleLogout = () => {
-    console.log("clicked logout");
-    logout();
-  };
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard");
+    }
+  }, [session, router]);
 
   return (
-    <>
-      <div className="text-xl text-red-500 mt-32">{error}</div>
-      <form
-        className="my-5 flex flex-col items-center border p-3 border-gray-200 rounded-md"
-        onSubmit={onSubmit}
-      >
-        <div className="my-2">
-          <label htmlFor="email">Email Address</label>
-          <input
-            className="border mx-2 border-gray-500 rounded"
-            type="email"
-            name="email"
-            id="email"
-          />
-        </div>
-
-        <div className="my-2">
-          <label htmlFor="password">Password</label>
-          <input
-            className="border mx-2 border-gray-500 rounded"
-            type="password"
-            name="password"
-            id="password"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-orange-300 mt-4 rounded flex justify-center items-center w-36"
-        >
-          Ceredential Login
-        </button>
-      </form>
-      {status === "loading" ? (
-        <div>Loading...</div>
-      ) : session ? (
-        <>
-          <div className="flex items-center gap-2">
-            <span>{session.user?.email}</span>
-            <button onClick={handleLogout}>logout</button>
-          </div>
-        </>
-      ) : (
-        <>Login</>
-      )}
-    </>
+    <Wrapper>
+      <div className="grid mt-16 min-h-[calc(100vh-348px)] p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center">Selamat Datang Kembali!</CardTitle>
+            <CardDescription className="text-center">Masukkan identitas Anda untuk masuk ke akun Anda.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-5" onSubmit={onSubmit}>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    type="email"
+                    name="email"
+                    id="email" 
+                    placeholder="hi@yourcompany.com" 
+                    required 
+                    />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
+              </div>
+              <Button type="submit" className="w-full">
+                Login
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </Wrapper>
   );
 };
 

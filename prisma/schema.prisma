@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,69 +7,86 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Studio {
-  id           Int                   @id @default(autoincrement())
-  name         String                @db.VarChar(255)
-  description  String?               @db.VarChar(500)
-  image        String?               @db.VarChar(255)
-  transactions CustomerTransaction[]
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+model addon {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(255)
+  price         Int
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime
+  customeraddon customeraddon[]
 }
 
-model Addon {
-  id             Int             @id @default(autoincrement())
-  name           String          @db.VarChar(255)
-  price          Int
-  customerAddons CustomerAddon[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+model customeraddon {
+  id                  Int                 @id @default(autoincrement())
+  transactionId       Int
+  addonId             Int
+  quantity            Int
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime
+  addon               addon               @relation(fields: [addonId], references: [id], onDelete: NoAction, map: "CustomerAddon_addonId_fkey")
+  customertransaction customertransaction @relation(fields: [transactionId], references: [id], onDelete: NoAction, map: "CustomerAddon_transactionId_fkey")
+
+  @@index([addonId], map: "CustomerAddon_addonId_fkey")
+  @@index([transactionId], map: "CustomerAddon_transactionId_fkey")
 }
 
-model Voucher {
-  id           Int                   @id @default(autoincrement())
-  name         String                @db.VarChar(255)
-  discount     String?               @db.VarChar(255)
-  count        Int
-  transactions CustomerTransaction[]
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+model customertransaction {
+  id            Int             @id @default(autoincrement())
+  studioId      Int
+  voucherId     Int?
+  customerName  String          @db.VarChar(255)
+  customerEmail String          @db.VarChar(255)
+  customerPhone String          @db.VarChar(15)
+  totalPrice    Int
+  bookingDate   DateTime        @db.Date
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime
+  isApproved    Boolean?
+  bookingTime   Int
+  customeraddon customeraddon[]
+  studio        studio          @relation(fields: [studioId], references: [id], map: "CustomerTransaction_studioId_fkey")
+  voucher       voucher?        @relation(fields: [voucherId], references: [id], map: "CustomerTransaction_voucherId_fkey")
+
+  @@index([studioId], map: "CustomerTransaction_studioId_fkey")
+  @@index([voucherId], map: "CustomerTransaction_voucherId_fkey")
 }
 
-model CustomerTransaction {
-  id             Int             @id @default(autoincrement())
-  studio         Studio?         @relation(fields: [studioId], references: [id])
-  studioId       Int?
-  voucher        Voucher?        @relation(fields: [voucherId], references: [id])
-  voucherId      Int?
-  customerName   String          @db.VarChar(255)
-  customerEmail  String          @db.VarChar(255)
-  customerPhone  String          @db.VarChar(15)
-  totalPrice     Int
-  bookingDate    DateTime        @db.Date
-  bookingTime    DateTime
-  customerAddons CustomerAddon[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+model holiday {
+  id          Int      @id @default(autoincrement())
+  date        DateTime @db.Date
+  description String   @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
 }
 
-model CustomerAddon {
-  id            Int                 @id @default(autoincrement())
-  transaction   CustomerTransaction @relation(fields: [transactionId], references: [id])
-  transactionId Int
-  addon         Addon               @relation(fields: [addonId], references: [id])
-  addonId       Int
-  quantity      Int
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
+model studio {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @db.VarChar(255)
+  description         String?               @db.Text
+  image               String?               @db.VarChar(255)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime
+  price               Int
+  customertransaction customertransaction[]
 }
 
-model Users {
+model users {
   id        Int      @id @default(autoincrement())
   email     String   @db.VarChar(255)
   password  String   @db.VarChar(255)
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime
+}
+
+model voucher {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @db.VarChar(255)
+  discount            Decimal?              @db.Decimal(5, 2)
+  count               Int
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime
+  is_deleted          Boolean               @default(false)
+  customertransaction customertransaction[]
 }
 
 model Channels {
