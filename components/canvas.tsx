@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState
 } from "react";
-import { Stage, Layer, Image } from "react-konva";
+import { Stage, Layer, Image, Rect } from "react-konva";
 import useImage from "use-image";
 import PhotoWithTransformer from "./transformer";
 import Konva from "konva";
@@ -15,7 +15,7 @@ import { usePhotoStore } from "@/stores/usePhotoStore";
 import { create } from "@/actions/results";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
-import { Trash2 } from "lucide-react";
+import { Check, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 type Props = {
@@ -31,6 +31,7 @@ const Canvas = forwardRef(function Canvas(
 ) {
   const [templateUrl] = useImage(templateImage, "anonymous");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [croppingId, setCroppingId] = useState<string | null>(null);
   const [, setPhotoAttrs] = useState<any>({});
   const templateIdRef = useRef(templateId);
 
@@ -38,13 +39,17 @@ const Canvas = forwardRef(function Canvas(
     usePhotoStore();
 
   const stageRef = useRef<Konva.Stage | null>(null);
-
   const router = useRouter();
 
   const checkDeselect = (e: any) => {
     if (e.target === e.target.getStage()) {
-      setPhotoClicked(false);
-      setSelectedId(null);
+      if (croppingId !== null) {
+        console.log("Exiting crop mode"); // Tampilkan log
+        setCroppingId(null); // Matikan crop mode
+      } else {
+        setPhotoClicked(false);
+        setSelectedId(null);
+      }
     }
   };
 
@@ -59,6 +64,7 @@ const Canvas = forwardRef(function Canvas(
     deletePhoto(id);
     setPhotoClicked(false);
     setSelectedId(null);
+    setCroppingId(null);
   };
 
   useImperativeHandle(
@@ -70,14 +76,12 @@ const Canvas = forwardRef(function Canvas(
             title: "Failed",
             description: "Mohon untuk memilih template terlebih dahulu!"
           });
-
           return null;
         }
         if (stageRef.current) {
           const uri = stageRef.current.toDataURL({
             pixelRatio: 3
           });
-
           const base64Response = await fetch(uri);
           const blob = await base64Response.blob();
 
@@ -112,7 +116,6 @@ const Canvas = forwardRef(function Canvas(
               templateIdRef.current,
               channelId
             );
-
             router.push("/results/" + res?.id);
           } catch (error) {
             toast({
@@ -140,7 +143,6 @@ const Canvas = forwardRef(function Canvas(
     };
 
     window.addEventListener("keydown", handleKeyDown);
-
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
@@ -157,6 +159,18 @@ const Canvas = forwardRef(function Canvas(
         onTouchStart={checkDeselect}
       >
         <Layer>
+          {croppingId && (
+            <Rect
+              x={0}
+              y={0}
+              width={800}
+              height={800}
+              fill="black"
+              opacity={0.5}
+              onClick={checkDeselect}
+            />
+          )}
+
           {photoImages.map((image) => {
             return (
               <PhotoWithTransformer
@@ -164,7 +178,14 @@ const Canvas = forwardRef(function Canvas(
                 id={image.id}
                 imageSrc={image.src}
                 isSelected={selectedId === image.id}
-                onSelect={() => setSelectedId(image.id)}
+                isCropping={croppingId === image.id}
+                onSelect={() => {
+                  setSelectedId(image.id);
+                  if (croppingId && croppingId !== image.id) {
+                    setCroppingId(null);
+                  }
+                }}
+                onDoubleClick={() => setCroppingId(image.id)}
                 onChange={handlePhotoChange}
               />
             );
@@ -183,14 +204,26 @@ const Canvas = forwardRef(function Canvas(
           )}
         </Layer>
       </Stage>
-      {isPhotoClicked && (
-        <Button
-          onClick={() => handleDeletePhoto(selectedId as string)}
-          className="col-span-1 bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow-lg hover:bg-red-600 transition duration-200"
-        >
-          <Trash2 size={32} />
-        </Button>
-      )}
+
+      <div className="flex flex-col gap-4">
+        {isPhotoClicked && (
+          <Button
+            onClick={() => handleDeletePhoto(selectedId as string)}
+            className="col-span-1 bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow-lg hover:bg-red-600 transition duration-200"
+          >
+            <Trash2 size={32} />
+          </Button>
+        )}
+
+        {croppingId && (
+          <Button
+            onClick={() => setCroppingId(null)}
+            className="bg-blue-500 text-white w-8 h-8 flex items-center justify-center shadow-lg hover:bg-blue-600 transition duration-200"
+          >
+            <Check size={20} />
+          </Button>
+        )}
+      </div>
     </div>
   );
 });

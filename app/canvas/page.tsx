@@ -57,11 +57,10 @@ const Page = () => {
 
     if (req && req.Results.length <= 0) {
       router.push("/canvas/" + req.id);
-      toast({
+      return toast({
         title: "Success",
         description: "Kode channel berhasil diverifikasi!"
       });
-      setCode("");
     }
 
     setIsLoading(false);
