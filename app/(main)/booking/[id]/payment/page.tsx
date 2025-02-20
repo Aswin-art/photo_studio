@@ -123,52 +123,52 @@ export default function BookingPayment() {
                                     </div>
                                 </div>
                                 <hr className="border-t border-gray-200 py-1" />
-                                    <p className="text-gray-500 text-sm">Instruksi Pembayaran</p>
-                                    <ol className="list-decimal pl-5 text-gray-700 space-y-2 text-justify">
-                                        <li>Segera lakukan pembayaran melalui <strong>QRIS</strong> sesuai total harga yang tertera.</li>
-                                        <li>
-                                            Gunakan aplikasi yang mendukung QRIS, seperti <span className="font-semibold">GoPay, OVO, DANA, ShopeePay, atau mobile banking</span>.
-                                        </li>
-                                        <li>
-                                            Pastikan jumlah yang ditransfer <strong>sesuai dengan total harga</strong> agar pembayaran dapat diverifikasi dengan cepat.
-                                        </li>
-                                        <li>
-                                            Simpan bukti pembayaran setelah transaksi berhasil.
-                                        </li>
-                                        <li>
-                                            Setelah melakukan pembayaran, kirim bukti pembayaran melalui WhatsApp ke nomor {" "}
-                                            <a href="https://wa.me/6285770037336" className="text-blue-500 underline">
-                                                085770037336
-                                            </a>
-                                            . Anda dapat mengirimnya secara manual dengan mencantumkan:
-                                            <ul className="list-disc pl-5 mt-2 space-y-1">
-                                                <li>Nama lengkap: {`${name}`}</li>
-                                                <li>Email: {`${email}`}</li>
-                                                <li>Nomor telepon: {`${phone}`}</li>
-                                                <li>Jenis studio yang dipesan: {`${studio?.name}`}</li>
-                                                <li>Tanggal booking: {`${bookingDate}`}</li>
-                                                <li>Sesi booking: {`${bookingTime}`}</li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            Atau, tekan tombol <span className="font-semibold">"Konfirmasi Pembayaran"</span> di bawah ini untuk langsung membuka WhatsApp
-                                            dengan informasi yang telah diisi otomatis. Anda hanya perlu mengunggah bukti pembayaran.
-                                        </li>
-                                    </ol>
-                                    <a 
-                                        href={whatsappLink} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer" 
-                                        onClick={async (e) => {
-                                            e.preventDefault();
-                                            await new Promise((resolve) => {
-                                                clearBookingCookies();
-                                                setTimeout(resolve, 100);
-                                            });
-                                            window.location.href = whatsappLink;
-                                        }}
-                                        className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 w-full">Konfirmasi Pembayaran
-                                    </a>
+                                <p className="text-gray-500 text-sm">Instruksi Pembayaran</p>
+                                <ol className="list-decimal pl-5 text-gray-700 space-y-2 text-justify">
+                                    <li>Segera lakukan pembayaran melalui <strong>QRIS</strong> sesuai total harga yang tertera.</li>
+                                    <li>
+                                        Gunakan aplikasi yang mendukung QRIS, seperti <span className="font-semibold">GoPay, OVO, DANA, ShopeePay, atau mobile banking</span>.
+                                    </li>
+                                    <li>
+                                        Pastikan jumlah yang ditransfer <strong>sesuai dengan total harga</strong> agar pembayaran dapat diverifikasi dengan cepat.
+                                    </li>
+                                    <li>
+                                        Simpan bukti pembayaran setelah transaksi berhasil.
+                                    </li>
+                                    <li>
+                                        Setelah melakukan pembayaran, kirim bukti pembayaran melalui WhatsApp ke nomor {" "}
+                                        <a href="https://wa.me/6285770037336" className="text-blue-500 underline">
+                                            085770037336
+                                        </a>
+                                        . Anda dapat mengirimnya secara manual dengan mencantumkan:
+                                        <ul className="list-disc pl-5 mt-2 space-y-1">
+                                            <li>Nama lengkap: {`${name}`}</li>
+                                            <li>Email: {`${email}`}</li>
+                                            <li>Nomor telepon: {`${phone}`}</li>
+                                            <li>Jenis studio yang dipesan: {`${studio?.name}`}</li>
+                                            <li>Tanggal booking: {`${bookingDate}`}</li>
+                                            <li>Sesi booking: {`${bookingTime}`}</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        Atau, tekan tombol <span className="font-semibold">"Konfirmasi Pembayaran"</span> di bawah ini untuk langsung membuka WhatsApp
+                                        dengan informasi yang telah diisi otomatis. Anda hanya perlu mengunggah bukti pembayaran.
+                                    </li>
+                                </ol>
+                                <a 
+                                    href={whatsappLink} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    onClick={async (e) => {
+                                        e.preventDefault();
+                                        await new Promise((resolve) => {
+                                            clearBookingCookies();
+                                            setTimeout(resolve, 100);
+                                        });
+                                        window.location.href = whatsappLink;
+                                    }}
+                                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 w-full">Konfirmasi Pembayaran
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -253,11 +253,7 @@ export default function BookingPayment() {
                 >
                   Konfirmasi Pembayaran
                 </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Wrapper>
-    </>
+            </Wrapper>
+        </>
   );
 }
