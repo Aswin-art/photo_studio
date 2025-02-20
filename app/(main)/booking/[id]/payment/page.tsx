@@ -80,6 +80,20 @@ export default function BookingPayment() {
     }
   }, []);
 
+  useEffect(() => {
+    fetchStudios();
+    if (!cookieUtils.get("bookingDate") || !cookieUtils.get("bookingTime")) {
+      router.push(`/booking/${id}/`);
+    } else if (
+      !cookieUtils.get("name") ||
+      !cookieUtils.get("email") ||
+      !cookieUtils.get("phone") ||
+      !cookieUtils.get("totalPrice")
+    ) {
+      router.push(`/booking/${id}/addon`);
+    }
+  }, []);
+
   return (
     <>
       <BackNavbar backPath="/booking" title="Pembayaran" />

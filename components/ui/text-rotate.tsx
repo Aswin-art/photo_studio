@@ -75,6 +75,7 @@ const TextRotate = forwardRef<TextRotateRef, TextRotateProps>(
     ref
   ) => {
     const [currentTextIndex, setCurrentTextIndex] = useState(0)
+    const [isClient, setIsClient] = useState(false)
 
     // handy function to split text into characters with support for unicode and emojis
     const splitIntoCharacters = (text: string): string[] => {
@@ -173,6 +174,12 @@ const TextRotate = forwardRef<TextRotateRef, TextRotateProps>(
       const intervalId = setInterval(next, rotationInterval)
       return () => clearInterval(intervalId)
     }, [next, rotationInterval, auto])
+
+    useEffect(() => {
+      setIsClient(true)
+    }, [])
+
+    if(!isClient) return <span>This is client component</span>
 
     return (
       <motion.span

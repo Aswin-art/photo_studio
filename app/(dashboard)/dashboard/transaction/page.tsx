@@ -1,4 +1,5 @@
 'use client'
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,9 +12,11 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import React, { useEffect, useState } from "react";
 import { getTransactions } from "@/actions/bookingAction";
-import ListTransaction from "@/components/transaction/ListTransaction";
 import { Transaction } from "@/types";
 import { useTransactionContext } from "@/components/transaction/TransactionContext";
+import dynamic from "next/dynamic";
+const ListTransaction = dynamic(() => import('@/components/transaction/ListTransaction'), { ssr: false })
+// import ListTransaction from "@/components/transaction/ListTransaction";
 
 export default function Page() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -24,7 +27,6 @@ export default function Page() {
     try {
       const data = await getTransactions();
       setTransactions(data);
-      console.log(data)
     } catch (error) {
       console.error("Failed to fetch transactions:", error);
     } finally {
@@ -41,9 +43,9 @@ export default function Page() {
     refreshTransactions();
   }, [triggerRefresh]);
 
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
+  // useEffect(() => {
+  //   fetchTransactions();
+  // }, []);
 
   return (
     <>

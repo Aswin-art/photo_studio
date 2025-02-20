@@ -15,8 +15,9 @@ import { CalendarDays, Clock } from "lucide-react";
 import { dateConvert, dateToStorage } from "@/utils/dateConvert";
 import { formatRupiah } from "@/utils/Rupiah";
 import { cookieUtils } from "@/utils/cookies";
+import dynamic from "next/dynamic";
 
-export default function Booking() {
+function Booking() {
     const { id } = useParams();
     const [studio, setStudio] = useState<Studio>();
     const [isLoading, setIsLoading] = useState(true);
@@ -212,3 +213,4 @@ export default function Booking() {
     );
 }
 
+export default dynamic(() => Promise.resolve(Booking), { ssr: false });

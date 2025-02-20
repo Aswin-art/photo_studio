@@ -22,7 +22,6 @@ export default function Page() {
     try {
       const data = await getAddons();
       setAddons(data);
-      console.log(data)
     } catch (error) {
       console.error("Failed to fetch addons:", error);
     } finally {

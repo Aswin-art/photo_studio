@@ -31,11 +31,12 @@ export default function RootLayout({
 }>) {
   return (
     <SessionProviderWrapper>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning={true}>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           data-new-gr-c-s-check-loaded="14.1215.0"
           data-gr-ext-installed=""
+          suppressHydrationWarning={true}
         >
           <Providers>{children}</Providers>
           <Toaster />
