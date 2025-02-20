@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { signIn } from "next-auth/react";
-import {  useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Wrapper from "@/components/wrapper";
 import { Label } from "@/components/ui/label";
@@ -11,15 +11,13 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
-
 const LoginForm = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -35,9 +33,10 @@ const LoginForm = () => {
       });
       if (response?.error) {
         toast({
-            title: "Gagal",
-            description: "Email atau password yang Anda masukkan salah. Coba lagi",
-            type: "foreground"
+          title: "Gagal",
+          description:
+            "Email atau password yang Anda masukkan salah. Coba lagi",
+          type: "foreground"
         });
       } else {
         router.push("/dashboard");
@@ -45,9 +44,9 @@ const LoginForm = () => {
     } catch (e) {
       console.error(e);
       toast({
-          title: "Gagal",
-          description: "Email atau password yang Anda masukkan salah. Coba lagi",
-          type: "foreground"
+        title: "Gagal",
+        description: "Email atau password yang Anda masukkan salah. Coba lagi",
+        type: "foreground"
       });
     }
   }
@@ -63,8 +62,12 @@ const LoginForm = () => {
       <div className="grid mt-16 min-h-[calc(100vh-348px)] p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-center">Selamat Datang Kembali!</CardTitle>
-            <CardDescription className="text-center">Masukkan identitas Anda untuk masuk ke akun Anda.</CardDescription>
+            <CardTitle className="text-center">
+              Selamat Datang Kembali!
+            </CardTitle>
+            <CardDescription className="text-center">
+              Masukkan identitas Anda untuk masuk ke akun Anda.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-5" onSubmit={onSubmit}>
@@ -74,10 +77,10 @@ const LoginForm = () => {
                   <Input
                     type="email"
                     name="email"
-                    id="email" 
-                    placeholder="hi@yourcompany.com" 
-                    required 
-                    />
+                    id="email"
+                    placeholder="hi@yourcompany.com"
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>

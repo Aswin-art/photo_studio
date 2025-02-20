@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Voucher } from "@/types";
 import DataTable from "../tables/data-table";
-import { VoucherColumns } from "./table/VoucherColumns"; 
+import { VoucherColumns } from "./table/VoucherColumns";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,63 +43,64 @@ export default function ListVoucher({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-  
+
     if (name === "discount") {
       let discountValue = value.replace(",", ".");
       const parsedDiscount = parseFloat(discountValue);
-  
+
       if (parsedDiscount > 100) {
         discountValue = "100";
       } else if (parsedDiscount < 0 || isNaN(parsedDiscount)) {
         discountValue = "";
       }
-  
+
       setFormData({ ...formData, [name]: discountValue });
       return;
     }
-  
+
     setFormData({ ...formData, [name]: value });
     setErrorMessage("");
   };
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!formData.name || !formData.discount || !formData.count) {
-        alert("Harap isi semua bidang.");
-        return;
-      }
-      setIsSubmitting(true);
+    e.preventDefault();
+    if (!formData.name || !formData.discount || !formData.count) {
+      alert("Harap isi semua bidang.");
+      return;
+    }
+    setIsSubmitting(true);
 
-      try {
-        await createVoucher(
-          formData.name,
-          Number(formData.discount.replace(",", ".")),
-          Number(formData.count)
+    try {
+      await createVoucher(
+        formData.name,
+        Number(formData.discount.replace(",", ".")),
+        Number(formData.count)
+      );
+      toast({
+        title: "Berhasil",
+        description: "Voucher berhasil dibuat",
+        type: "foreground"
+      });
+      setFormData({ name: "", discount: "", count: "" });
+      setErrorMessage("");
+      refreshVouchers();
+      setIsDialogOpen(false);
+    } catch (error: any) {
+      if (error.message.includes("Voucher dengan nama ini sudah ada.")) {
+        setErrorMessage(
+          "Voucher dengan nama ini sudah ada. Gunakan nama lain."
         );
+      } else {
+        console.error("Error saat membuat voucher:", error.message);
         toast({
-          title: "Berhasil",
-          description: "Voucher berhasil dibuat",
-          type: "foreground",
+          title: "Terjadi Kesalahan",
+          description: "Gagal membuat voucher. Silakan coba lagi.",
+          type: "background"
         });
-        setFormData({ name: "", discount: "", count: "" });
-        setErrorMessage("");
-        refreshVouchers();
-        setIsDialogOpen(false);
-      } catch (error: any) {
-        if (error.message.includes("Voucher dengan nama ini sudah ada.")) {
-          setErrorMessage("Voucher dengan nama ini sudah ada. Gunakan nama lain.");
-        }else{
-          console.error("Error saat membuat voucher:", error.message);
-          toast({
-            title: "Terjadi Kesalahan",
-            description: "Gagal membuat voucher. Silakan coba lagi.",
-            type: "background",
-          });
-        }
-      } finally {
-        setIsSubmitting(false);
       }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -130,7 +132,9 @@ export default function ListVoucher({
                   required
                 />
                 {errorMessage && (
-                    <p className="text-red-500 text-sm mt-1 col-span-4">{errorMessage}</p>
+                  <p className="text-red-500 text-sm mt-1 col-span-4">
+                    {errorMessage}
+                  </p>
                 )}
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -138,7 +142,7 @@ export default function ListVoucher({
                   Diskon
                 </Label>
                 <div className="flex items-center gap-2 col-span-3">
-                    <Input
+                  <Input
                     id="discount"
                     name="discount"
                     value={formData.discount}
@@ -150,10 +154,13 @@ export default function ListVoucher({
                     min={0}
                     step={0.1}
                     required
-                    />
-                    <Label htmlFor="discount" className="text-center p-[10px] border border-gray-200 rounded-md">
+                  />
+                  <Label
+                    htmlFor="discount"
+                    className="text-center p-[10px] border border-gray-200 rounded-md"
+                  >
                     %
-                    </Label>
+                  </Label>
                 </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -189,11 +196,7 @@ export default function ListVoucher({
         </Button>
       </div>
       {isLoading && <p>Loading...</p>}
-      <DataTable
-        columns={VoucherColumns(refreshVouchers)}
-        data={voucher}
-        searchColumns={["name"]}
-      />
+      <DataTable columns={VoucherColumns(refreshVouchers)} data={voucher} />
     </div>
   );
 }

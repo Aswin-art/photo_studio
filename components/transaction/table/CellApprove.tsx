@@ -9,7 +9,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Transaction } from "@/types";
 import { useState } from "react";
@@ -30,24 +29,24 @@ export const CellApprove: React.FC<CellApproveProps> = ({ data, refresh }) => {
   const handleApprove = () => {
     setIsApprove(true);
     setOpen(true);
-  }
+  };
 
   const handleReject = () => {
     setIsApprove(false);
     setOpen(true);
-  }
+  };
 
   const onConfirm = async (id) => {
     setLoading(true);
     try {
-        await updateTransactionApproval(id, isApprove);
-        setOpen(false);
-        toast({
-            title: "Success",
-            type: "foreground",
-            description: "Berhasil memperbarui status pembayaran"
-        });
-        refresh();
+      await updateTransactionApproval(id, isApprove);
+      setOpen(false);
+      toast({
+        title: "Success",
+        type: "foreground",
+        description: "Berhasil memperbarui status pembayaran"
+      });
+      refresh();
     } catch {
       toast({
         title: "Error",
@@ -62,9 +61,12 @@ export const CellApprove: React.FC<CellApproveProps> = ({ data, refresh }) => {
       <AlertDialog open={open}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Apakah Anda Yakin {isApprove ? "Menerima" : "Menolak"} Pembayaran?</AlertDialogTitle>
+            <AlertDialogTitle>
+              Apakah Anda Yakin {isApprove ? "Menerima" : "Menolak"} Pembayaran?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Tindakan ini tidak dapat dibatalkan. Transaksi ini akan {isApprove ? "diterima" : "ditolak"} secara permanen.
+              Tindakan ini tidak dapat dibatalkan. Transaksi ini akan{" "}
+              {isApprove ? "diterima" : "ditolak"} secara permanen.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -84,24 +86,26 @@ export const CellApprove: React.FC<CellApproveProps> = ({ data, refresh }) => {
         </AlertDialogContent>
       </AlertDialog>
 
-        {data.isApproved === null && 
-            <div className="flex gap-2">
-                <button onClick={handleApprove} className="flex items-center gap-2 px-2 py-1 text-white bg-green-500 rounded-md">
-                    Terima
-                </button>
-                <button onClick={handleReject} className="flex items-center gap-2 px-2 py-1 text-white bg-red-500 rounded-md">
-                    Tolak
-                </button>
-            </div>
-        }
+      {data.isApproved === null && (
+        <div className="flex gap-2">
+          <button
+            onClick={handleApprove}
+            className="flex items-center gap-2 px-2 py-1 text-white bg-green-500 rounded-md"
+          >
+            Terima
+          </button>
+          <button
+            onClick={handleReject}
+            className="flex items-center gap-2 px-2 py-1 text-white bg-red-500 rounded-md"
+          >
+            Tolak
+          </button>
+        </div>
+      )}
 
-        {data.isApproved === true && 
-            <span>Di Terima</span>
-        }
+      {data.isApproved === true && <span>Di Terima</span>}
 
-        {data.isApproved === false && 
-            <span>Di tolak</span>
-        }
+      {data.isApproved === false && <span>Di tolak</span>}
     </>
   );
 };

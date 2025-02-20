@@ -1,4 +1,5 @@
-'use client'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import React, { useEffect, useRef } from "react";
 import { useTransactionContext } from "@/components/transaction/TransactionContext";
 import Pusher from "pusher-js";
@@ -11,16 +12,16 @@ const BookingNotifications = () => {
 
   useEffect(() => {
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!
     });
 
     const channel = pusher.subscribe("booking-channel");
 
     channel.bind("new-booking", (data: any) => {
       toast({
-          title: "Reservasi Baru",
-          description: `Terdapat Reservasi studio baru atas nama ${data.customerName}`,
-          type: "background"
+        title: "Reservasi Baru",
+        description: `Terdapat Reservasi studio baru atas nama ${data.customerName}`,
+        type: "background"
       });
 
       if (audioRef.current) {
@@ -39,7 +40,11 @@ const BookingNotifications = () => {
 
   return (
     <>
-        <audio ref={audioRef} src="/mixkit-positive-notification-951.wav" preload="auto" />
+      <audio
+        ref={audioRef}
+        src="/mixkit-positive-notification-951.wav"
+        preload="auto"
+      />
     </>
   );
 };

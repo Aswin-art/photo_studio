@@ -154,11 +154,7 @@ export default function ListHoliday({
         </Button>
       </div>
       {isLoading && <p>Loading...</p>}
-      <DataTable
-        columns={holidayColumns(refreshHolidays)}
-        data={holiday}
-        searchColumns={["description"]}
-      />
+      <DataTable columns={holidayColumns(refreshHolidays)} data={holiday} />
     </div>
   );
 }

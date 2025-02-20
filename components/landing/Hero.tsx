@@ -1,42 +1,41 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
-import Link from "next/link"
-import { LayoutGroup, motion } from "framer-motion"
-import { TextRotate } from "../ui/text-rotate"
-import Floating, { FloatingElement } from "../ui/parallax-floating" 
+import Link from "next/link";
+import { LayoutGroup, motion } from "framer-motion";
+import { TextRotate } from "../ui/text-rotate";
+import Floating, { FloatingElement } from "../ui/parallax-floating";
 
 const exampleImages = [
   {
     url: "/pictures/photo-3.jpg",
     author: "Branislav Rodman",
-    title: "A Black and White Photo of a Woman Brushing Her Teeth",
+    title: "A Black and White Photo of a Woman Brushing Her Teeth"
   },
   {
     url: "/pictures/photo-14.jpg",
     link: "https://unsplash.com/photos/a-painting-of-a-palm-leaf-on-a-multicolored-background-AaNPwrSNOFE",
     title: "Neon Palm",
-    author: "Tim Mossholder",
+    author: "Tim Mossholder"
   },
   {
     url: "/pictures/photo-12.jpg",
     link: "https://unsplash.com/photos/a-blurry-photo-of-a-crowd-of-people-UgbxzloNGsc",
     author: "ANDRII SOLOK",
-    title: "A blurry photo of a crowd of people",
+    title: "A blurry photo of a crowd of people"
   },
   {
     url: "/pictures/photo-20.jpg",
     link: "https://unsplash.com/photos/rippling-crystal-blue-water-9-OCsKoyQlk",
     author: "Wesley Tingey",
-    title: "Rippling Crystal Blue Water",
+    title: "Rippling Crystal Blue Water"
   },
   {
     url: "/pictures/photo-8.jpg",
     link: "https://unsplash.com/de/fotos/mann-im-schwarzen-hemd-unter-blauem-himmel-m8RDNiuEXro",
     author: "Serhii Tyaglovsky",
-    title: "Mann im schwarzen Hemd unter blauem Himmel",
+    title: "Mann im schwarzen Hemd unter blauem Himmel"
   }
-]
+];
 
 function LandingHero() {
   return (
@@ -131,13 +130,7 @@ function LandingHero() {
                 dengan{" "}
               </motion.span>
               <TextRotate
-                texts={[
-                  "Indah",
-                  "Sempurna",
-                  "Kreatif",
-                  "Gaya",
-                  "Ceria",
-                ]}
+                texts={["Indah", "Sempurna", "Kreatif", "Gaya", "Ceria"]}
                 mainClassName="overflow-hidden pr-3 text-[#0015ff] py-0 pb-2 md:pb-4 rounded-xl"
                 staggerDuration={0.03}
                 staggerFrom="last"
@@ -153,7 +146,8 @@ function LandingHero() {
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
         >
-          Dengan fasilitas studio modern, pencahayaan profesional, dan berbagai pilihan konsep foto. Abadikan momen terbaikmu dengan kualitas terbaik
+          Dengan fasilitas studio modern, pencahayaan profesional, dan berbagai
+          pilihan konsep foto. Abadikan momen terbaikmu dengan kualitas terbaik
         </motion.p>
 
         <div className="flex flex-row justify-center space-x-4 items-center mt-10 sm:mt-16 md:mt-20 lg:mt-20 text-xs">
@@ -165,11 +159,11 @@ function LandingHero() {
               duration: 0.2,
               ease: "easeOut",
               delay: 0.7,
-              scale: { duration: 0.2 },
+              scale: { duration: 0.2 }
             }}
             whileHover={{
               scale: 1.05,
-              transition: { type: "spring", damping: 30, stiffness: 400 },
+              transition: { type: "spring", damping: 30, stiffness: 400 }
             }}
           >
             <Link href="/booking">Booking Sekarang</Link>
@@ -177,7 +171,7 @@ function LandingHero() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default LandingHero; 
+export default LandingHero;

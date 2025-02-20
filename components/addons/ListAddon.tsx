@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Addon } from "@/types";
@@ -41,7 +42,7 @@ export default function ListAddon({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-  
+
     if (name === "price") {
       const rawValue = value.replace(/\D/g, "");
       setFormData({ ...formData, price: formatRupiah(rawValue) });
@@ -49,7 +50,6 @@ export default function ListAddon({
       setFormData({ ...formData, [name]: value });
     }
   };
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,14 +60,11 @@ export default function ListAddon({
     setIsSubmitting(true);
 
     try {
-      await createAddon(
-        formData.name,
-        parseRupiah(formData.price)
-      );
+      await createAddon(formData.name, parseRupiah(formData.price));
       toast({
         title: "Berhasil",
         description: "Addon berhasil dibuat",
-        type: "foreground",
+        type: "foreground"
       });
       setFormData({ name: "", price: "" });
       refreshAddons();
@@ -76,7 +73,7 @@ export default function ListAddon({
       toast({
         title: "Error",
         description: error.message,
-        type: "background",
+        type: "background"
       });
     } finally {
       setIsSubmitting(false);
@@ -135,20 +132,12 @@ export default function ListAddon({
           </DialogContent>
         </Dialog>
 
-        <Button
-          onClick={refreshAddons}
-          variant={`outline`}
-          className={`py-5`}
-        >
+        <Button onClick={refreshAddons} variant={`outline`} className={`py-5`}>
           Refresh Data
         </Button>
       </div>
       {isLoading && <p>Loading...</p>}
-      <DataTable
-        columns={AddonColumns(refreshAddons)}
-        data={addon}
-        searchColumns={["name"]}
-      />
+      <DataTable columns={AddonColumns(refreshAddons)} data={addon} />
     </div>
   );
 }

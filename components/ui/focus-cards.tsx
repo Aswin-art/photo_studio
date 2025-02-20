@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -8,7 +9,7 @@ export const Card = React.memo(
     card,
     index,
     hovered,
-    setHovered,
+    setHovered
   }: {
     card: any;
     index: number;

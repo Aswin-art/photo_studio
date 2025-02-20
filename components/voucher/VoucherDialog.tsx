@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
 import VoucherForm from "./VoucherForm";
 
 interface VoucherDialogProps {
@@ -8,15 +14,23 @@ interface VoucherDialogProps {
   refreshVouchers: () => void;
 }
 
-const VoucherDialog: React.FC<VoucherDialogProps> = ({ open, onClose, voucherData, refreshVouchers }) => {
-
+const VoucherDialog: React.FC<VoucherDialogProps> = ({
+  open,
+  onClose,
+  voucherData,
+  refreshVouchers
+}) => {
   return (
-    <Dialog open={open} onOpenChange={onClose} >
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Voucher</DialogTitle>
         </DialogHeader>
-        <VoucherForm voucherData={voucherData} onClose={onClose} refreshVouchers={refreshVouchers} />
+        <VoucherForm
+          voucherData={voucherData}
+          onClose={onClose}
+          refreshVouchers={refreshVouchers}
+        />
       </DialogContent>
     </Dialog>
   );

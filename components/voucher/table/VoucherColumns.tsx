@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { CellAction } from "@/components/tables/cell-action";
 
-export const VoucherColumns = (refreshVouchers: () => void): ColumnDef<any>[] => [
+export const VoucherColumns = (
+  refreshVouchers: () => void
+): ColumnDef<any>[] => [
   {
     accessorKey: "index",
     header: "No",
-    cell: ({ row }) => row.index + 1, 
+    cell: ({ row }) => row.index + 1,
     enableSorting: false
   },
   {
@@ -21,26 +23,22 @@ export const VoucherColumns = (refreshVouchers: () => void): ColumnDef<any>[] =>
     header: ({ column }) => {
       return (
         <button
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 px-0 py-2"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 px-0 py-2"
         >
           discount <ArrowUpDown />
         </button>
       );
     },
-    cell: ({ row }) => (
-      <span>
-        {row.original.discount} %
-      </span>
-    )
+    cell: ({ row }) => <span>{row.original.discount} %</span>
   },
   {
     accessorKey: "count",
     header: ({ column }) => {
       return (
         <button
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 px-0 py-2"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 px-0 py-2"
         >
           Jumlah Voucher <ArrowUpDown />
         </button>
@@ -51,6 +49,12 @@ export const VoucherColumns = (refreshVouchers: () => void): ColumnDef<any>[] =>
   {
     id: "actions",
     header: "ACTIONS",
-    cell: ({ row }) => <CellAction data={row.original} updatePath="/dashboard/voucher" refresh={refreshVouchers} />
+    cell: ({ row }) => (
+      <CellAction
+        data={row.original}
+        updatePath="/dashboard/voucher"
+        refresh={refreshVouchers}
+      />
+    )
   }
 ];

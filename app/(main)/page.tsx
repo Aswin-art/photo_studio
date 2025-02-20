@@ -1,6 +1,4 @@
 "use client";
-import Wrapper from "@/components/wrapper";
-import Image from "next/image";
 import LandingHero from "@/components/landing/Hero";
 import About from "@/components/landing/About";
 import Service from "@/components/landing/Service";

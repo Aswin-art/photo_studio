@@ -1,23 +1,8 @@
 "use client";
-import Image from "next/image";
 import React from "react";
-import { ModeToggle } from "./mode-toggle";
 import Link from "next/link";
 import Wrapper from "./wrapper";
-import { ArrowLeft, ChevronRight, GanttChart } from "lucide-react";
-import { usePathname } from "next/navigation";
-import clsx from "clsx";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger
-} from "./ui/sheet";
-import { Button } from "./ui/button";
-import { navItems } from "@/constants/data";
+import { ArrowLeft } from "lucide-react";
 
 interface BackNavbarProps {
   backPath: string;
@@ -25,7 +10,6 @@ interface BackNavbarProps {
 }
 
 const BackNavbar: React.FC<BackNavbarProps> = ({ backPath, title }) => {
-
   return (
     <div className="w-full fixed top-0 left-0 right-0 z-20 p-4">
       <Wrapper>

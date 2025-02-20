@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
@@ -7,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 export const ParallaxScrollSecond = ({
   images,
-  className,
+  className
 }: {
   images: string[];
   className?: string;
@@ -15,7 +16,7 @@ export const ParallaxScrollSecond = ({
   const gridRef = useRef<any>(null);
   const { scrollYProgress } = useScroll({
     container: gridRef, // remove this if your container is not fixed height
-    offset: ["start start", "end start"], // remove this if your container is not fixed height
+    offset: ["start start", "end start"] // remove this if your container is not fixed height
   });
 
   const translateYFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
@@ -38,7 +39,7 @@ export const ParallaxScrollSecond = ({
       style={{
         msOverflowStyle: "none",
         scrollbarWidth: "none",
-        overflowY: "scroll",
+        overflowY: "scroll"
       }}
       ref={gridRef}
     >
@@ -52,7 +53,7 @@ export const ParallaxScrollSecond = ({
               style={{
                 y: translateYFirst,
                 x: translateXFirst,
-                rotateZ: rotateXFirst,
+                rotateZ: rotateXFirst
               }} // Apply the translateY motion value here
               key={"grid-1" + idx}
             >
@@ -85,7 +86,7 @@ export const ParallaxScrollSecond = ({
               style={{
                 y: translateYThird,
                 x: translateXThird,
-                rotateZ: rotateXThird,
+                rotateZ: rotateXThird
               }}
               key={"grid-3" + idx}
             >

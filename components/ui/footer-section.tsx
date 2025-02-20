@@ -1,31 +1,28 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
+import * as React from "react";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { Facebook, Instagram, Linkedin, Moon, Send, Sun, Twitter } from "lucide-react"
+  TooltipTrigger
+} from "@/components/ui/tooltip";
+import { Instagram } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Foooter() {
-  const [isDarkMode, setIsDarkMode] = React.useState(false)
-  const [isChatOpen, setIsChatOpen] = React.useState(false)
+  // const [isDarkMode, setIsDarkMode] = React.useState(false);
+  // const [isChatOpen, setIsChatOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-    }
-  }, [isDarkMode])
+  // React.useEffect(() => {
+  //   if (isDarkMode) {
+  //     document.documentElement.classList.add("dark");
+  //   } else {
+  //     document.documentElement.classList.remove("dark");
+  //   }
+  // }, [isDarkMode]);
 
   return (
     <footer className="relative border-t bg-background text-foreground transition-colors duration-300">
@@ -46,18 +43,30 @@ export default function Foooter() {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
             <nav className="space-y-2 text-sm">
-              <a href="/" className="block transition-colors hover:text-primary">
+              <Link
+                href="/"
+                className="block transition-colors hover:text-primary"
+              >
                 Home
-              </a>
-              <a href="/booking" className="block transition-colors hover:text-primary">
+              </Link>
+              <Link
+                href="/booking"
+                className="block transition-colors hover:text-primary"
+              >
                 Booking
-              </a>
-              <a href="https://wa.me/628123456789" className="block transition-colors hover:text-primary">
+              </Link>
+              <Link
+                href="https://wa.me/628123456789"
+                className="block transition-colors hover:text-primary"
+              >
                 Contact Us
-              </a>
-              <a href="photo-access" className="block transition-colors hover:text-primary">
+              </Link>
+              <Link
+                href="photo-access"
+                className="block transition-colors hover:text-primary"
+              >
                 Photo Access
-              </a>
+              </Link>
             </nav>
           </div>
           <div>
@@ -101,8 +110,16 @@ export default function Foooter() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full"
-                      onClick={() => window.open("https://www.instagram.com/prostudio_id/", "_blank")}
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full"
+                      onClick={() =>
+                        window.open(
+                          "https://www.instagram.com/prostudio_id/",
+                          "_blank"
+                        )
+                      }
                     >
                       <Instagram className="h-4 w-4" />
                       <span className="sr-only">Instagram</span>
@@ -147,5 +164,5 @@ export default function Foooter() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
