@@ -43,22 +43,18 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Foto Editor",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#"
+          title: "Channels",
+          url: "/dashboard/channels"
         },
         {
-          title: "Starred",
-          url: "#"
-        },
-        {
-          title: "Settings",
-          url: "#"
+          title: "Templates",
+          url: "/dashboard/templates"
         }
       ]
     },

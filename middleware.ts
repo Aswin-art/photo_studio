@@ -2,10 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET
+  });
 
-  const protectedRoutes = ["/dashboard", "/profile"];
-  if (!token && protectedRoutes.includes(request.nextUrl.pathname)) {
+  console.log("token: ", token);
+
+  if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
+    console.log("masuk sini");
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (!token && request.nextUrl.pathname.startsWith("/profile")) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -17,5 +26,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/profile", "/login"],
+  matcher: ["/dashboard", "/profile", "/login"]
 };

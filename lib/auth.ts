@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-import { NextAuthOptions, SessionStrategy } from "next-auth";
+import { SessionStrategy } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
 import { db } from "./db";
@@ -7,16 +7,16 @@ import { db } from "./db";
 export const authOptions = {
   debug: true,
   session: {
-    strategy: "jwt" as SessionStrategy,
+    strategy: "jwt" as SessionStrategy
   },
   pages: {
-    signIn: "/login",
+    signIn: "/login"
   },
   providers: [
     CredentialsProvider({
       credentials: {
         email: {},
-        password: {},
+        password: {}
       },
       async authorize(credentials) {
         if (!credentials) return null;
@@ -29,7 +29,7 @@ export const authOptions = {
         }
 
         const user = await db.users.findFirst({
-          where: { email: email },
+          where: { email: email }
         });
 
         if (!user) return null;
@@ -40,10 +40,10 @@ export const authOptions = {
 
         return {
           id: user.id.toString(),
-          email: user.email,
+          email: user.email
         };
-      },
-    }),
+      }
+    })
   ],
   callbacks: {
     async session({ session, token }) {
@@ -52,7 +52,7 @@ export const authOptions = {
           id: token.sub || "",
           email: token.email || "",
           name: token.name,
-          emailVerified: null,
+          emailVerified: null
         };
       }
       return session;
@@ -64,9 +64,9 @@ export const authOptions = {
         token.name = user.name;
       }
       return token;
-    },
+    }
   },
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.AUTH_SECRET
 };
 
 export default NextAuth(authOptions);
