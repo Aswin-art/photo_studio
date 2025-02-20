@@ -10,10 +10,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import React, { useEffect, useState } from "react";
-import StudioList from "@/components/studio/studio-list";
-import CreateStudioForm from "@/components/studio/createModal";
 import { getStudios } from "@/actions/studioAction";
 import { Studio } from "@/types";
+import dynamic from "next/dynamic";
+const StudioList = dynamic(() => import('@/components/studio/studio-list'), { ssr: false });
+const CreateStudioForm = dynamic(() => import('@/components/studio/createModal'), { ssr: false });
 
 export default function Page() {
   const [studios, setStudios] = useState<Studio[]>([]);
