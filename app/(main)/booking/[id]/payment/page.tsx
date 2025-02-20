@@ -34,7 +34,7 @@ export default function BookingPayment() {
         
         Mohon verifikasi pembayaran saya.`);
 
-    const whatsappLink = `https://wa.me/${62895413215176}?text=${message}`;
+    const whatsappLink = `https://wa.me/${6285770037336}?text=${message}`;
 
 
 
@@ -124,8 +124,8 @@ export default function BookingPayment() {
                                         </li>
                                         <li>
                                             Setelah melakukan pembayaran, kirim bukti pembayaran melalui WhatsApp ke nomor {" "}
-                                            <a href="https://wa.me/62XXXXXXXXXX" className="text-blue-500 underline">
-                                                62XXXXXXXXXX
+                                            <a href="https://wa.me/6285770037336" className="text-blue-500 underline">
+                                                085770037336
                                             </a>
                                             . Anda dapat mengirimnya secara manual dengan mencantumkan:
                                             <ul className="list-disc pl-5 mt-2 space-y-1">
