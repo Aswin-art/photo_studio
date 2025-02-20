@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { formatRupiah } from "@/utils/Rupiah";
 import { CellApprove } from "./CellApprove";
 import { convertBookingSession } from "@/utils/convertBookingSession";
+import { useMemo, useEffect, useState } from "react";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const TransactionColumns = (
@@ -39,15 +40,22 @@ export const TransactionColumns = (
   {
     accessorKey: "bookingDate",
     header: "Tanggal Booking",
-    cell: ({ row }) => (
-      <span>
-        {new Date(row.original.bookingDate).toLocaleDateString("id-ID", {
+    cell: ({ row }) => {
+      const [formattedDate, setFormattedDate] = useState<string>("");
+
+      useEffect(() => {
+        const date = new Date(row.original.bookingDate);
+        const formatted = date.toLocaleDateString("id-ID", {
           year: "numeric",
           month: "short",
-          day: "numeric"
-        })}
-      </span>
-    )
+          day: "numeric",
+          timeZone: "Asia/Jakarta",
+        });
+        setFormattedDate(formatted);
+      }, [row.original.bookingDate]);
+
+      return <span>{formattedDate || "Memuat..."}</span>;
+    },
   },
   {
     accessorKey: "bookingTime",

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTransactionContext } from "@/components/transaction/TransactionContext";
 import Pusher from "pusher-js";
 import { useToast } from "@/hooks/use-toast";
@@ -9,6 +9,7 @@ const BookingNotifications = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { toast } = useToast();
   const { triggerRefresh } = useTransactionContext();
+  const [hasMounted, setHasMounted] = useState(false);
 
   const pusherKey = process.env.NEXT_PUBLIC_PUSHER_KEY;
   const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
@@ -39,13 +40,20 @@ const BookingNotifications = () => {
     };
   }, [triggerRefresh, pusherKey, pusherCluster, toast]);
 
+  useEffect(() => {
+    setHasMounted(true); 
+  }, []);
+
+  if (!hasMounted) return null;
+
   return (
     <>
-      <audio
-        ref={audioRef}
-        src="/mixkit-positive-notification-951.wav"
-        preload="auto"
-      />
+      {typeof window !== 'undefined' && (
+        <audio 
+          ref={audioRef} 
+          src="/mixkit-positive-notification-951.wav" 
+          preload="auto" />
+      )}
     </>
   );
 };
