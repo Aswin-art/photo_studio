@@ -1,11 +1,11 @@
 "use client";
-import Wrapper from "@/components/wrapper";
-import Image from "next/image";
-import LandingHero from "@/components/landing/Hero";
-import About from "@/components/landing/About";
-import Service from "@/components/landing/Service";
-import Gallery from "@/components/landing/Gallery";
-import Testimoni from "@/components/landing/Testimoni";
+
+import dynamic from "next/dynamic";
+const LandingHero = dynamic(() => import('@/components/landing/Hero'), { ssr: false })
+const About = dynamic(() => import('@/components/landing/About'), { ssr: false })
+const Service = dynamic(() => import('@/components/landing/Service'), { ssr: false })
+const Gallery = dynamic(() => import('@/components/landing/Gallery'), { ssr: false })
+const Testimoni = dynamic(() => import('@/components/landing/Testimoni'), { ssr: false })
 
 export default function Home() {
   return (

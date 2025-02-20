@@ -8,6 +8,7 @@ import {
   useEffect,
   useRef,
   RefObject,
+  useId,
 } from "react"
 import { useAnimationFrame } from "motion/react"
 
@@ -46,7 +47,10 @@ const Floating = ({
       }
     >()
   )
-  const mousePositionRef = useMousePositionRef(containerRef as RefObject<HTMLElement>)
+
+  const mousePositionRef = typeof window !== "undefined" 
+    ? useMousePositionRef(containerRef as RefObject<HTMLElement>)
+    : { current: { x: 0, y: 0 } }
 
   const registerElement = useCallback(
     (id: string, element: HTMLDivElement, depth: number) => {
@@ -68,16 +72,12 @@ const Floating = ({
 
     elementsMap.current.forEach((data) => {
       const strength = (data.depth * sensitivity) / 20
-
-      // Calculate new target position
       const newTargetX = mousePositionRef.current.x * strength
       const newTargetY = mousePositionRef.current.y * strength
 
-      // Check if we need to update
       const dx = newTargetX - data.currentPosition.x
       const dy = newTargetY - data.currentPosition.y
 
-      // Update position only if we're still moving
       data.currentPosition.x += dx * easingFactor
       data.currentPosition.y += dy * easingFactor
 
@@ -112,17 +112,17 @@ export const FloatingElement = ({
   depth = 1,
 }: FloatingElementProps) => {
   const elementRef = useRef<HTMLDivElement>(null)
-  const idRef = useRef(Math.random().toString(36).substring(7))
+  const id = useId() // Lebih stabil daripada Math.random
   const context = useContext(FloatingContext)
 
   useEffect(() => {
     if (!elementRef.current || !context) return
 
     const nonNullDepth = depth ?? 0.01
+    context.registerElement(id, elementRef.current, nonNullDepth)
 
-    context.registerElement(idRef.current, elementRef.current, nonNullDepth)
-    return () => context.unregisterElement(idRef.current)
-  }, [depth])
+    return () => context.unregisterElement(id)
+  }, [depth, context, id])
 
   return (
     <div
