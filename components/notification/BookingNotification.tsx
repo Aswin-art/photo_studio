@@ -10,11 +10,13 @@ const BookingNotifications = () => {
   const { toast } = useToast();
   const { triggerRefresh } = useTransactionContext();
 
-  useEffect(() => {
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!
-    });
+  const pusherKey = process.env.NEXT_PUBLIC_PUSHER_KEY;
+  const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
 
+  useEffect(() => {
+    if (typeof window === "undefined" || !pusherKey || !pusherCluster) return;
+
+    const pusher = new Pusher(pusherKey, { cluster: pusherCluster });
     const channel = pusher.subscribe("booking-channel");
 
     channel.bind("new-booking", (data: any) => {
@@ -24,19 +26,18 @@ const BookingNotifications = () => {
         type: "background"
       });
 
-      if (audioRef.current) {
-        audioRef.current.play().catch((err) => {
-          console.error("Audio tidak bisa diputar:", err);
-        });
-      }
+      audioRef.current?.play().catch((err) => {
+        console.error("Audio tidak bisa diputar:", err);
+      });
 
       triggerRefresh();
     });
 
     return () => {
       pusher.unsubscribe("booking-channel");
+      pusher.disconnect();
     };
-  }, [triggerRefresh]);
+  }, [triggerRefresh, pusherKey, pusherCluster, toast]);
 
   return (
     <>
