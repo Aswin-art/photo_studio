@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,7 +18,7 @@ import { Studio } from "@/types";
 export default function Page() {
   const [studios, setStudios] = useState<Studio[]>([]);
   const [isLoading, setIsLoading] = useState(true);
- 
+
   const fetchStudios = async () => {
     try {
       const data = await getStudios();
@@ -62,7 +62,7 @@ export default function Page() {
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div>
           <h1 className="text-2xl font-semibold">Studio</h1>
-          <CreateStudioForm refreshStudios={refreshStudios}/>
+          <CreateStudioForm refreshStudios={refreshStudios} />
         </div>
         <StudioList
           studios={studios}
