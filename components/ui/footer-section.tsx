@@ -56,7 +56,7 @@ export default function Foooter() {
                 Booking
               </Link>
               <Link
-                href="https://wa.me/628123456789"
+                href="https://wa.me/6285770037336"
                 className="block transition-colors hover:text-primary"
               >
                 Contact Us
@@ -74,8 +74,8 @@ export default function Foooter() {
             <address className="space-y-2 text-sm not-italic">
               <p>Ruko Kraton Superblock, Kec. Krian</p>
               <p>Kabupaten Sidoarjo, Jawa Timur</p>
-              <p>Phone: (+62) 812-3456-789</p>
-              {/* <p>Email: hello@example.com</p> */}
+              <p>Phone: (+62) 857-7003-7336</p>
+              <p>Email: prostudio098@gmail.com</p>
             </address>
           </div>
           <div className="relative">
