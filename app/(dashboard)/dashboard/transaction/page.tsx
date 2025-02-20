@@ -27,7 +27,6 @@ export default function Page() {
     try {
       const data = await getTransactions();
       setTransactions(data);
-      console.log(data)
     } catch (error) {
       console.error("Failed to fetch transactions:", error);
     } finally {
