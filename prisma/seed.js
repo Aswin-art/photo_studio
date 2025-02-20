@@ -12,8 +12,8 @@ const prisma = new PrismaClient();
 async function main() {
   const newUser2 = await prisma.users.create({
     data: {
-      email: "test1@mail.com",
-      password: saltAndHashPassword("123"),
+      email: "admin@prostudio.com",
+      password: saltAndHashPassword("STDpr0STD"),
       updatedAt: new Date()
     }
   });
