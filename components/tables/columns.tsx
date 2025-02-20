@@ -1,6 +1,5 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { CellAction } from "./cell-action";
 import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -83,7 +82,7 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "hair.type",
     header: "HAIR TYPE"
-  },
+  }
   // {
   //   id: "actions",
   //   cell: ({ row }) => <CellAction data={row.original} />

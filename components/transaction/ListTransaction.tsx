@@ -15,8 +15,8 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  SelectValue
+} from "@/components/ui/select";
 
 interface ListTransactionProps {
   transaction: Transaction[];
@@ -33,49 +33,54 @@ export default function ListTransaction({
 }: ListTransactionProps) {
   const [studios, setStudios] = useState<Studio[]>([]);
   const [selectedStudio, setSelectedStudio] = useState<string | null>(null);
-  const [selectedIsApproved, setSelectedIsApproved] = useState<boolean | null | string>("");
-  const [isApproveValue, setIsApproveValue] = useState<string>("")
+  const [selectedIsApproved, setSelectedIsApproved] = useState<
+    boolean | null | string
+  >("");
+  const [isApproveValue, setIsApproveValue] = useState<string>("");
 
   const handleStudioChange = (studioId: string) => {
-      setSelectedStudio(studioId || null);
+    setSelectedStudio(studioId || null);
   };
 
   const handleIsApprovedChange = (isApproved: string) => {
-      setIsApproveValue(isApproved);
+    setIsApproveValue(isApproved);
 
-      if (isApproved === "1") {
-          setSelectedIsApproved(true);
-      } else if (isApproved === "0") {
-          setSelectedIsApproved(false);
-      } else if (isApproved === "null") {
-          setSelectedIsApproved(null);
-      }
+    if (isApproved === "1") {
+      setSelectedIsApproved(true);
+    } else if (isApproved === "0") {
+      setSelectedIsApproved(false);
+    } else if (isApproved === "null") {
+      setSelectedIsApproved(null);
+    }
   };
 
   useEffect(() => {
     const fetchTransactions = async () => {
-        try {
-            if (selectedIsApproved === true || selectedIsApproved === false || selectedIsApproved === null) {
-                const data = await getTransactionsByFilter(
-                    selectedStudio ? Number(selectedStudio) : undefined,
-                    selectedIsApproved
-                );
-                setTransaction(data);
-            } else if(selectedStudio){
-              const data = await getTransactionsByFilter(Number(selectedStudio));
-              setTransaction(data);
-            } else {
-                await refreshTransactions();
-            }
-        } catch (error) {
-            console.error("Failed to fetch transactions:", error);
+      try {
+        if (
+          selectedIsApproved === true ||
+          selectedIsApproved === false ||
+          selectedIsApproved === null
+        ) {
+          const data = await getTransactionsByFilter(
+            selectedStudio ? Number(selectedStudio) : undefined,
+            selectedIsApproved
+          );
+          setTransaction(data);
+        } else if (selectedStudio) {
+          const data = await getTransactionsByFilter(Number(selectedStudio));
+          setTransaction(data);
+        } else {
+          await refreshTransactions();
         }
+      } catch (error) {
+        console.error("Failed to fetch transactions:", error);
+      }
     };
 
     fetchTransactions();
-}, [selectedIsApproved, selectedStudio]);
-  
-  
+  }, [selectedIsApproved, selectedStudio]);
+
   const fetchStudios = async () => {
     try {
       const data = await getStudios();
@@ -99,7 +104,7 @@ export default function ListTransaction({
         >
           Refresh Data
         </Button>
-        <Select onValueChange={handleStudioChange} value={selectedStudio || ''}>
+        <Select onValueChange={handleStudioChange} value={selectedStudio || ""}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter By Studio" />
           </SelectTrigger>
@@ -121,15 +126,9 @@ export default function ListTransaction({
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Status Pembayaran</SelectLabel>
-              <SelectItem value="1">
-                Di Terima
-              </SelectItem>
-              <SelectItem value="0">
-                Di Tolak
-              </SelectItem>
-              <SelectItem value="null">
-                Belum ada status
-              </SelectItem>
+              <SelectItem value="1">Di Terima</SelectItem>
+              <SelectItem value="0">Di Tolak</SelectItem>
+              <SelectItem value="null">Belum ada status</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -138,7 +137,6 @@ export default function ListTransaction({
       <DataTable
         columns={TransactionColumns(refreshTransactions)}
         data={transaction}
-        searchColumns={["customerName", "customerPhone", "customerEmail", "studioName", "addons"]}
       />
     </div>
   );

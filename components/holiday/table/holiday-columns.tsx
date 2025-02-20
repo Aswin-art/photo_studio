@@ -1,18 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { CellAction } from "@/components/tables/cell-action";
 
-interface HolidayColumnsProps {
-  onRefresh: () => void;
-}
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const holidayColumns = (refreshHolidays: () => void): ColumnDef<any>[] => [
+export const holidayColumns = (
+  refreshHolidays: () => void
+): ColumnDef<any>[] => [
   {
     accessorKey: "index",
     header: "INDEX",
-    cell: ({ row }) => row.index + 1, 
+    cell: ({ row }) => row.index + 1,
     enableSorting: false
   },
   {
@@ -45,6 +45,12 @@ export const holidayColumns = (refreshHolidays: () => void): ColumnDef<any>[] =>
   {
     id: "actions",
     header: "ACTIONS",
-    cell: ({ row }) => <CellAction data={row.original} updatePath="/dashboard/holiday" refresh={refreshHolidays} />
+    cell: ({ row }) => (
+      <CellAction
+        data={row.original}
+        updatePath="/dashboard/holiday"
+        refresh={refreshHolidays}
+      />
+    )
   }
 ];

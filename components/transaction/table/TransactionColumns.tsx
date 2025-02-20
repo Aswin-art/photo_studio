@@ -1,18 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
-import { CellAction } from "@/components/tables/cell-action";
 import { formatRupiah } from "@/utils/Rupiah";
 import { CellApprove } from "./CellApprove";
 import { convertBookingSession } from "@/utils/convertBookingSession";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const TransactionColumns = (refreshTransactions: () => void): ColumnDef<any>[] => [
+export const TransactionColumns = (
+  refreshTransactions: () => void
+): ColumnDef<any>[] => [
   {
     accessorKey: "index",
     header: "No",
-    cell: ({ row }) => row.index + 1, 
+    cell: ({ row }) => row.index + 1,
     enableSorting: false
   },
   {
@@ -52,13 +52,17 @@ export const TransactionColumns = (refreshTransactions: () => void): ColumnDef<a
   {
     accessorKey: "bookingTime",
     header: "Waktu Booking",
-    cell: ({ row }) => <span>{convertBookingSession(row.original.bookingTime)}</span>
+    cell: ({ row }) => (
+      <span>{convertBookingSession(row.original.bookingTime)}</span>
+    )
   },
   {
     accessorKey: "addons",
     header: "Layanan Tambahan",
     cell: ({ row }) => {
-      const addonNames = row.original.customeraddon.map((item: any) => item.addon.name).join(", ");
+      const addonNames = row.original.customeraddon
+        .map((item: any) => item.addon.name)
+        .join(", ");
       return <span>{addonNames}</span>;
     }
   },
@@ -66,16 +70,22 @@ export const TransactionColumns = (refreshTransactions: () => void): ColumnDef<a
     accessorFn: (row) => row.voucher?.name ?? "",
     id: "voucher",
     header: "Voucher",
-    cell: ({ row }) => <span>{row.original.voucher ? row.original.voucher.name : "Tidak ada"}</span>
+    cell: ({ row }) => (
+      <span>
+        {row.original.voucher ? row.original.voucher.name : "Tidak ada"}
+      </span>
+    )
   },
   {
     accessorKey: "totalPrice",
     header: "Total Harga",
     cell: ({ row }) => <span>Rp{formatRupiah(row.original.totalPrice)}</span>
-  }, 
+  },
   {
     id: "isApproved",
     header: "Status Pembayaran",
-    cell: ({ row }) => <CellApprove data={row.original} refresh={refreshTransactions} />
+    cell: ({ row }) => (
+      <CellApprove data={row.original} refresh={refreshTransactions} />
+    )
   }
 ];

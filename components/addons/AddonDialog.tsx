@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
 import AddonForm from "./AddonForm";
 
 interface AddonDialogProps {
@@ -8,15 +14,23 @@ interface AddonDialogProps {
   refreshAddons: () => void;
 }
 
-const AddonDialog: React.FC<AddonDialogProps> = ({ open, onClose, addonData, refreshAddons }) => {
-
+const AddonDialog: React.FC<AddonDialogProps> = ({
+  open,
+  onClose,
+  addonData,
+  refreshAddons
+}) => {
   return (
-    <Dialog open={open} onOpenChange={onClose} >
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Addon</DialogTitle>
         </DialogHeader>
-        <AddonForm addonData={addonData} onClose={onClose} refreshAddons={refreshAddons} />
+        <AddonForm
+          addonData={addonData}
+          onClose={onClose}
+          refreshAddons={refreshAddons}
+        />
       </DialogContent>
     </Dialog>
   );

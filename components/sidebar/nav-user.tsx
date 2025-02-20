@@ -1,18 +1,10 @@
 "use client";
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles
-} from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -25,7 +17,6 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 import { Button } from "../ui/button";
-import { logout } from "@/actions/authAction";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 
@@ -39,7 +30,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-  const { data: session } = useSession(); 
+  const { data: session } = useSession();
   const userLogin = session?.user;
 
   const handleLogout = async () => {
@@ -60,8 +51,12 @@ export function NavUser({
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{userLogin?.name || "Admin"}</span>
-                <span className="truncate text-xs">{userLogin?.email || "Admin@mail.com"}</span>
+                <span className="truncate font-semibold">
+                  {userLogin?.name || "Admin"}
+                </span>
+                <span className="truncate text-xs">
+                  {userLogin?.email || "Admin@mail.com"}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -79,14 +74,22 @@ export function NavUser({
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{userLogin?.name || "Admin"}</span>
-                  <span className="truncate text-xs">{userLogin?.email || "Admin@mail.com"}</span>
+                  <span className="truncate font-semibold">
+                    {userLogin?.name || "Admin"}
+                  </span>
+                  <span className="truncate text-xs">
+                    {userLogin?.email || "Admin@mail.com"}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Button variant={"destructive"} className="w-full" onClick={handleLogout}>
+              <Button
+                variant={"destructive"}
+                className="w-full"
+                onClick={handleLogout}
+              >
                 <LogOut />
                 Keluar
               </Button>

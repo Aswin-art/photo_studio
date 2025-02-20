@@ -5,9 +5,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*",
-      },
-    ],
+        hostname: "*"
+      }
+    ]
   },
 
   reactStrictMode: false,
@@ -17,10 +17,10 @@ const nextConfig: NextConfig = {
       {
         source: "/contact-us",
         destination: "https://wa.me/6285770037336",
-        permanent: false,
-      },
+        permanent: false
+      }
     ];
-  },
+  }
 };
 
 export default nextConfig;

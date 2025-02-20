@@ -1,10 +1,9 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import { ModeToggle } from "./mode-toggle";
 import Link from "next/link";
 import Wrapper from "./wrapper";
-import { ChevronRight, GanttChart } from "lucide-react";
+import { GanttChart } from "lucide-react";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import {
@@ -44,7 +43,9 @@ const Navbar = () => {
                 href={nav.url}
                 key={nav.name}
                 className={clsx("hover:text-blue-600 transition-all", {
-                  "text-blue-600": (pathname?.startsWith(nav.url) && nav.url !== "/") || (nav.url === "/" && pathname === "/")
+                  "text-blue-600":
+                    (pathname?.startsWith(nav.url) && nav.url !== "/") ||
+                    (nav.url === "/" && pathname === "/")
                 })}
               >
                 {nav.name}
@@ -101,7 +102,10 @@ const Navbar = () => {
                         className={clsx(
                           "hover:text-blue-600 hover:bg-blue-600/10 transition-all border border-input p-4 rounded-md",
                           {
-                            "text-blue-600 bg-blue-600/10": (pathname?.startsWith(nav.url) && nav.url !== "/") || (nav.url === "/" && pathname === "/")
+                            "text-blue-600 bg-blue-600/10":
+                              (pathname?.startsWith(nav.url) &&
+                                nav.url !== "/") ||
+                              (nav.url === "/" && pathname === "/")
                           }
                         )}
                       >
