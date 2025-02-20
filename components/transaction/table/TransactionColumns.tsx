@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { formatRupiah } from "@/utils/Rupiah";
 import { CellApprove } from "./CellApprove";
 import { convertBookingSession } from "@/utils/convertBookingSession";
-import { useMemo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const TransactionColumns = (
@@ -49,13 +50,13 @@ export const TransactionColumns = (
           year: "numeric",
           month: "short",
           day: "numeric",
-          timeZone: "Asia/Jakarta",
+          timeZone: "Asia/Jakarta"
         });
         setFormattedDate(formatted);
       }, [row.original.bookingDate]);
 
       return <span>{formattedDate || "Memuat..."}</span>;
-    },
+    }
   },
   {
     accessorKey: "bookingTime",

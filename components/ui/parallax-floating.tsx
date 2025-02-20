@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   createContext,
@@ -8,25 +8,25 @@ import {
   useEffect,
   useRef,
   RefObject,
-  useId,
-} from "react"
-import { useAnimationFrame } from "motion/react"
+  useId
+} from "react";
+import { useAnimationFrame } from "motion/react";
 
-import { cn } from "@/lib/utils"
-import { useMousePositionRef } from "@/hooks/use-mouse-position-ref"
+import { cn } from "@/lib/utils";
+import { useMousePositionRef } from "@/hooks/use-mouse-position-ref";
 
 interface FloatingContextType {
-  registerElement: (id: string, element: HTMLDivElement, depth: number) => void
-  unregisterElement: (id: string) => void
+  registerElement: (id: string, element: HTMLDivElement, depth: number) => void;
+  unregisterElement: (id: string) => void;
 }
 
-const FloatingContext = createContext<FloatingContextType | null>(null)
+const FloatingContext = createContext<FloatingContextType | null>(null);
 
 interface FloatingProps {
-  children: ReactNode
-  className?: string
-  sensitivity?: number
-  easingFactor?: number
+  children: ReactNode;
+  className?: string;
+  sensitivity?: number;
+  easingFactor?: number;
 }
 
 const Floating = ({
@@ -36,54 +36,58 @@ const Floating = ({
   easingFactor = 0.05,
   ...props
 }: FloatingProps) => {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
   const elementsMap = useRef(
     new Map<
       string,
       {
-        element: HTMLDivElement
-        depth: number
-        currentPosition: { x: number; y: number }
+        element: HTMLDivElement;
+        depth: number;
+        currentPosition: { x: number; y: number };
       }
     >()
-  )
+  );
 
-  const mousePositionRef = typeof window !== "undefined" 
-    ? useMousePositionRef(containerRef as RefObject<HTMLElement>)
-    : { current: { x: 0, y: 0 } }
+  const mousePositionRef = useMousePositionRef(
+    containerRef as RefObject<HTMLElement>
+  );
+
+  if (typeof window === "undefined") {
+    mousePositionRef.current = { x: 0, y: 0 };
+  }
 
   const registerElement = useCallback(
     (id: string, element: HTMLDivElement, depth: number) => {
       elementsMap.current.set(id, {
         element,
         depth,
-        currentPosition: { x: 0, y: 0 },
-      })
+        currentPosition: { x: 0, y: 0 }
+      });
     },
     []
-  )
+  );
 
   const unregisterElement = useCallback((id: string) => {
-    elementsMap.current.delete(id)
-  }, [])
+    elementsMap.current.delete(id);
+  }, []);
 
   useAnimationFrame(() => {
-    if (!containerRef.current) return
+    if (!containerRef.current) return;
 
     elementsMap.current.forEach((data) => {
-      const strength = (data.depth * sensitivity) / 20
-      const newTargetX = mousePositionRef.current.x * strength
-      const newTargetY = mousePositionRef.current.y * strength
+      const strength = (data.depth * sensitivity) / 20;
+      const newTargetX = mousePositionRef.current.x * strength;
+      const newTargetY = mousePositionRef.current.y * strength;
 
-      const dx = newTargetX - data.currentPosition.x
-      const dy = newTargetY - data.currentPosition.y
+      const dx = newTargetX - data.currentPosition.x;
+      const dy = newTargetY - data.currentPosition.y;
 
-      data.currentPosition.x += dx * easingFactor
-      data.currentPosition.y += dy * easingFactor
+      data.currentPosition.x += dx * easingFactor;
+      data.currentPosition.y += dy * easingFactor;
 
-      data.element.style.transform = `translate3d(${data.currentPosition.x}px, ${data.currentPosition.y}px, 0)`
-    })
-  })
+      data.element.style.transform = `translate3d(${data.currentPosition.x}px, ${data.currentPosition.y}px, 0)`;
+    });
+  });
 
   return (
     <FloatingContext.Provider value={{ registerElement, unregisterElement }}>
@@ -95,34 +99,34 @@ const Floating = ({
         {children}
       </div>
     </FloatingContext.Provider>
-  )
-}
+  );
+};
 
-export default Floating
+export default Floating;
 
 interface FloatingElementProps {
-  children: ReactNode
-  className?: string
-  depth?: number
+  children: ReactNode;
+  className?: string;
+  depth?: number;
 }
 
 export const FloatingElement = ({
   children,
   className,
-  depth = 1,
+  depth = 1
 }: FloatingElementProps) => {
-  const elementRef = useRef<HTMLDivElement>(null)
-  const id = useId() // Lebih stabil daripada Math.random
-  const context = useContext(FloatingContext)
+  const elementRef = useRef<HTMLDivElement>(null);
+  const id = useId(); // Lebih stabil daripada Math.random
+  const context = useContext(FloatingContext);
 
   useEffect(() => {
-    if (!elementRef.current || !context) return
+    if (!elementRef.current || !context) return;
 
-    const nonNullDepth = depth ?? 0.01
-    context.registerElement(id, elementRef.current, nonNullDepth)
+    const nonNullDepth = depth ?? 0.01;
+    context.registerElement(id, elementRef.current, nonNullDepth);
 
-    return () => context.unregisterElement(id)
-  }, [depth, context, id])
+    return () => context.unregisterElement(id);
+  }, [depth, context, id]);
 
   return (
     <div
@@ -131,5 +135,5 @@ export const FloatingElement = ({
     >
       {children}
     </div>
-  )
-}
+  );
+};
