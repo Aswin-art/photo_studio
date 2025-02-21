@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import {
   AudioWaveform,
   BookOpen,
@@ -171,7 +172,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     user && (
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader>
-          <TeamSwitcher teams={data.teams} />
+          <Image
+            src={"/image/logo.png"}
+            alt={"Studio Kami"}
+            width={400}
+            height={200}
+            className=" rounded-md w-28 h-full flex-1 object-contain self-center"
+          />
         </SidebarHeader>
         <SidebarContent>
           {/* <NavMain items={data.navMain} /> */}
