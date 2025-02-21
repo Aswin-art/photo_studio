@@ -44,8 +44,7 @@ const Canvas = forwardRef(function Canvas(
   const checkDeselect = (e: any) => {
     if (e.target === e.target.getStage()) {
       if (croppingId !== null) {
-        console.log("Exiting crop mode"); // Tampilkan log
-        setCroppingId(null); // Matikan crop mode
+        setCroppingId(null);
       } else {
         setPhotoClicked(false);
         setSelectedId(null);

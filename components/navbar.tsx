@@ -16,7 +16,7 @@ import {
   SheetTrigger
 } from "./ui/sheet";
 import { Button } from "./ui/button";
-import { navItems } from "@/constants/data";
+import { navItems } from "@/contanst/data";
 
 const Navbar = () => {
   const pathname = usePathname();

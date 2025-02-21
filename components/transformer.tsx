@@ -31,20 +31,15 @@ const PhotoWithTransformer = ({
   const cropRectRef = useRef<any>(null);
   const cropTransformerRef = useRef<any>(null);
 
-  // State untuk area crop (dalam koordinat stage)
   const [cropX, setCropX] = useState(0);
   const [cropY, setCropY] = useState(0);
   const [cropWidth, setCropWidth] = useState(0);
   const [cropHeight, setCropHeight] = useState(0);
-  // Flag untuk menandai crop sudah di‑bake
   const [isCropped, setIsCropped] = useState(false);
   const prevIsCroppingRef = useRef(isCropping);
-  // Simpan ukuran natural (ukuran asli) dari gambar atau hasil crop sebelumnya
   const naturalDimsRef = useRef<{ width: number; height: number } | null>(null);
-  // Faktor awal konversi: awalnya ditampilkan 1/2 dari ukuran natural
   const initialFactor = 2;
 
-  // State untuk properti gambar (posisi dan dimensi tampilan)
   const [imageProps, setImageProps] = useState({
     x: 100,
     y: 100,
@@ -52,7 +47,52 @@ const PhotoWithTransformer = ({
     height: 0
   });
 
-  // Saat photoUrl sudah tersedia, simpan ukuran natural dan inisialisasi imageProps
+  const imageRect = shapeRef.current
+    ? shapeRef.current.getClientRect({ skipTransform: false })
+    : {
+        x: imageProps.x,
+        y: imageProps.y,
+        width: imageProps.width,
+        height: imageProps.height
+      };
+  const stageWidth = 800;
+  const stageHeight = 800;
+
+  const handleCrop = () => {
+    if (!cropRectRef.current || !shapeRef.current || !naturalDimsRef.current)
+      return;
+    let x = cropRectRef.current.x();
+    let y = cropRectRef.current.y();
+    let width = cropRectRef.current.width() * cropRectRef.current.scaleX();
+    let height = cropRectRef.current.height() * cropRectRef.current.scaleY();
+
+    const imageRect = shapeRef.current.getClientRect({ skipTransform: false });
+    const originX = imageRect.x;
+    const originY = imageRect.y;
+    const originWidth = imageRect.width;
+    const originHeight = imageRect.height;
+
+    x = Math.max(x, originX);
+    y = Math.max(y, originY);
+    width = Math.min(width, originWidth - (x - originX));
+    height = Math.min(height, originHeight - (y - originY));
+    cropRectRef.current.setAttrs({
+      x,
+      y,
+      width,
+      height,
+      scaleX: 1,
+      scaleY: 1
+    });
+    if (cropTransformerRef.current) {
+      cropTransformerRef.current.forceUpdate();
+    }
+    setCropX(x);
+    setCropY(y);
+    setCropWidth(width);
+    setCropHeight(height);
+  };
+
   useEffect(() => {
     if (photoUrl) {
       naturalDimsRef.current = {
@@ -68,11 +108,8 @@ const PhotoWithTransformer = ({
     }
   }, [photoUrl]);
 
-  // Saat masuk mode crop, update crop rectangle berdasarkan imageProps
   useEffect(() => {
     if (isCropping) {
-      // Tidak mereset crop jika sudah di‑crop,
-      // sehingga state hasil crop sebelumnya (ukuran dan posisi) tetap dipertahankan
       setCropX(imageProps.x);
       setCropY(imageProps.y);
       setCropWidth(imageProps.width);
@@ -80,13 +117,11 @@ const PhotoWithTransformer = ({
     }
   }, [isCropping, imageProps]);
 
-  // Saat keluar mode crop, "bake" crop ke gambar baru menggunakan offscreen canvas
   useEffect(() => {
     if (prevIsCroppingRef.current && !isCropping) {
       const imageNode = shapeRef.current;
       if (imageNode && naturalDimsRef.current) {
         const strokeOffset = 1;
-        // Gunakan bounding box aktual dari node (memperhitungkan rotasi dan scaling)
         const displayedRect = imageNode.getClientRect({ skipTransform: false });
         const conversionFactor =
           naturalDimsRef.current.width / displayedRect.width;
@@ -98,7 +133,6 @@ const PhotoWithTransformer = ({
           width: (cropWidth - strokeOffset * 2) * conversionFactor,
           height: (cropHeight - strokeOffset * 2) * conversionFactor
         };
-        // Buat offscreen canvas untuk mendapatkan gambar baru dari area crop
         const canvas = document.createElement("canvas");
         canvas.width = newCrop.width;
         canvas.height = newCrop.height;
@@ -120,21 +154,17 @@ const PhotoWithTransformer = ({
           const newImg = new window.Image();
           newImg.src = dataURL;
           newImg.onload = () => {
-            // Update node dengan image baru
             imageNode.image(newImg);
-            // Hapus properti crop agar transformasi resize berjalan normal
             imageNode.crop({
               x: 0,
               y: 0,
               width: newCrop.width,
               height: newCrop.height
             });
-            // Update ukuran node sesuai dengan gambar baru (tampilan berdasarkan dimensi tampilan baru)
             const updatedWidth = newCrop.width / conversionFactor;
             const updatedHeight = newCrop.height / conversionFactor;
             imageNode.width(updatedWidth);
             imageNode.height(updatedHeight);
-            // Tetapkan posisi baru sesuai dengan crop rectangle
             imageNode.x(cropX);
             imageNode.y(cropY);
             setImageProps((prev) => ({
@@ -145,7 +175,6 @@ const PhotoWithTransformer = ({
               height: updatedHeight
             }));
             setIsCropped(true);
-            // Perbarui natural dims untuk sesi crop selanjutnya
             naturalDimsRef.current = {
               width: newCrop.width,
               height: newCrop.height
@@ -183,43 +212,6 @@ const PhotoWithTransformer = ({
     imageProps
   ]);
 
-  // Memperbarui boundary crop dengan menggunakan bounding box aktual dari gambar
-  const handleCrop = () => {
-    if (!cropRectRef.current || !shapeRef.current || !naturalDimsRef.current)
-      return;
-    let x = cropRectRef.current.x();
-    let y = cropRectRef.current.y();
-    let width = cropRectRef.current.width() * cropRectRef.current.scaleX();
-    let height = cropRectRef.current.height() * cropRectRef.current.scaleY();
-
-    // Gunakan bounding box aktual sebagai batas crop
-    const imageRect = shapeRef.current.getClientRect({ skipTransform: false });
-    const originX = imageRect.x;
-    const originY = imageRect.y;
-    const originWidth = imageRect.width;
-    const originHeight = imageRect.height;
-
-    x = Math.max(x, originX);
-    y = Math.max(y, originY);
-    width = Math.min(width, originWidth - (x - originX));
-    height = Math.min(height, originHeight - (y - originY));
-    cropRectRef.current.setAttrs({
-      x,
-      y,
-      width,
-      height,
-      scaleX: 1,
-      scaleY: 1
-    });
-    if (cropTransformerRef.current) {
-      cropTransformerRef.current.forceUpdate();
-    }
-    setCropX(x);
-    setCropY(y);
-    setCropWidth(width);
-    setCropHeight(height);
-  };
-
   useEffect(() => {
     if (isSelected && shapeRef.current) {
       setPhotoClicked(true);
@@ -229,18 +221,6 @@ const PhotoWithTransformer = ({
       }
     }
   }, [isSelected, isCropping, setPhotoClicked]);
-
-  // Gunakan bounding box aktual untuk batas gambar
-  const imageRect = shapeRef.current
-    ? shapeRef.current.getClientRect({ skipTransform: false })
-    : {
-        x: imageProps.x,
-        y: imageProps.y,
-        width: imageProps.width,
-        height: imageProps.height
-      };
-  const stageWidth = 800;
-  const stageHeight = 800;
 
   useEffect(() => {
     if (isCropping && cropRectRef.current && cropTransformerRef.current) {
@@ -273,7 +253,6 @@ const PhotoWithTransformer = ({
         onTransformEnd={() => {
           if (!isCropping) {
             const node = shapeRef.current;
-            // Dapatkan bounding box aktual dari node
             const displayedRect = node.getClientRect({ skipTransform: false });
             node.scaleX(1);
             node.scaleY(1);
@@ -283,7 +262,6 @@ const PhotoWithTransformer = ({
               width: Math.max(50, displayedRect.width),
               height: Math.max(50, displayedRect.height)
             });
-            // Perbarui naturalDims hanya jika gambar belum di‑crop
             if (!isCropped) {
               naturalDimsRef.current = {
                 width: displayedRect.width * initialFactor,
@@ -307,7 +285,6 @@ const PhotoWithTransformer = ({
       />
       {isCropping ? (
         <Group>
-          {/* Overlay */}
           <Rect
             x={0}
             y={0}
@@ -340,7 +317,6 @@ const PhotoWithTransformer = ({
             fill="rgba(0,0,0,0.5)"
             listening={false}
           />
-          {/* Crop rectangle */}
           <Rect
             ref={cropRectRef}
             x={cropX}
