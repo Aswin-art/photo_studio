@@ -26,7 +26,6 @@ export default function CreateStudioForm({
     const rawValue = e.target.value.replace(/\D/g, "");
     setPrice(formatRupiah(rawValue));
   };
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +56,6 @@ export default function CreateStudioForm({
       console.error("Upload result does not contain a valid image URL.");
     }
   };
-
 
   return (
     <>
@@ -117,7 +115,7 @@ export default function CreateStudioForm({
                   Gambar
                 </label>
                 <CldUploadWidget
-                  uploadPreset="foto_booth"
+                  uploadPreset="studio"
                   onSuccess={(result) => handleUpload(result)}
                 >
                   {({ open }) => {

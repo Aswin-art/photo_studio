@@ -9,6 +9,9 @@
     "lint": "next lint",
     "email": "email dev",
     "prepare": "husky",
+    "start:prod": "node server.js",
+    "migrate": "prisma migrate deploy",
+    "setup": "npm run migrate && seed",
     "postinstall": "prisma generate",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.json"
   },
