@@ -3,7 +3,9 @@ import { db } from "@/lib/db";
 
 export async function getAddons() {
     try {
-        const addons = await db.addon.findMany();
+        const addons = await db.addon.findMany({
+            where: { is_deleted: false },
+        });
         return addons;
     } catch (err) {
         throw new Error(`Failed to get addons: ${err}`);
@@ -27,10 +29,9 @@ export async function createAddon(name: string, price: number) {
 
 export async function deleteAddon(id: number) {
     try {
-        const addon = await db.addon.delete({
-            where: {
-                id,
-            },
+        const addon = await db.addon.update({
+            where: { id },
+            data: { is_deleted: true, updatedAt: new Date() },
         });
         return addon;
     } catch (err) {
@@ -43,6 +44,7 @@ export async function getAddonById(id: number) {
         const addon = await db.addon.findUnique({
             where: {
                 id,
+                is_deleted: false,
             },
         });
         return addon;

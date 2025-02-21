@@ -11,6 +11,7 @@ model addon {
   id            Int             @id @default(autoincrement())
   name          String          @db.VarChar(255)
   price         Int
+  is_deleted    Boolean         @default(false)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime
   customeraddon customeraddon[]
