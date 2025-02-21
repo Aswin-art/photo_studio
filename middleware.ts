@@ -7,10 +7,7 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET
   });
 
-  console.log("token: ", token);
-
   if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
-    console.log("masuk sini");
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
