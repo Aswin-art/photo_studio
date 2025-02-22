@@ -22,13 +22,13 @@ const demoData = {
     },
     {
       title: "Photo Access",
-      url: "/photo-access",
+      url: "/canvas",
     },
   ]
 };
 
 function Navbar1Demo() {
-  return <div className="w-full fixed top-0 left-0 right-0 z-20 bg-white"><Navbar1 {...demoData} /></div>;
+  return <div className="w-full z-20 bg-white"><Navbar1 {...demoData} /></div>;
 }
 
 export { Navbar1Demo };
