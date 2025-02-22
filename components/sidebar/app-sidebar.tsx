@@ -10,11 +10,7 @@ import {
   GalleryVerticalEnd,
   Settings2,
   SquareTerminal,
-  Camera,
-  Calendar,
-  Ticket,
-  Receipt,
-  CopyPlus
+  Camera, Calendar, Ticket, Receipt, CopyPlus, LayoutTemplate, TvMinimal
 } from "lucide-react";
 import {
   Sidebar,
@@ -152,7 +148,17 @@ const data = {
     {
       name: "Transaksi",
       url: "/dashboard/transaction",
-      icon: Receipt // Icon kwitansi untuk transaksi
+      icon: Receipt  // Icon kwitansi untuk transaksi
+    },
+    {
+      name: "Channels",
+      url: "/dashboard/channels",
+      icon: TvMinimal
+    },
+    {
+      name: "Templates",
+      url: "/dashboard/templates",
+      icon: LayoutTemplate
     }
   ]
 };

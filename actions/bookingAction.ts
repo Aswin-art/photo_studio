@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { startOfDay, endOfDay } from 'date-fns';
 import { pusher } from "@/lib/pusher";
 import { formatDateToWIB } from "@/utils/dateConvert";
+import { generateChannelCode } from "./channels";
 
 export async function getTransactions() {
     try {
@@ -112,8 +113,20 @@ export async function updateTransactionApproval(transactionId: number, isApprove
     try {
         const transaction = await db.customertransaction.update({
             where: { id: transactionId },
-            data: { isApproved, updatedAt: new Date() }
+            data: { isApproved, updatedAt: new Date() },
         });
+
+        if (isApproved === true) {
+            const channelCode = await generateChannelCode();
+        
+            await db.channels.create({
+                data: {
+                  code: channelCode,
+                  email: transaction.customerEmail,
+                  phone: transaction.customerPhone,
+                },
+            });
+        }
 
         return {
             message: "Status transaksi berhasil diperbarui",

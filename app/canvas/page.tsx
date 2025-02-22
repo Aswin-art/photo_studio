@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -82,17 +82,22 @@ const Page = () => {
             placeholder="Masukkan kode..."
             required
           />
-          <Button disabled={isLoading} onClick={handleCheckChannelCode}>
-            {isLoading ? (
-              <>
-                <Loader2 className="animate-spin" /> Loading...
-              </>
-            ) : (
-              <>
-                Submit <ArrowRight />
-              </>
-            )}
-          </Button>
+          <div className="flex gap-x-3 w-full">
+            <Button className="w-full" onClick={() => router.push("/")}>
+                  <ArrowLeft /> Back
+            </Button>
+            <Button className="w-full" disabled={isLoading} onClick={handleCheckChannelCode}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin" /> Loading...
+                </>
+              ) : (
+                <>
+                  Submit <ArrowRight />
+                </>
+              )}
+            </Button>
+          </div>
           <DialogFooter>
             <p className="text-muted-foreground text-sm">
               Minta kepada admin jika anda tidak memiliki kode channel

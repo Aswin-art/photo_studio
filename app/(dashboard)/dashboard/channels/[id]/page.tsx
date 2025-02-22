@@ -280,12 +280,12 @@ const Page = () => {
                       >
                         {loadingDelete ? (
                           <div className="flex gap-2 items-center justify-center">
-                            <Loader2 className="animate-spin" size={64} />{" "}
+                            <Loader2 className="animate-spin" size={20} />{" "}
                             Loading...
                           </div>
                         ) : (
                           <div className="flex gap-2 items-center justify-center">
-                            <Trash size={64} /> Hapus
+                            <Trash size={20} /> Hapus
                           </div>
                         )}
                       </Button>
