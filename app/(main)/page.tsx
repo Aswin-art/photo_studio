@@ -9,7 +9,7 @@ const Testimoni = dynamic(() => import('@/components/landing/Testimoni'), { ssr:
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-y-6 sm:gap-y-8 md:gap-y-10 max-w-[100vw] overflow-x-hidden">
+    <div className="flex flex-col gap-y-6 sm:gap-y-8 md:gap-y-10 pt-[72px] max-w-[100vw] overflow-x-hidden">
       <LandingHero />
       <About />
       <Service />

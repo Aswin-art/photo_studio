@@ -19,7 +19,6 @@ import {
   SidebarHeader,
   SidebarRail
 } from "@/components/ui/sidebar";
-import { TeamSwitcher } from "./team-switcher";
 import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
 
