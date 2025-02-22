@@ -19,7 +19,7 @@ export const dateToStorage = (date: Date): string => {
 }
 
 
-export const formatDateToWIB = (utcDateString: string): string => {
+export const formatDateToWIB = (utcDateString: string | Date): string => {
   const timeZone = "Asia/Jakarta";
 
   const localDate = toZonedTime(utcDateString, timeZone);

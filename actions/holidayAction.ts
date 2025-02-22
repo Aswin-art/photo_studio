@@ -1,6 +1,7 @@
 "use server";
 import { db } from "@/lib/db";
 import { startOfDay } from 'date-fns';
+import { formatDateToWIB } from "@/utils/dateConvert";
 
 export async function getHolidays() {
   try {
@@ -24,9 +25,10 @@ export async function getHolidays() {
 
 export async function createHoliday(date: Date, description: string) {
   try {
+    const targetDate = new Date(formatDateToWIB(date));
     const holiday = await db.holiday.create({
       data: {
-        date,
+        date: targetDate,
         description,
         updatedAt: new Date()
       }
@@ -37,7 +39,7 @@ export async function createHoliday(date: Date, description: string) {
   }
 }
 
-export async function deleteHoliday(id: number) {
+export async function deleteHoliday(id: string) {
   try {
     const holiday = await db.holiday.delete({
       where: {
@@ -51,7 +53,7 @@ export async function deleteHoliday(id: number) {
   }
 }
 
-export async function getHolidayById(id: number) {
+export async function getHolidayById(id: string) {
   try {
     const holiday = await db.holiday.findUnique({
       where: {
@@ -65,13 +67,17 @@ export async function getHolidayById(id: number) {
 }
 
 export async function updateHoliday(
-  id: number,
+  id: string,
   data: { date: Date; description: string }
 ) {
   try {
+    const targetDate = new Date(formatDateToWIB(data.date));
     const holiday = await db.holiday.update({
       where: { id },
-      data
+      data: {
+        date: targetDate,
+        description: data.description
+      }
     });
     return holiday;
   } catch (err) {

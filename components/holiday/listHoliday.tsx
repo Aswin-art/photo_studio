@@ -38,7 +38,7 @@ export default function ListHoliday({
   isLoading,
   refreshHolidays
 }: ListHolidayProps) {
-  const [date, setDate] = React.useState<Date>();
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [formData, setFormData] = useState({
     name: "",
     date: ""
@@ -117,6 +117,7 @@ export default function ListHoliday({
                       mode="single"
                       selected={date}
                       onSelect={setDate}
+                      disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                       initialFocus
                     />
                   </PopoverContent>
