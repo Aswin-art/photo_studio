@@ -23,6 +23,7 @@ import { usePhotoStore } from "@/stores/usePhotoStore";
 import Image from "next/image";
 import Link from "next/link";
 import Wrapper from "@/components/wrapper";
+import { useRouter } from "next/navigation";
 
 const Canvas = dynamic(() => import("@/components/canvas"), {
   ssr: false
@@ -39,6 +40,7 @@ const Page = () => {
   const [toggleOpacityTemplate, setToggleOpacityTemplate] = useState(false);
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const router = useRouter();
 
   const handleResize = useCallback(() => {
     setIsMobile(window.innerWidth <= 768);
@@ -203,37 +205,42 @@ const Page = () => {
           </div>
           <div className="col-span-12 md:col-span-8 p-2 bg-gray-50">
             <div className="flex flex-col justify-center items-center w-full h-full">
-              <div className="flex w-full justify-end gap-4 mb-10">
-                <div className="flex flex-col gap-2">
-                  <Button
-                    onClick={() => setToggleOpacityTemplate((prev) => !prev)}
-                  >
-                    Ubah Opacity Template
-                  </Button>
-                  {toggleOpacityTemplate && (
-                    <Slider
-                      defaultValue={[templateOpacity]}
-                      max={1}
-                      step={0.1}
-                      onValueChange={(value) =>
-                        setTemplateOpacityValue(value[0])
-                      }
-                    />
-                  )}
-                </div>
-                <Button
-                  onClick={handleUpload}
-                  disabled={loadingUpload}
-                  className="bg-green-500 hover:bg-green-600"
-                >
-                  {loadingUpload ? (
-                    <>
-                      <Loader2 className="animate-spin" /> Loading...
-                    </>
-                  ) : (
-                    <p>Selesai Mengedit</p>
-                  )}
+              <div className="flex w-full justify-between">
+                <Button onClick={() => router.push("/")}>
+                      <ArrowLeft /> Back
                 </Button>
+                <div className="flex w-full justify-end gap-4 mb-10">
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      onClick={() => setToggleOpacityTemplate((prev) => !prev)}
+                    >
+                      Ubah Opacity Template
+                    </Button>
+                    {toggleOpacityTemplate && (
+                      <Slider
+                        defaultValue={[templateOpacity]}
+                        max={1}
+                        step={0.1}
+                        onValueChange={(value) =>
+                          setTemplateOpacityValue(value[0])
+                        }
+                      />
+                    )}
+                  </div>
+                  <Button
+                    onClick={handleUpload}
+                    disabled={loadingUpload}
+                    className="bg-green-500 hover:bg-green-600"
+                  >
+                    {loadingUpload ? (
+                      <>
+                        <Loader2 className="animate-spin" /> Loading...
+                      </>
+                    ) : (
+                      <p>Selesai Mengedit</p>
+                    )}
+                  </Button>
+                </div>
               </div>
               <Canvas
                 ref={canvasRef}
