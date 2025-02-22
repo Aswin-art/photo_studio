@@ -34,7 +34,12 @@ export default function UpdateStudioForm({
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateStudio(id, { name, description, image, price: parseRupiah(price) });
+      await updateStudio(id, {
+        name,
+        description,
+        image,
+        price: parseRupiah(price)
+      });
       Swal.fire({
         title: "Success!",
         text: "Studio updated successfully!",
@@ -128,10 +133,7 @@ export default function UpdateStudioForm({
                 <label className="block text-sm font-medium text-gray-700">
                   Gambar
                 </label>
-                <CldUploadWidget
-                  uploadPreset="foto_booth"
-                  onSuccess={handleUpload}
-                >
+                <CldUploadWidget uploadPreset="studio" onSuccess={handleUpload}>
                   {({ open }) => {
                     return (
                       <button

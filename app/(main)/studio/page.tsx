@@ -10,7 +10,7 @@ export default function ImageUploader() {
 
   return (
     <div className="mt-64">
-      <CldUploadWidget uploadPreset="foto_booth" onUpload={handleUpload}>
+      <CldUploadWidget uploadPreset="studio" onUpload={handleUpload}>
         {({ open }) => {
           return <button onClick={() => open()}>Upload an Image</button>;
         }}
