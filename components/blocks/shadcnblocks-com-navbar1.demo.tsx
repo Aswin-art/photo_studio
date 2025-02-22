@@ -2,7 +2,7 @@ import { Navbar1 } from "@/components/blocks/shadcnblocks-com-navbar1"
 
 const demoData = {
   logo: {
-    url: "https://www.shadcnblocks.com",
+    url: "/",
     src: "/image/logo.png",
     alt: "ProStudio",
     title: "ProStudio",
