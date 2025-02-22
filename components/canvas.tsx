@@ -208,7 +208,7 @@ const Canvas = forwardRef(function Canvas(
         {isPhotoClicked && (
           <Button
             onClick={() => handleDeletePhoto(selectedId as string)}
-            className="col-span-1 bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow-lg hover:bg-red-600 transition duration-200"
+            className="col-span-1 bg-red-500 p-0 text-white w-10 h-10 flex items-center justify-center shadow-lg hover:bg-red-600 transition duration-200"
           >
             <Trash2 size={32} />
           </Button>
@@ -217,7 +217,7 @@ const Canvas = forwardRef(function Canvas(
         {croppingId && (
           <Button
             onClick={() => setCroppingId(null)}
-            className="bg-blue-500 text-white w-8 h-8 flex items-center justify-center shadow-lg hover:bg-blue-600 transition duration-200"
+            className="bg-blue-500 p-0 text-white w-8 h-8 flex items-center justify-center shadow-lg hover:bg-blue-600 transition duration-200"
           >
             <Check size={20} />
           </Button>
