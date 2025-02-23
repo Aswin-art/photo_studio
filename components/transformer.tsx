@@ -124,7 +124,6 @@ const PhotoWithTransformer = ({
       if (imageNode && naturalDimsRef.current) {
         const strokeOffset = 1;
         const displayedRect = imageNode.getClientRect({ skipTransform: false });
-        // Hitung faktor konversi secara terpisah untuk sumbu X dan Y
         const conversionFactorX =
           naturalDimsRef.current.width / displayedRect.width;
         const conversionFactorY =
@@ -165,7 +164,6 @@ const PhotoWithTransformer = ({
               width: newCrop.width,
               height: newCrop.height
             });
-            // Hitung ulang ukuran tampilan berdasarkan faktor konversi sumbu X dan Y
             const updatedWidth = newCrop.width / conversionFactorX;
             const updatedHeight = newCrop.height / conversionFactorY;
             imageNode.width(updatedWidth);
@@ -180,7 +178,6 @@ const PhotoWithTransformer = ({
               height: updatedHeight
             }));
             setIsCropped(true);
-            // Perbarui naturalDimsRef dengan ukuran baru hasil crop
             naturalDimsRef.current = {
               width: newCrop.width,
               height: newCrop.height
@@ -235,7 +232,6 @@ const PhotoWithTransformer = ({
     }
   }, [isCropping, cropX, cropY, cropWidth, cropHeight]);
 
-  // Siapkan elemen <Image> yang sama untuk kedua mode
   const imageElement = (
     <Image
       image={photoUrl}
@@ -268,7 +264,6 @@ const PhotoWithTransformer = ({
             width: Math.max(50, displayedRect.width),
             height: Math.max(50, displayedRect.height)
           });
-          // Jangan perbarui naturalDimsRef di sini agar dimensi asli tetap utuh
           onChange(id, {
             x: displayedRect.x,
             y: displayedRect.y,
@@ -394,8 +389,6 @@ const PhotoWithTransformer = ({
           </Group>
         </>
       ) : (
-        // Mode non-crop: bungkus image dan transformer dalam Group dengan clip agar
-        // bagian foto yang melewati batas canvas tidak terlihat.
         <Group clip={{ x: 0, y: 0, width: stageWidth, height: stageHeight }}>
           {imageElement}
           {isSelected && (
