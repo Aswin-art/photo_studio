@@ -128,22 +128,22 @@ const data = {
     {
       name: "Studio",
       url: "/dashboard/studio",
-      icon: Camera  // Icon kamera untuk studio fotografi
+      icon: Camera // Icon kamera untuk studio fotografi
     },
     {
       name: "Layanan Tambahan",
       url: "/dashboard/addon",
-      icon: CopyPlus  // Icon kamera untuk studio fotografi
+      icon: CopyPlus // Icon kamera untuk studio fotografi
     },
     {
       name: "Jadwal Foto",
       url: "/dashboard/holiday",
-      icon: Calendar  // Icon kalender untuk penjadwalan
+      icon: Calendar // Icon kalender untuk penjadwalan
     },
     {
       name: "Voucher",
       url: "/dashboard/voucher",
-      icon: Ticket  // Icon tiket untuk voucher
+      icon: Ticket // Icon tiket untuk voucher
     },
     {
       name: "Transaksi",

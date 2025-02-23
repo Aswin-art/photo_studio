@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsx-a11y/alt-text */
 import { usePhotoStore } from "@/stores/usePhotoStore";
@@ -35,7 +36,7 @@ const PhotoWithTransformer = ({
   const [cropY, setCropY] = useState(0);
   const [cropWidth, setCropWidth] = useState(0);
   const [cropHeight, setCropHeight] = useState(0);
-  const [isCropped, setIsCropped] = useState(false);
+  const [_, setIsCropped] = useState(false);
   const prevIsCroppingRef = useRef(isCropping);
   const naturalDimsRef = useRef<{ width: number; height: number } | null>(null);
   const initialFactor = 2;
@@ -123,15 +124,18 @@ const PhotoWithTransformer = ({
       if (imageNode && naturalDimsRef.current) {
         const strokeOffset = 1;
         const displayedRect = imageNode.getClientRect({ skipTransform: false });
-        const conversionFactor =
+        // Hitung faktor konversi secara terpisah untuk sumbu X dan Y
+        const conversionFactorX =
           naturalDimsRef.current.width / displayedRect.width;
+        const conversionFactorY =
+          naturalDimsRef.current.height / displayedRect.height;
         const relativeCropX = cropX + strokeOffset - displayedRect.x;
         const relativeCropY = cropY + strokeOffset - displayedRect.y;
         const newCrop = {
-          x: relativeCropX * conversionFactor,
-          y: relativeCropY * conversionFactor,
-          width: (cropWidth - strokeOffset * 2) * conversionFactor,
-          height: (cropHeight - strokeOffset * 2) * conversionFactor
+          x: relativeCropX * conversionFactorX,
+          y: relativeCropY * conversionFactorY,
+          width: (cropWidth - strokeOffset * 2) * conversionFactorX,
+          height: (cropHeight - strokeOffset * 2) * conversionFactorY
         };
         const canvas = document.createElement("canvas");
         canvas.width = newCrop.width;
@@ -161,8 +165,9 @@ const PhotoWithTransformer = ({
               width: newCrop.width,
               height: newCrop.height
             });
-            const updatedWidth = newCrop.width / conversionFactor;
-            const updatedHeight = newCrop.height / conversionFactor;
+            // Hitung ulang ukuran tampilan berdasarkan faktor konversi sumbu X dan Y
+            const updatedWidth = newCrop.width / conversionFactorX;
+            const updatedHeight = newCrop.height / conversionFactorY;
             imageNode.width(updatedWidth);
             imageNode.height(updatedHeight);
             imageNode.x(cropX);
@@ -175,6 +180,7 @@ const PhotoWithTransformer = ({
               height: updatedHeight
             }));
             setIsCropped(true);
+            // Perbarui naturalDimsRef dengan ukuran baru hasil crop
             naturalDimsRef.current = {
               width: newCrop.width,
               height: newCrop.height
@@ -229,173 +235,181 @@ const PhotoWithTransformer = ({
     }
   }, [isCropping, cropX, cropY, cropWidth, cropHeight]);
 
+  // Siapkan elemen <Image> yang sama untuk kedua mode
+  const imageElement = (
+    <Image
+      image={photoUrl}
+      ref={shapeRef}
+      draggable={!isCropping}
+      onClick={onSelect}
+      onTap={onSelect}
+      onDblClick={onDoubleClick}
+      x={imageProps.x}
+      y={imageProps.y}
+      width={imageProps.width}
+      height={imageProps.height}
+      onDragEnd={(e) => {
+        if (!isCropping) {
+          const newX = e.target.x();
+          const newY = e.target.y();
+          setImageProps((prev) => ({ ...prev, x: newX, y: newY }));
+          onChange(id, { x: newX, y: newY });
+        }
+      }}
+      onTransformEnd={() => {
+        if (!isCropping) {
+          const node = shapeRef.current;
+          const displayedRect = node.getClientRect({ skipTransform: false });
+          node.scaleX(1);
+          node.scaleY(1);
+          setImageProps({
+            x: displayedRect.x,
+            y: displayedRect.y,
+            width: Math.max(50, displayedRect.width),
+            height: Math.max(50, displayedRect.height)
+          });
+          // Jangan perbarui naturalDimsRef di sini agar dimensi asli tetap utuh
+          onChange(id, {
+            x: displayedRect.x,
+            y: displayedRect.y,
+            width: Math.max(50, displayedRect.width),
+            height: Math.max(50, displayedRect.height)
+          });
+        }
+      }}
+      onMouseEnter={() => {
+        document.body.style.cursor = "pointer";
+      }}
+      onMouseLeave={() => {
+        document.body.style.cursor = "default";
+      }}
+    />
+  );
+
   return (
     <>
-      <Image
-        image={photoUrl}
-        ref={shapeRef}
-        draggable={!isCropping}
-        onClick={onSelect}
-        onTap={onSelect}
-        onDblClick={onDoubleClick}
-        x={imageProps.x}
-        y={imageProps.y}
-        width={imageProps.width}
-        height={imageProps.height}
-        onDragEnd={(e) => {
-          if (!isCropping) {
-            const newX = e.target.x();
-            const newY = e.target.y();
-            setImageProps((prev) => ({ ...prev, x: newX, y: newY }));
-            onChange(id, { x: newX, y: newY });
-          }
-        }}
-        onTransformEnd={() => {
-          if (!isCropping) {
-            const node = shapeRef.current;
-            const displayedRect = node.getClientRect({ skipTransform: false });
-            node.scaleX(1);
-            node.scaleY(1);
-            setImageProps({
-              x: displayedRect.x,
-              y: displayedRect.y,
-              width: Math.max(50, displayedRect.width),
-              height: Math.max(50, displayedRect.height)
-            });
-            if (!isCropped) {
-              naturalDimsRef.current = {
-                width: displayedRect.width * initialFactor,
-                height: displayedRect.height * initialFactor
-              };
-            }
-            onChange(id, {
-              x: displayedRect.x,
-              y: displayedRect.y,
-              width: Math.max(50, displayedRect.width),
-              height: Math.max(50, displayedRect.height)
-            });
-          }
-        }}
-        onMouseEnter={() => {
-          document.body.style.cursor = "pointer";
-        }}
-        onMouseLeave={() => {
-          document.body.style.cursor = "default";
-        }}
-      />
       {isCropping ? (
-        <Group>
-          <Rect
-            x={0}
-            y={0}
-            width={stageWidth}
-            height={cropY}
-            fill="rgba(0,0,0,0.5)"
-            listening={false}
-          />
-          <Rect
-            x={0}
-            y={cropY}
-            width={cropX}
-            height={cropHeight}
-            fill="rgba(0,0,0,0.5)"
-            listening={false}
-          />
-          <Rect
-            x={cropX + cropWidth}
-            y={cropY}
-            width={stageWidth - (cropX + cropWidth)}
-            height={cropHeight}
-            fill="rgba(0,0,0,0.5)"
-            listening={false}
-          />
-          <Rect
-            x={0}
-            y={cropY + cropHeight}
-            width={stageWidth}
-            height={stageHeight - (cropY + cropHeight)}
-            fill="rgba(0,0,0,0.5)"
-            listening={false}
-          />
-          <Rect
-            ref={cropRectRef}
-            x={cropX}
-            y={cropY}
-            width={cropWidth}
-            height={cropHeight}
-            stroke="white"
-            strokeWidth={2}
-            dash={[4, 4]}
-            draggable
-            dragBoundFunc={(pos) => {
-              const newX = Math.max(
-                imageRect.x,
-                Math.min(pos.x, imageRect.x + imageRect.width - cropWidth)
-              );
-              const newY = Math.max(
-                imageRect.y,
-                Math.min(pos.y, imageRect.y + imageRect.height - cropHeight)
-              );
-              return { x: newX, y: newY };
-            }}
-            onDragEnd={(e) => {
-              setCropX(e.target.x());
-              setCropY(e.target.y());
-              handleCrop();
-            }}
-            onTransformEnd={(e) => {
-              const node: any = e.target;
-              const scaleX = node.scaleX();
-              const scaleY = node.scaleY();
-              node.width(node.width() * scaleX);
-              node.height(node.height() * scaleY);
-              node.scaleX(1);
-              node.scaleY(1);
-              setCropX(node.x());
-              setCropY(node.y());
-              setCropWidth(node.width());
-              setCropHeight(node.height());
-              handleCrop();
-            }}
-          />
-          <Transformer
-            ref={cropTransformerRef}
-            rotateEnabled={false}
-            enabledAnchors={[
-              "top-left",
-              "top-center",
-              "top-right",
-              "middle-left",
-              "middle-right",
-              "bottom-left",
-              "bottom-center",
-              "bottom-right"
-            ]}
-            boundBoxFunc={(oldBox, newBox) => {
-              if (newBox.width < 50 || newBox.height < 50) return oldBox;
-              let { x, y, width, height } = newBox;
-              const maxX = imageRect.x + imageRect.width;
-              const maxY = imageRect.y + imageRect.height;
-              x = Math.max(imageRect.x, x);
-              y = Math.max(imageRect.y, y);
-              width = Math.min(width, maxX - x);
-              height = Math.min(height, maxY - y);
-              return { x, y, width, height, rotation: newBox.rotation };
-            }}
-          />
-        </Group>
+        <>
+          {/* Tanpa clip sehingga seluruh foto tampil, meskipun melebihi batas canvas */}
+          {imageElement}
+          <Group>
+            <Rect
+              x={0}
+              y={0}
+              width={stageWidth}
+              height={cropY}
+              fill="rgba(0,0,0,0.5)"
+              listening={false}
+            />
+            <Rect
+              x={0}
+              y={cropY}
+              width={cropX}
+              height={cropHeight}
+              fill="rgba(0,0,0,0.5)"
+              listening={false}
+            />
+            <Rect
+              x={cropX + cropWidth}
+              y={cropY}
+              width={stageWidth - (cropX + cropWidth)}
+              height={cropHeight}
+              fill="rgba(0,0,0,0.5)"
+              listening={false}
+            />
+            <Rect
+              x={0}
+              y={cropY + cropHeight}
+              width={stageWidth}
+              height={stageHeight - (cropY + cropHeight)}
+              fill="rgba(0,0,0,0.5)"
+              listening={false}
+            />
+            <Rect
+              ref={cropRectRef}
+              x={cropX}
+              y={cropY}
+              width={cropWidth}
+              height={cropHeight}
+              stroke="white"
+              strokeWidth={2}
+              dash={[4, 4]}
+              draggable
+              dragBoundFunc={(pos) => {
+                const newX = Math.max(
+                  imageRect.x,
+                  Math.min(pos.x, imageRect.x + imageRect.width - cropWidth)
+                );
+                const newY = Math.max(
+                  imageRect.y,
+                  Math.min(pos.y, imageRect.y + imageRect.height - cropHeight)
+                );
+                return { x: newX, y: newY };
+              }}
+              onDragEnd={(e) => {
+                setCropX(e.target.x());
+                setCropY(e.target.y());
+                handleCrop();
+              }}
+              onTransformEnd={(e) => {
+                const node: any = e.target;
+                const scaleX = node.scaleX();
+                const scaleY = node.scaleY();
+                node.width(node.width() * scaleX);
+                node.height(node.height() * scaleY);
+                node.scaleX(1);
+                node.scaleY(1);
+                setCropX(node.x());
+                setCropY(node.y());
+                setCropWidth(node.width());
+                setCropHeight(node.height());
+                handleCrop();
+              }}
+            />
+            <Transformer
+              ref={cropTransformerRef}
+              rotateEnabled={false}
+              enabledAnchors={[
+                "top-left",
+                "top-center",
+                "top-right",
+                "middle-left",
+                "middle-right",
+                "bottom-left",
+                "bottom-center",
+                "bottom-right"
+              ]}
+              boundBoxFunc={(oldBox, newBox) => {
+                if (newBox.width < 50 || newBox.height < 50) return oldBox;
+                let { x, y, width, height } = newBox;
+                const maxX = imageRect.x + imageRect.width;
+                const maxY = imageRect.y + imageRect.height;
+                x = Math.max(imageRect.x, x);
+                y = Math.max(imageRect.y, y);
+                width = Math.min(width, maxX - x);
+                height = Math.min(height, maxY - y);
+                return { x, y, width, height, rotation: newBox.rotation };
+              }}
+            />
+          </Group>
+        </>
       ) : (
-        isSelected && (
-          <Transformer
-            ref={transformerRef}
-            rotateEnabled={false}
-            boundBoxFunc={(oldBox, newBox) => {
-              if (Math.abs(newBox.width) < 50 || Math.abs(newBox.height) < 50)
-                return oldBox;
-              return newBox;
-            }}
-          />
-        )
+        // Mode non-crop: bungkus image dan transformer dalam Group dengan clip agar
+        // bagian foto yang melewati batas canvas tidak terlihat.
+        <Group clip={{ x: 0, y: 0, width: stageWidth, height: stageHeight }}>
+          {imageElement}
+          {isSelected && (
+            <Transformer
+              ref={transformerRef}
+              rotateEnabled={false}
+              boundBoxFunc={(oldBox, newBox) => {
+                if (Math.abs(newBox.width) < 50 || Math.abs(newBox.height) < 50)
+                  return oldBox;
+                return newBox;
+              }}
+            />
+          )}
+        </Group>
       )}
     </>
   );
