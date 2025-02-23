@@ -63,12 +63,12 @@ export default function ListTransaction({
           selectedIsApproved === null
         ) {
           const data = await getTransactionsByFilter(
-            selectedStudio ? Number(selectedStudio) : undefined,
+            selectedStudio ? selectedStudio : undefined,
             selectedIsApproved
           );
           setTransaction(data);
         } else if (selectedStudio) {
-          const data = await getTransactionsByFilter(Number(selectedStudio));
+          const data = await getTransactionsByFilter(selectedStudio);
           setTransaction(data);
         } else {
           await refreshTransactions();

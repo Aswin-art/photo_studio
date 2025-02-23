@@ -17,7 +17,7 @@ export const CreateQuery = (images: any[]) => {
   });
 };
 
-export const DestroyQuery = (id: number) => {
+export const DestroyQuery = (id: string) => {
   return useQuery({
     queryKey: ["destroy-templates-" + id],
     queryFn: () => destroy(id),

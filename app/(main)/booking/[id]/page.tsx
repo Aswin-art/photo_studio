@@ -3,7 +3,6 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { getStudioById } from "@/actions/studioAction";
 import { Studio } from "@/types";
-import BackNavbar from "@/components/backNavbar";
 import Wrapper from "@/components/wrapper";
 import { Calendar } from "@/components/ui/calendar";
 import { getDailySessions } from "@/actions/bookingAction";
@@ -47,7 +46,7 @@ function Booking() {
 
     const fetchStudios = async () => {
         try {
-            const data = await getStudioById(Number(id));
+            const data = await getStudioById(id as string);
             if (data) {
                 setStudio(data);
             } else {
@@ -62,7 +61,7 @@ function Booking() {
 
     const fetchDailySession = async () => {
         try {
-            const data = await getDailySessions(Number(id), date?.toISOString() || "");
+            const data = await getDailySessions(id as string, date?.toISOString() || "");
             setDailySessions(data);
             console.log(data)
         } catch (error) {
@@ -81,9 +80,8 @@ function Booking() {
     
     return (
         <>
-            <BackNavbar backPath="/booking" title="Jadwal Booking"/>
             <Wrapper>
-                <div className="flex flex-col min-h-[calc(100vh-208px)] md:min-h-screen md:mt-[12px] p-8 md:pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] justify-items-center items-center">
+                <div className="flex flex-col min-h-[calc(100vh-208px)] md:min-h-screen md:mt-[72px] p-8 md:pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] justify-items-center items-center">
                     <div className="w-full md:max-w-screen-lg md:pt-5 mt-16 md:mt-0">
                         <div className="grid gird-cols-1 md:grid-cols-2 gap-4 md:gap-12 justify-items-center">
                             <div className="flex flex-col items-center gap-y-6 w-full">

@@ -18,7 +18,7 @@ export const retrieve = async () => {
   }
 };
 
-export const find = async (id: number) => {
+export const find = async (id: string) => {
   try {
     const channels = await db.channels.findUnique({
       where: {
@@ -44,7 +44,7 @@ export const generateChannelCode = async () => {
 };
 
 export const insertImages = async (
-  channel_id: number,
+  channel_id: string,
   images: any[]
 ): Promise<boolean> => {
   try {
@@ -89,7 +89,7 @@ export const create = async (images: any[]) => {
 };
 
 export const update = async (
-  id: number,
+  id: string,
   email?: string | null,
   phone?: string | null
 ) => {
@@ -111,7 +111,7 @@ export const update = async (
   }
 };
 
-export const destroy = async (id: number) => {
+export const destroy = async (id: string) => {
   try {
     const channel = await db.channels.findUnique({
       where: {

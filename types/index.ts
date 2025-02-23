@@ -7,7 +7,7 @@ export type User = {
 };
 
 export type Studio = {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
   image: string | null;
@@ -15,20 +15,20 @@ export type Studio = {
 }
 
 export type Holiday = {
-  id: number;
+  id: string;
   date: Date;
   description: string | null;
 }
 
 export type Voucher = {
-  id: number;
+  id: string;
   name: string;
   discount: number | null;
   count: number;
 }
 
 export type Addon = {
-  id: number;
+  id: string;
   name: string;
   price: number;
   createdAt: Date;
@@ -36,9 +36,9 @@ export type Addon = {
 }
 
 export type CustomerAddon = {
-  id: number;
-  transactionId: number;
-  addonId: number;
+  id: string;
+  transactionId: string;
+  addonId: string;
   quantity: number;
   createdAt: Date;
   updatedAt: Date;
@@ -46,9 +46,9 @@ export type CustomerAddon = {
 };
 
 export type Transaction = {
-  id: number;
-  studioId: number;
-  voucherId: number | null;
+  id: string;
+  studioId: string;
+  voucherId: string | null;
   studio: Studio;
   customerName: string;
   customerPhone: string;
@@ -74,13 +74,13 @@ export type DailySession = {
 }
 
 export interface AddonQuantity {
-  id: number;
+  id: string;
   quantity: number;
   price: number;
 }
 
 export interface AddonCardProps {
-  id: number;
+  id: string;
   title: string;
   price: number;
   quantity: number;

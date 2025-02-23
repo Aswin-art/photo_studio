@@ -14,7 +14,7 @@ import { toast } from "@/hooks/use-toast";
 
 const Page = () => {
   const params = useParams();
-  const { data, isLoading, isError } = FindQuery(Number(params.id));
+  const { data, isLoading, isError } = FindQuery(params.id as string);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [lightboxToggler, setLightboxToggler] = useState(false);
   const [lightboxResultToggler, setLightboxResultToggler] = useState(false);

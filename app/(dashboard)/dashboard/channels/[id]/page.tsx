@@ -54,7 +54,7 @@ const Page = () => {
 
   const [loadingDelete, setLoadingDelete] = useState(false);
 
-  const { data, isLoading, refetch } = FindQuery(Number(params.id));
+  const { data, isLoading, refetch } = FindQuery(params.id as string);
 
   const handleUploadSuccess = async (results: any) => {
     if (results) {
@@ -76,7 +76,7 @@ const Page = () => {
     }
 
     try {
-      const result = await insertImages(Number(params.id), photos as any[]);
+      const result = await insertImages(params.id as string, photos as any[]);
       console.log(result);
 
       if (result) {
@@ -118,7 +118,7 @@ const Page = () => {
 
   const handleUpdateChannel = async (values: z.infer<typeof formSchema>) => {
     const updateChannel = await update(
-      Number(params.id),
+      params.id as string,
       values.email,
       values.phone
     );

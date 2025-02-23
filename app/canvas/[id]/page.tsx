@@ -50,7 +50,7 @@ const Page = () => {
 
   const { data: templates, isLoading: templateLoading } = TemplateQuery();
   const { data: photos, isLoading: photosLoading } = ChannelImageQuery(
-    Number(params.id)
+    params.id as string
   );
 
   const canvasRef = useRef<any>(null);
@@ -244,7 +244,7 @@ const Page = () => {
               </div>
               <Canvas
                 ref={canvasRef}
-                channelId={Number(params.id)}
+                channelId={params.id as string}
                 templateId={selectedTemplate.id}
                 templateImage={selectedTemplate.url ?? ""}
                 templateOpacity={templateOpacity}

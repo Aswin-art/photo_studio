@@ -27,7 +27,7 @@ export async function createAddon(name: string, price: number) {
     }
 }
 
-export async function deleteAddon(id: number) {
+export async function deleteAddon(id: string) {
     try {
         const addon = await db.addon.update({
             where: { id },
@@ -39,7 +39,7 @@ export async function deleteAddon(id: number) {
     }
 }
 
-export async function getAddonById(id: number) {
+export async function getAddonById(id: string) {
     try {
         const addon = await db.addon.findUnique({
             where: {
@@ -53,7 +53,7 @@ export async function getAddonById(id: number) {
     }
 }
 
-export async function updateAddon(id: number, data: { name: string; price: number }) {
+export async function updateAddon(id: string, data: { name: string; price: number }) {
     try {
         const addon = await db.addon.update({
             where: {

@@ -21,8 +21,8 @@ import { toast } from "@/hooks/use-toast";
 type Props = {
   templateImage: string;
   templateOpacity: number;
-  channelId: number;
-  templateId: number;
+  channelId: string;
+  templateId: string;
 };
 
 const Canvas = forwardRef(function Canvas(

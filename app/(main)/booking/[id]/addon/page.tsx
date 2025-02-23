@@ -4,7 +4,6 @@ import { useParams, useRouter } from "next/navigation";
 import { cookieUtils } from "@/utils/cookies";
 import React, { useEffect, useState } from "react";
 import AddonCard from "@/components/booking/AddonCard";
-import BackNavbar from "@/components/backNavbar";
 import Wrapper from "@/components/wrapper";
 import { getStudioById } from "@/actions/studioAction";
 import { getAddons } from "@/actions/addonAction";
@@ -45,7 +44,7 @@ export default function BookingAddon() {
   const [addonQuantities, setAddonQuantities] = useState<AddonQuantity[]>([]);
   const [selectedVoucher, setSelectedVoucher] = useState("");
   const [appliedVoucher, setAppliedVoucher] = useState<{
-    id: number;
+    id: string;
     name: string;
     discount: number;
   } | null>(null);
@@ -60,7 +59,7 @@ export default function BookingAddon() {
 
   const fetchStudios = async () => {
     try {
-      const data = await getStudioById(Number(id));
+      const data = await getStudioById(id as string);
       if (data) {
         setStudio(data);
       } else {
@@ -88,7 +87,7 @@ export default function BookingAddon() {
     }
   };
 
-  const handleQuantityChange = (addonId: number, quantity: number) => {
+  const handleQuantityChange = (addonId: string, quantity: number) => {
     setAddonQuantities((prev) =>
       prev.map((item) => (item.id === addonId ? { ...item, quantity } : item))
     );
@@ -183,7 +182,7 @@ export default function BookingAddon() {
         }));
 
       const booking = await createBooking(
-        Number(id),
+        id as string,
         storedBookingDate,
         storedBookingTime,
         {
@@ -239,11 +238,11 @@ export default function BookingAddon() {
   };
 
   useEffect(() => {
-    const voucherId = cookieUtils.get("voucherId");
+    const voucherId = cookieUtils.get("voucherId") as string;
     if (voucherId) {
       const fetchVoucher = async () => {
         try {
-          const voucher = await getVoucherById(Number(voucherId));
+          const voucher = await getVoucherById(voucherId);
           if (voucher) {
             setAppliedVoucher({
               id: voucher.id,
@@ -285,9 +284,8 @@ export default function BookingAddon() {
 
   return (
     <>
-      <BackNavbar backPath="/booking" title="Layanan Tambahan" />
       <Wrapper>
-        <div className="flex flex-col min-h-[calc(100vh-208px)] md:min-h-screen md:mt-[12px] p-8 md:pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] justify-items-center items-center">
+        <div className="flex flex-col min-h-[calc(100vh-208px)] md:min-h-screen md:mt-[72px] p-8 md:pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] justify-items-center items-center">
           <div className="w-full md:max-w-screen-lg md:pt-5 mt-16 md:mt-0">
             <div className="grid gird-cols-1 md:grid-cols-2 gap-4 md:gap-12 justify-items-center">
               <div className="flex flex-col">

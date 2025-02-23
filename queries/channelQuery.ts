@@ -9,7 +9,7 @@ export const RetrieveQuery = () => {
   });
 };
 
-export const FindQuery = (id: number) => {
+export const FindQuery = (id: string) => {
   return useQuery({
     queryKey: ["find-channels-" + id],
     queryFn: () => find(id),
@@ -33,7 +33,7 @@ export const UpdateQuery = (images: any[]) => {
   });
 };
 
-export const DestroyQuery = (id: number) => {
+export const DestroyQuery = (id: string) => {
   return useQuery({
     queryKey: ["destroy-channels-" + id],
     queryFn: () => destroy(id),

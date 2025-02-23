@@ -32,7 +32,7 @@ export async function getTransactions() {
     }
 }
 
-export async function getTransactionsByFilter(studioId?: number | undefined, isApproved?: boolean | null) {
+export async function getTransactionsByFilter(studioId?: string | undefined, isApproved?: boolean | null) {
     try {
         const transactions = await db.customertransaction.findMany({
             where: {
@@ -109,7 +109,7 @@ export async function getAllCustomerTransactions() {
     }
 }
 
-export async function updateTransactionApproval(transactionId: number, isApproved: boolean | null) {
+export async function updateTransactionApproval(transactionId: string, isApproved: boolean | null) {
     try {
         const transaction = await db.customertransaction.update({
             where: { id: transactionId },
@@ -142,7 +142,7 @@ export async function updateTransactionApproval(transactionId: number, isApprove
 }
 
 export async function createBooking(
-    studioId: number,
+    studioId: string,
     bookingDate: string,
     bookingTime: number,
     customerData: {
@@ -150,8 +150,8 @@ export async function createBooking(
         customerEmail: string;
         customerPhone: string;
     },
-    voucherId?: number,
-    addons?: { addonId: number; quantity: number }[]
+    voucherId?: string,
+    addons?: { addonId: string; quantity: number }[]
 ) {
     try {
         const targetDate = new Date(formatDateToWIB(bookingDate));
@@ -269,7 +269,7 @@ export async function createBooking(
     }
 }
 
-export async function getDailySessions(studioId: number, bookingDate: string) {
+export async function getDailySessions(studioId: string, bookingDate: string) {
     try {
         const today = new Date();
         const todayCompare = new Date();
@@ -287,10 +287,10 @@ export async function getDailySessions(studioId: number, bookingDate: string) {
 
         let relatedStudioIds = [studioId];
 
-        if (studioId === 1) {
-            relatedStudioIds.push(2);
-        } else if (studioId === 2) {
-            relatedStudioIds.push(1);
+        if (studioId === "1") {
+            relatedStudioIds.push("2");
+        } else if (studioId === "2") {
+            relatedStudioIds.push("1");
         }
 
         const holiday = await db.holiday.findFirst({

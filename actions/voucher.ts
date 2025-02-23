@@ -43,7 +43,7 @@ export async function createVoucher(name: string, discount: number, count: numbe
     }
 }
 
-export async function deleteVoucher(id: number) {
+export async function deleteVoucher(id: string) {
     try {
         const voucher = await db.voucher.update({
             where: { id },
@@ -56,7 +56,7 @@ export async function deleteVoucher(id: number) {
     }
 }
 
-export async function getVoucherById(id: number) {
+export async function getVoucherById(id: string) {
     try {
         const voucher = await db.voucher.findUnique({
             where: {
@@ -70,7 +70,7 @@ export async function getVoucherById(id: number) {
     }
 }
 
-export async function updateVoucher(id: number, data: { name: string; discount: number; count: number }) {
+export async function updateVoucher(id: string, data: { name: string; discount: number; count: number }) {
     try {
         const existingVoucher = await db.voucher.findFirst({
             where: {

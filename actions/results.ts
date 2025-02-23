@@ -4,7 +4,7 @@
 import { db } from "@/lib/db";
 import { sendResult } from "@/lib/mail";
 
-const checkIfAlreadyCreated = async (channel_id: number) => {
+const checkIfAlreadyCreated = async (channel_id: string) => {
   try {
     const isCreated = await db.results.findFirst({
       where: {
@@ -22,8 +22,8 @@ const checkIfAlreadyCreated = async (channel_id: number) => {
 export const create = async (
   public_id: string,
   image_url: string,
-  template_id: number,
-  channel_id: number
+  template_id: string,
+  channel_id: string
 ) => {
   try {
     const alreadyCreated = await checkIfAlreadyCreated(channel_id);
@@ -48,7 +48,7 @@ export const create = async (
   }
 };
 
-export const find = async (id: number) => {
+export const find = async (id: string) => {
   try {
     const result = await db.results.findUnique({
       where: {
@@ -70,7 +70,7 @@ export const find = async (id: number) => {
   }
 };
 
-export const sentEmail = async (id: number) => {
+export const sentEmail = async (id: string) => {
   try {
     const result = await db.results.findUnique({
       where: {

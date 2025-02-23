@@ -15,7 +15,7 @@ export const retrieve = async () => {
   }
 };
 
-export const update = async (id: number, label?: string) => {
+export const update = async (id: string, label?: string) => {
   try {
     const template = await db.templates.update({
       where: {
@@ -53,7 +53,7 @@ export const create = async (images: any[]) => {
   }
 };
 
-export const destroy = async (id: number) => {
+export const destroy = async (id: string) => {
   try {
     const templates = await db.templates.findUnique({
       where: {

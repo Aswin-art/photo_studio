@@ -41,6 +41,10 @@ export default function CreateStudioForm({
       });
       setIsOpen(false);
       refreshStudios();
+      setName("");
+      setDescription("");
+      setPrice("");
+      setImage("");
     } catch (error) {
       alert(`Failed to create studio: ${error}`);
     }

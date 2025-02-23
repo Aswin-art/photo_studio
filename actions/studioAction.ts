@@ -27,7 +27,7 @@ export async function createStudio(name: string, description: string, image: str
     }
 }
 
-export async function deleteStudio(id: number) {
+export async function deleteStudio(id: string) {
     try {
         const studio = await db.studio.delete({
             where: {
@@ -40,7 +40,7 @@ export async function deleteStudio(id: number) {
     }
 }
 
-export async function getStudioById(id: number) {
+export async function getStudioById(id: string) {
     try {
         const studio = await db.studio.findUnique({
             where: {
@@ -53,7 +53,7 @@ export async function getStudioById(id: number) {
     }
 }
 
-export async function updateStudio(id: number, data: { name: string; description: string; image: string, price: number }) {
+export async function updateStudio(id: string, data: { name: string; description: string; image: string, price: number }) {
     try {
         const studio = await db.studio.update({
             where: {

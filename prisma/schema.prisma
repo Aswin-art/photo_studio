@@ -8,7 +8,7 @@ datasource db {
 }
 
 model addon {
-  id            Int             @id @default(autoincrement())
+  id            String          @id @default(cuid())
   name          String          @db.VarChar(255)
   price         Int
   is_deleted    Boolean         @default(false)
@@ -18,9 +18,9 @@ model addon {
 }
 
 model customeraddon {
-  id                  Int                 @id @default(autoincrement())
-  transactionId       Int
-  addonId             Int
+  id                  String              @id @default(cuid())
+  transactionId       String
+  addonId             String
   quantity            Int
   createdAt           DateTime            @default(now())
   updatedAt           DateTime
@@ -32,9 +32,9 @@ model customeraddon {
 }
 
 model customertransaction {
-  id            Int             @id @default(autoincrement())
-  studioId      Int
-  voucherId     Int?
+  id            String          @id @default(cuid())
+  studioId      String
+  voucherId     String?
   customerName  String          @db.VarChar(255)
   customerEmail String          @db.VarChar(255)
   customerPhone String          @db.VarChar(15)
@@ -53,15 +53,15 @@ model customertransaction {
 }
 
 model holiday {
-  id          Int      @id @default(autoincrement())
-  date        DateTime @db.Date
-  description String   @db.VarChar(255)
-  createdAt   DateTime @default(now())
+  id          String          @id @default(cuid())
+  date        DateTime        @db.Date
+  description String          @db.VarChar(255)
+  createdAt   DateTime        @default(now())
   updatedAt   DateTime
 }
 
 model studio {
-  id                  Int                   @id @default(autoincrement())
+  id                  String                @id @default(cuid())
   name                String                @db.VarChar(255)
   description         String?               @db.Text
   image               String?               @db.VarChar(255)
@@ -72,15 +72,15 @@ model studio {
 }
 
 model users {
-  id        Int      @id @default(autoincrement())
-  email     String   @db.VarChar(255)
-  password  String   @db.VarChar(255)
-  createdAt DateTime @default(now())
+  id        String          @id @default(cuid())
+  email     String          @db.VarChar(255)
+  password  String          @db.VarChar(255)
+  createdAt DateTime        @default(now())
   updatedAt DateTime
 }
 
 model voucher {
-  id                  Int                   @id @default(autoincrement())
+  id                  String                @id @default(cuid())
   name                String                @db.VarChar(255)
   discount            Decimal?              @db.Decimal(5, 2)
   count               Int
@@ -91,7 +91,7 @@ model voucher {
 }
 
 model Channels {
-  id            Int             @id @default(autoincrement())
+  id            String          @id @default(cuid())
   code          String
   email         String?         @db.VarChar(255)
   phone         String?         @db.VarChar(255)
@@ -102,29 +102,29 @@ model Channels {
 }
 
 model ChannelImages {
-  id         Int      @id @default(autoincrement())
-  image_url  String   @db.VarChar(255)
-  public_id  String   @unique @db.VarChar(255)
-  channel_id Int
-  channels   Channels @relation(fields: [channel_id], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String           @id @default(cuid())
+  image_url  String           @db.VarChar(255)
+  public_id  String           @unique @db.VarChar(255)
+  channel_id String
+  channels   Channels         @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
 }
 
 model Templates {
-  id        Int       @id @default(autoincrement())
-  image_url String    @db.VarChar(255)
-  label     String?   @db.VarChar(255)
-  public_id String    @db.VarChar(255)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        String            @id @default(cuid())
+  image_url String            @db.VarChar(255)
+  label     String?           @db.VarChar(255)
+  public_id String            @db.VarChar(255)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
   Results   Results[]
 }
 
 model Results {
-  id          Int        @id @default(autoincrement())
-  template_id Int?
-  channel_id  Int?
+  id          String     @id @default(cuid())
+  template_id String?
+  channel_id  String?
   image_url   String     @db.VarChar(255)
   public_id   String     @db.VarChar(255)
   templates   Templates? @relation(fields: [template_id], references: [id], onDelete: Cascade)

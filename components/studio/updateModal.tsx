@@ -13,7 +13,7 @@ import "react-quill-new/dist/quill.snow.css";
 
 interface CreateStudioFormProps {
   refreshStudios: () => void;
-  id: number;
+  id: string;
 }
 
 export default function UpdateStudioForm({
@@ -70,7 +70,7 @@ export default function UpdateStudioForm({
   const fetchStudio = async () => {
     console.log("Fetching studio with id:", id);
     if (id) {
-      const fetchedStudio = await getStudioById(Number(id));
+      const fetchedStudio = await getStudioById(id);
       if (fetchedStudio) {
         console.log("Fetched studio:", fetchedStudio);
         setName(fetchedStudio.name);
