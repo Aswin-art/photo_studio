@@ -11,6 +11,8 @@ function saltAndHashPassword(password) {
 
 const prisma = new PrismaClient();
 async function main() {
+  await prisma.users.deleteMany();
+
   const newUser2 = await prisma.users.create({
     data: {
       email: "admin@prostudio.com",
