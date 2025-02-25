@@ -5,27 +5,27 @@ export default function Gallery() {
     const cards = [
         {
           title: "Elegan dalam Monokrom",
-          src: "/pictures/photo-1.jpg",
+          src: "/pictures/photo-1.webp",
         },
         {
           title: "Sahabat Selamanya",
-          src: "/pictures/photo-2.jpg",
+          src: "/pictures/photo-2.webp",
         },
         {
           title: "Kenangan Manis masa SMA",
-          src: "/pictures/photo-4.jpg",
+          src: "/pictures/photo-4.webp",
         },
         {
           title: "Kompak & Berkelas",
-          src: "/pictures/photo-13.jpg",
+          src: "/pictures/photo-13.webp",
         },
         {
           title: "Hangatnya Kebersamaan Keluarga",
-          src: "/pictures/photo-18.jpg",
+          src: "/pictures/photo-18.webp",
         },
         {
           title: "Keluarga selalu satu hati",
-          src: "/pictures/photo-17.jpg",
+          src: "/pictures/photo-17.webp",
         },
       ];
     return (

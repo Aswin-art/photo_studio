@@ -7,7 +7,7 @@ function Feature() {
       <div className="container mx-auto">
         <div className="flex flex-col-reverse lg:flex-row gap-10 lg:items-center">
           <Image
-            src={"/image/studio.jpg"}
+            src={"/image/studio.webp"}
             alt={"Studio Kami"}
             width={400}
             height={400}

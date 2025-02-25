@@ -7,30 +7,30 @@ import Floating, { FloatingElement } from "../ui/parallax-floating";
 
 const exampleImages = [
   {
-    url: "/pictures/photo-3.jpg",
+    url: "/pictures/photo-3.webp",
     author: "Branislav Rodman",
     title: "A Black and White Photo of a Woman Brushing Her Teeth"
   },
   {
-    url: "/pictures/photo-14.jpg",
+    url: "/pictures/photo-14.webp",
     link: "https://unsplash.com/photos/a-painting-of-a-palm-leaf-on-a-multicolored-background-AaNPwrSNOFE",
     title: "Neon Palm",
     author: "Tim Mossholder"
   },
   {
-    url: "/pictures/photo-12.jpg",
+    url: "/pictures/photo-12.webp",
     link: "https://unsplash.com/photos/a-blurry-photo-of-a-crowd-of-people-UgbxzloNGsc",
     author: "ANDRII SOLOK",
     title: "A blurry photo of a crowd of people"
   },
   {
-    url: "/pictures/photo-20.jpg",
+    url: "/pictures/photo-20.webp",
     link: "https://unsplash.com/photos/rippling-crystal-blue-water-9-OCsKoyQlk",
     author: "Wesley Tingey",
     title: "Rippling Crystal Blue Water"
   },
   {
-    url: "/pictures/photo-8.jpg",
+    url: "/pictures/photo-8.webp",
     link: "https://unsplash.com/de/fotos/mann-im-schwarzen-hemd-unter-blauem-himmel-m8RDNiuEXro",
     author: "Serhii Tyaglovsky",
     title: "Mann im schwarzen Hemd unter blauem Himmel"
