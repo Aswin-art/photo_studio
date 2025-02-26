@@ -36,11 +36,20 @@ export const find = async (id: string) => {
   }
 };
 
-export const generateChannelCode = async () => {
-  const timestamp = Date.now();
-  const randomString = Math.random().toString(36).substring(2, 7);
-  const roomCode = `${timestamp}-${randomString}`;
-  return roomCode;
+export const generateChannelCode = async (): Promise<string> => {
+  while (true) {
+    const timestamp = Date.now();
+    const randomString = Math.random().toString(36).substring(2, 7);
+    const roomCode = `${timestamp}-${randomString}`;
+
+    const existingChannel = await db.channels.findUnique({
+      where: { code: roomCode },
+    });
+
+    if (!existingChannel) {
+      return roomCode;
+    }
+  }
 };
 
 export const insertImages = async (

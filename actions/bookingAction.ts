@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { startOfDay, endOfDay } from 'date-fns';
 import { pusher } from "@/lib/pusher";
 import { formatDateToWIB } from "@/utils/dateConvert";
-import { generateChannelCode } from "./channels";
 
 export async function getTransactions() {
     try {
@@ -117,13 +116,16 @@ export async function updateTransactionApproval(transactionId: string, isApprove
         });
 
         if (isApproved === true) {
-            const channelCode = await generateChannelCode();
+            const channelCode = await generateUniqueChannelCode(transaction.customerName);
+
+            console.log(channelCode);
         
             await db.channels.create({
                 data: {
                   code: channelCode,
                   email: transaction.customerEmail,
                   phone: transaction.customerPhone,
+                  updatedAt: new Date(),
                 },
             });
         }
@@ -140,6 +142,19 @@ export async function updateTransactionApproval(transactionId: string, isApprove
         }
     }
 }
+
+async function generateUniqueChannelCode(customerName: string): Promise<string> {
+    while (true) {
+        const nameFormatted = customerName.toLowerCase().trim().replace(/\s+/g, "-");
+        const randomString = Math.random().toString(36).substring(2, 5);
+        const code = `${nameFormatted}-${randomString}`;
+
+        const existingChannel = await db.channels.findUnique({ where: { code } });
+
+        if (!existingChannel) return code;
+    }
+}
+
 
 export async function createBooking(
     studioId: string,

@@ -92,7 +92,7 @@ model voucher {
 
 model Channels {
   id            String          @id @default(cuid())
-  code          String
+  code          String          @unique
   email         String?         @db.VarChar(255)
   phone         String?         @db.VarChar(255)
   createdAt     DateTime        @default(now())
