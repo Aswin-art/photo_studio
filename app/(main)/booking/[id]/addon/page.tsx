@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { createBooking } from "@/actions/bookingAction";
+import { formatPhoneNumber } from "@/utils/FormatPhoneNumber";
 
 export default function BookingAddon() {
   const { id } = useParams();
@@ -41,6 +42,7 @@ export default function BookingAddon() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [displayPhone, setDisplayPhone] = useState("");
   const [addonQuantities, setAddonQuantities] = useState<AddonQuantity[]>([]);
   const [selectedVoucher, setSelectedVoucher] = useState("");
   const [appliedVoucher, setAppliedVoucher] = useState<{
@@ -85,6 +87,14 @@ export default function BookingAddon() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    const cleaned = input.replace(/\D/g, "");
+
+    setPhone(cleaned);
+    setDisplayPhone(formatPhoneNumber(cleaned));
   };
 
   const handleQuantityChange = (addonId: string, quantity: number) => {
@@ -514,9 +524,9 @@ export default function BookingAddon() {
               <Input
                 id="phone"
                 name="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder={`Masukkan Nama Anda`}
+                value={displayPhone}
+                onChange={handlePhoneChange}
+                placeholder={`Masukkan Nomor HP Anda`}
                 className="col-span-3"
                 required
               />
