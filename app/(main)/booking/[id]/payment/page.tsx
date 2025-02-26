@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Studio } from "@/types";
 import { convertBookingSession } from "@/utils/convertBookingSession";
 import { formatRupiah } from "@/utils/Rupiah";
-import { CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock, TriangleAlert } from "lucide-react";
 import { dateConvert } from "@/utils/dateConvert";
 import { getStudioById } from "@/actions/studioAction";
 import Wrapper from "@/components/wrapper";
@@ -134,46 +134,13 @@ export default function BookingPayment() {
                     Segera lakukan pembayaran melalui <strong>QRIS</strong>{" "}
                     sesuai total harga yang tertera.
                   </li>
+                  <li>Screenshot bukti pembayaran setelah transaksi berhasil.</li>
                   <li>
-                    Gunakan aplikasi yang mendukung QRIS, seperti{" "}
-                    <span className="font-semibold">
-                      GoPay, OVO, DANA, ShopeePay, atau mobile banking
-                    </span>
-                    .
-                  </li>
-                  <li>
-                    Pastikan jumlah yang ditransfer{" "}
-                    <strong>sesuai dengan total harga</strong> agar pembayaran
-                    dapat diverifikasi dengan cepat.
-                  </li>
-                  <li>Simpan bukti pembayaran setelah transaksi berhasil.</li>
-                  <li>
-                    Setelah melakukan pembayaran, kirim bukti pembayaran melalui
-                    WhatsApp ke nomor{" "}
-                    <a
-                      href="https://wa.me/6285770037336"
-                      className="text-blue-500 underline"
-                    >
-                      085770037336
-                    </a>
-                    . Anda dapat mengirimnya secara manual dengan mencantumkan:
-                    <ul className="list-disc pl-5 mt-2 space-y-1">
-                      <li>Nama lengkap: {`${name}`}</li>
-                      <li>Email: {`${email}`}</li>
-                      <li>Nomor telepon: {`${phone}`}</li>
-                      <li>Jenis studio yang dipesan: {`${studio?.name}`}</li>
-                      <li>Tanggal booking: {`${bookingDate}`}</li>
-                      <li>Sesi booking: {`${bookingTime}`}</li>
-                    </ul>
-                  </li>
-                  <li>
-                    Atau, tekan tombol{" "}
+                    Kirim bukti pembayaran melalui WhatsApp dengan menekan tombol{" "}
                     <span className="font-semibold">
                       &quot;Konfirmasi Pembayaran&quot;
                     </span>{" "}
-                    di bawah ini untuk langsung membuka WhatsApp dengan
-                    informasi yang telah diisi otomatis. Anda hanya perlu
-                    mengunggah bukti pembayaran.
+                    di bawah ini.
                   </li>
                 </ol>
                 <a
@@ -192,6 +159,15 @@ export default function BookingPayment() {
                 >
                   Konfirmasi Pembayaran
                 </a>
+                <div className="flex gap-x-4">
+                  <TriangleAlert className="text-yellow-400 self-center" size={24} />
+                  <p className="text-sm text-gray-400 self-center">Catatan: Apabila terjadi kendala hubungi  nomor                     <a
+                      href="https://wa.me/6285770037336"
+                      className="underline text-gray-400"
+                    >
+                      085770037336
+                    </a> melalui WhatsAPP</p>
+                </div>
               </div>
             </div>
           </div>
