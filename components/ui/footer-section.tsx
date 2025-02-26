@@ -36,13 +36,13 @@ export default function Foooter() {
               height={200}
               className=" rounded-md w-full h-8 flex-1 object-contain mb-4"
             />
-            <p className="mb-6 text-muted-foreground">
-              Capture Your Moments, Keep Them Forever.
+            <p className="mb-6 text-muted-foreground text-center">
+              The new standard of photo studio
             </p>
           </div>
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
-            <nav className="space-y-2 text-sm">
+            <h3 className="mb-4 text-lg font-semibold text-center md:text-start">Quick Links</h3>
+            <nav className="space-y-2 text-sm justify-items-center md:justify-items-start">
               <Link
                 href="/"
                 className="block transition-colors hover:text-primary"
@@ -70,8 +70,8 @@ export default function Foooter() {
             </nav>
           </div>
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Contact Us</h3>
-            <address className="space-y-2 text-sm not-italic">
+            <h3 className="mb-4 text-lg font-semibold text-center md:text-start">Contact Us</h3>
+            <address className="space-y-2 text-sm not-italic justify-items-center md:justify-items-start">
               <p>Ruko Kraton Superblock, Kec. Krian</p>
               <p>Kabupaten Sidoarjo, Jawa Timur</p>
               <p>Phone: (+62) 857-7003-7336</p>
@@ -79,8 +79,8 @@ export default function Foooter() {
             </address>
           </div>
           <div className="relative">
-            <h3 className="mb-4 text-lg font-semibold">Follow Us</h3>
-            <div className="mb-6 flex space-x-4">
+            <h3 className="mb-4 text-lg font-semibold text-center md:text-start">Follow Us</h3>
+            <div className="mb-6 flex space-x-4 justify-center items-center md:justify-start md:align-baseline">
               {/* <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
