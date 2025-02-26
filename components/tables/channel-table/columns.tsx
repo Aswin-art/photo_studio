@@ -4,6 +4,7 @@ import { CellAction } from "./cell-action";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { useEffect, useState } from "react";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const columns: ColumnDef<any>[] = [
@@ -53,6 +54,22 @@ export const columns: ColumnDef<any>[] = [
           Tanggal Pembuatan <ArrowUpDown />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      const [formattedDate, setFormattedDate] = useState<string>("");
+
+      useEffect(() => {
+        const date = new Date(row.original.createdAt);
+        const formatted = date.toLocaleDateString("id-ID", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          timeZone: "Asia/Jakarta"
+        });
+        setFormattedDate(formatted);
+      }, [row.original.createdAt]);
+
+      return <span>{formattedDate || "Memuat..."}</span>;
     }
   },
   {
