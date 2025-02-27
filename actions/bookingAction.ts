@@ -311,8 +311,9 @@ export async function getDailySessions(studioId: string, bookingDate: string) {
         const holiday = await db.holiday.findFirst({
             where: { 
                 date: {
-                    equals: targetDate
-                }
+                    gte: startOfDay(targetDate),
+                    lte: endOfDay(targetDate)
+                },
             },
             select: { description: true },
         });
