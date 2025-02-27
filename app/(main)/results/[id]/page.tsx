@@ -90,7 +90,7 @@ const Page = () => {
                   </>
                 ) : (
                   <>
-                    <Mail /> Kirim Ke Email
+                    <Mail className="mr-2" /> Kirim Ke Email
                   </>
                 )}
               </Button>

@@ -13,7 +13,7 @@ export const sendResult = async (
 
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "Prostudio <mail@prostudio.awsd-qwerty.com>",
       to: email,
       subject: "Hasil Foto Studio",
       react: PhotoDeliveryEmail({

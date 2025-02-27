@@ -13,14 +13,14 @@ const prisma = new PrismaClient();
 async function main() {
   await prisma.users.deleteMany();
 
-  const newUser2 = await prisma.users.create({
+  const newUser = await prisma.users.create({
     data: {
       email: "admin@prostudio.com",
       password: saltAndHashPassword("STDpr0STD"),
       updatedAt: new Date()
     }
   });
-  console.log("Created new user: ", newUser2);
+  console.log("Created new user: ", newUser);
 }
 
 main()

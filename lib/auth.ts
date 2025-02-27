@@ -19,7 +19,6 @@ export const authOptions = {
         password: {}
       },
       async authorize(credentials) {
-        console.log("masuk auth", credentials);
         if (!credentials) return null;
 
         const email = credentials.email as string;
@@ -29,20 +28,13 @@ export const authOptions = {
           throw new Error("Missing credentials");
         }
 
-        console.log("cari user");
         const user = await db.users.findFirst({
           where: { email: email }
         });
 
-        console.log("user ditemukan", user);
-
         if (!user) return null;
 
-        console.log("compare pw");
-
         const isValidPassword = await bcryptjs.compare(password, user.password);
-
-        console.log("is valid password", isValidPassword);
 
         if (!isValidPassword) return null;
 
