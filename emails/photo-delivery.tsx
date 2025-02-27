@@ -26,9 +26,7 @@ export const PhotoDeliveryEmail = ({
       <Body style={bodyStyle}>
         <Container style={containerStyle}>
           <Img
-            src="https://via.placeholder.com/150"
-            width="100"
-            height="100"
+            src="https://res.cloudinary.com/dgluwmu1o/image/upload/v1740643440/logo_s87mcu.png"
             alt="Studio Logo"
             style={logoStyle}
           />
@@ -42,13 +40,15 @@ export const PhotoDeliveryEmail = ({
 
           <Section style={resultPhotoContainerStyle}>
             {result ? (
-              <Img
-                src={result}
-                width="100%"
-                height="auto"
-                alt="Hasil Foto"
-                style={resultPhotoStyle}
-              />
+              <a href={result} download style={{ textDecoration: "none" }}>
+                <Img
+                  src={result}
+                  width="100%"
+                  height="auto"
+                  alt="Hasil Foto"
+                  style={resultPhotoStyle}
+                />
+              </a>
             ) : (
               <Text style={emptyTextStyle}>❌ Hasil foto belum tersedia.</Text>
             )}
@@ -62,13 +62,15 @@ export const PhotoDeliveryEmail = ({
                 .filter((url) => url)
                 .map((url, index) => (
                   <div key={index} style={photoWrapperStyle}>
-                    <Img
-                      src={url}
-                      width="100%"
-                      height="auto"
-                      alt={`Foto ${index + 1}`}
-                      style={photoStyle}
-                    />
+                    <a href={url} download style={{ textDecoration: "none" }}>
+                      <Img
+                        src={url}
+                        width="100%"
+                        height="auto"
+                        alt={`Foto ${index + 1}`}
+                        style={photoStyle}
+                      />
+                    </a>
                   </div>
                 ))
             ) : (
@@ -99,10 +101,13 @@ const containerStyle = {
   textAlign: "center" as const
 };
 
-const logoStyle = {
+const logoStyle: React.CSSProperties = {
   display: "block",
   margin: "0 auto",
-  borderRadius: "50%"
+  maxWidth: "150px",
+  width: "100%",
+  height: "auto",
+  objectFit: "contain"
 };
 
 const titleStyle = {
