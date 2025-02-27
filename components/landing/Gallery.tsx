@@ -4,28 +4,28 @@ import { FocusCards } from "../ui/focus-cards";
 export default function Gallery() {
     const cards = [
         {
-          title: "Elegan dalam Monokrom",
-          src: "/pictures/photo-1.webp",
+          title: "",
+          src: "/pictures/4.webp",
         },
         {
-          title: "Sahabat Selamanya",
-          src: "/pictures/photo-2.webp",
+          title: "",
+          src: "/pictures/3.webp",
         },
         {
-          title: "Kenangan Manis masa SMA",
+          title: "",
+          src: "/pictures/testimonials/izzah.webp",
+        },
+        {
+          title: "",
+          src: "/pictures/2.webp",
+        },
+        {
+          title: "",
+          src: "/pictures/5.webp",
+        },
+        {
+          title: "",
           src: "/pictures/photo-4.webp",
-        },
-        {
-          title: "Kompak & Berkelas",
-          src: "/pictures/photo-13.webp",
-        },
-        {
-          title: "Hangatnya Kebersamaan Keluarga",
-          src: "/pictures/photo-18.webp",
-        },
-        {
-          title: "Keluarga selalu satu hati",
-          src: "/pictures/photo-17.webp",
         },
       ];
     return (

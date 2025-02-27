@@ -7,33 +7,33 @@ import Floating, { FloatingElement } from "../ui/parallax-floating";
 
 const exampleImages = [
   {
-    url: "/pictures/photo-3.webp",
-    author: "Branislav Rodman",
-    title: "A Black and White Photo of a Woman Brushing Her Teeth"
+    url: "/pictures/4.webp",
+    author: "prostudio",
+    title: "Captured by ProStudio"
   },
   {
-    url: "/pictures/photo-14.webp",
-    link: "https://unsplash.com/photos/a-painting-of-a-palm-leaf-on-a-multicolored-background-AaNPwrSNOFE",
-    title: "Neon Palm",
-    author: "Tim Mossholder"
+    url: "/pictures/testimonials/izzah.webp",
+    link: "/",
+    title: "Captured by ProStudio",
+    author: "prostudio"
   },
   {
-    url: "/pictures/photo-12.webp",
-    link: "https://unsplash.com/photos/a-blurry-photo-of-a-crowd-of-people-UgbxzloNGsc",
-    author: "ANDRII SOLOK",
-    title: "A blurry photo of a crowd of people"
+    url: "/pictures/5.webp",
+    link: "/",
+    author: "prostudio",
+    title: "Captured by ProStudio"
   },
   {
-    url: "/pictures/photo-20.webp",
-    link: "https://unsplash.com/photos/rippling-crystal-blue-water-9-OCsKoyQlk",
-    author: "Wesley Tingey",
-    title: "Rippling Crystal Blue Water"
+    url: "/pictures/2.webp",
+    link: "/",
+    author: "prostudio",
+    title: "Captured by ProStudio"
   },
   {
-    url: "/pictures/photo-8.webp",
-    link: "https://unsplash.com/de/fotos/mann-im-schwarzen-hemd-unter-blauem-himmel-m8RDNiuEXro",
-    author: "Serhii Tyaglovsky",
-    title: "Mann im schwarzen Hemd unter blauem Himmel"
+    url: "/pictures/3.webp",
+    link: "/",
+    author: "prostudio",
+    title: "Captured by ProStudio"
   }
 ];
 
@@ -48,7 +48,7 @@ function LandingHero() {
           <motion.img
             src={exampleImages[0].url}
             alt={exampleImages[0].title}
-            className="w-16 h-12 sm:w-24 sm:h-16 md:w-28 md:h-20 lg:w-32 lg:h-24 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform -rotate-[3deg] shadow-2xl rounded-xl"
+            className="w-16 h-20 sm:w-24 sm:h-28 md:w-28 md:h-32 lg:w-32 lg:h-36 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform -rotate-[3deg] shadow-2xl rounded-xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
@@ -62,7 +62,7 @@ function LandingHero() {
           <motion.img
             src={exampleImages[1].url}
             alt={exampleImages[1].title}
-            className="w-40 h-28 sm:w-48 sm:h-36 md:w-56 md:h-44 lg:w-60 lg:h-48 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform -rotate-12 shadow-2xl rounded-xl"
+            className="w-36 h-32 sm:w-44 sm:h-40 md:w-52 md:h-48 lg:w-56 lg:h-52 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform -rotate-12 shadow-2xl rounded-xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
