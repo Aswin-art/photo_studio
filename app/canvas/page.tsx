@@ -49,7 +49,7 @@ const Page = () => {
       });
     }
 
-    if (req?.Results.length > 1) {
+    if (req?.Results.length > 0) {
       router.push("/results/" + req.Results[0].id);
 
       return;
@@ -84,9 +84,13 @@ const Page = () => {
           />
           <div className="flex gap-x-3 w-full">
             <Button className="w-full" onClick={() => router.push("/")}>
-                  <ArrowLeft /> Back
+              <ArrowLeft /> Back
             </Button>
-            <Button className="w-full" disabled={isLoading} onClick={handleCheckChannelCode}>
+            <Button
+              className="w-full"
+              disabled={isLoading}
+              onClick={handleCheckChannelCode}
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="animate-spin" /> Loading...

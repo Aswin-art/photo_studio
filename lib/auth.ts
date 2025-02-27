@@ -47,7 +47,6 @@ export const authOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
-      console.log("masuk callback", session, token);
       if (token) {
         session.user = {
           id: token.sub || "",
