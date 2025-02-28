@@ -300,14 +300,6 @@ export async function getDailySessions(studioId: string, bookingDate: string) {
             };
         }
 
-        let relatedStudioIds = [studioId];
-
-        if (studioId === "1") {
-            relatedStudioIds.push("2");
-        } else if (studioId === "2") {
-            relatedStudioIds.push("1");
-        }
-
         const holiday = await db.holiday.findFirst({
             where: { 
                 date: {
@@ -323,6 +315,51 @@ export async function getDailySessions(studioId: string, bookingDate: string) {
                 sessions: [],
                 message: holiday.description
             };
+        }
+
+        const currentStudio = await db.studio.findUnique({
+            where: { id: studioId },
+            select: { name: true, id: true }
+        });
+
+        if (!currentStudio) {
+            throw new Error("Studio tidak ditemukan");
+        }
+
+        const allStudios = await db.studio.findMany({
+            select: { id: true, name: true }
+        });
+
+        const studioName = currentStudio.name.toLowerCase();
+        const isBasic = studioName.includes("basic");
+        const isSpotlight = studioName.includes("spotlight");
+        const isWide = studioName.includes("wide");
+
+        let relatedStudioIds: string[] = [studioId];
+
+        if (isBasic || isSpotlight) {
+            const basicAndSpotlightStudios = allStudios.filter(studio => {
+                const name = studio.name.toLowerCase();
+                return name.includes("basic") || name.includes("spotlight");
+            });
+            
+            relatedStudioIds = [
+                ...new Set([
+                    ...relatedStudioIds,
+                    ...basicAndSpotlightStudios.map(studio => studio.id)
+                ])
+            ];
+        } else if (isWide) {
+            const wideStudios = allStudios.filter(studio => 
+                studio.name.toLowerCase().includes("wide")
+            );
+            
+            relatedStudioIds = [
+                ...new Set([
+                    ...relatedStudioIds,
+                    ...wideStudios.map(studio => studio.id)
+                ])
+            ];
         }
 
         const bookedSessions = await db.customertransaction.findMany({
