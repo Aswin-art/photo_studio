@@ -25,8 +25,7 @@ export const metadata: Metadata = {
     "ProStudio adalah platform terdepan untuk studio foto profesional. Abadikan momen terbaik Anda dengan layanan fotografi dan editing foto yang canggih.",
   openGraph: {
     title: "ProStudio | Studio Foto Profesional",
-    description:
-      "Abadikan momen terbaik Anda dengan layanan fotografi dan editing foto profesional di ProStudio.",
+    description: "Photo Studio Berkualitas dengan Harga Terjangkau.",
     url: "https://prostudio.com",
     siteName: "ProStudio",
     images: [
