@@ -65,6 +65,7 @@ model studio {
   name                String                @db.VarChar(255)
   description         String?               @db.Text
   image               String?               @db.VarChar(255)
+  is_deleted          Boolean               @default(false)
   createdAt           DateTime              @default(now())
   updatedAt           DateTime
   price               Int

@@ -191,7 +191,7 @@ export async function createBooking(
         }
 
         const studio = await db.studio.findUnique({
-            where: { id: studioId },
+            where: { id: studioId, is_deleted: false, },
             select: { price: true },
         });
 
@@ -318,7 +318,7 @@ export async function getDailySessions(studioId: string, bookingDate: string) {
         }
 
         const currentStudio = await db.studio.findUnique({
-            where: { id: studioId },
+            where: { id: studioId, is_deleted: false, },
             select: { name: true, id: true }
         });
 
@@ -327,6 +327,7 @@ export async function getDailySessions(studioId: string, bookingDate: string) {
         }
 
         const allStudios = await db.studio.findMany({
+            where: { is_deleted: false },
             select: { id: true, name: true }
         });
 

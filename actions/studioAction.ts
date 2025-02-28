@@ -3,7 +3,9 @@ import { db } from "@/lib/db";
 
 export async function getStudios() {
     try {
-        const studios = await db.studio.findMany();
+        const studios = await db.studio.findMany({
+            where: { is_deleted: false},
+        });
         return studios;
     } catch (err) {
         throw new Error(`failed to get studios: ${err}`);
@@ -29,9 +31,13 @@ export async function createStudio(name: string, description: string, image: str
 
 export async function deleteStudio(id: string) {
     try {
-        const studio = await db.studio.delete({
+        const studio = await db.studio.update({
             where: {
                 id,
+            },
+            data: {
+                is_deleted: true,
+                updatedAt: new Date(),
             },
         });
         return studio;
@@ -45,6 +51,7 @@ export async function getStudioById(id: string) {
         const studio = await db.studio.findUnique({
             where: {
                 id,
+                is_deleted: false,
             },
         });
         return studio;
