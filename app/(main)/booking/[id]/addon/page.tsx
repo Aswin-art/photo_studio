@@ -216,12 +216,17 @@ export default function BookingAddon() {
       console.error("Booking error:", error);
       toast({
         title: "Error",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Terjadi kesalahan saat membuat booking",
+        description: "Terjadi kesalahan saat booking studio",
         type: "foreground"
       });
+      // toast({
+      //   title: "Error",
+      //   description:
+      //     error instanceof Error
+      //       ? error.message
+      //       : "Terjadi kesalahan saat membuat booking",
+      //   type: "foreground"
+      // });
     } finally {
       setIsSubmitting(false);
       setIsOpen(false);
