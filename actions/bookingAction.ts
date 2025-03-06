@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { startOfDay, endOfDay } from 'date-fns';
 import { pusher } from "@/lib/pusher";
 import { formatDateToWIB } from "@/utils/dateConvert";
+import { toZonedTime } from "date-fns-tz";
 
 export async function getTransactions() {
     try {
@@ -290,7 +291,7 @@ export async function getDailySessions(studioId: string, bookingDate: string) {
         const todayCompare = new Date();
         todayCompare.setHours(0, 0, 0, 0);
         
-        const targetDate = new Date(bookingDate);
+        const targetDate = toZonedTime(new Date(bookingDate), "Asia/Jakarta");
         targetDate.setHours(0, 0, 0, 0);
 
         if (targetDate < todayCompare) {
