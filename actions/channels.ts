@@ -9,6 +9,9 @@ export const retrieve = async () => {
     const channels = await db.channels.findMany({
       include: {
         ChannelImages: true
+      },
+      orderBy: {
+        createdAt: "desc"
       }
     });
     return channels;
@@ -43,7 +46,7 @@ export const generateChannelCode = async (): Promise<string> => {
     const roomCode = `${timestamp}-${randomString}`;
 
     const existingChannel = await db.channels.findUnique({
-      where: { code: roomCode },
+      where: { code: roomCode }
     });
 
     if (!existingChannel) {

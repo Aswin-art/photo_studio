@@ -6,7 +6,11 @@ import { db } from "@/lib/db";
 
 export const retrieve = async () => {
   try {
-    const templates: any[] = await db.templates.findMany();
+    const templates: any[] = await db.templates.findMany({
+      orderBy: {
+        createdAt: "desc"
+      }
+    });
 
     return templates;
   } catch (err: any) {
