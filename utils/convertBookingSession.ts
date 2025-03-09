@@ -1,53 +1,53 @@
 export const convertBookingSession = (bookingSession: number): string => {
     switch (bookingSession) {
         case 1:
-            return "08:00 - 08:29";
+            return "09:00";
         case 2:
-            return "08:30 - 08:59";
+            return "09:30";
         case 3:
-            return "09:00 - 09:29";
+            return "10:00";
         case 4:
-            return "09:30 - 09:59";
+            return "10:30";
         case 5:
-            return "10:00 - 10:29";
+            return "11:00";
         case 6:
-            return "10:30 - 10:59";
+            return "11:30";
         case 7:
-            return "11:00 - 11:29";
+            return "12:00";
         case 8:
-            return "11:30 - 11:59";
+            return "12:30";
         case 9:
-            return "12:00 - 12:29";
+            return "13:00";
         case 10:
-            return "12:30 - 12:59";
+            return "13:30";
         case 11:
-            return "13:00 - 13:29";
+            return "14:00";
         case 12:
-            return "13:30 - 13:59";
+            return "14:30";
         case 13:
-            return "14:00 - 14:29";
+            return "15:00";
         case 14:
-            return "14:30 - 14:59";
+            return "15:30";
         case 15:
-            return "15:00 - 15:29";
+            return "16:00";
         case 16:
-            return "15:30 - 15:59";
+            return "16:30";
         case 17:
-            return "16:00 - 16:29";
+            return "17:00";
         case 18:
-            return "16:30 - 16:59";
+            return "17:30";
         case 19:
-            return "17:00 - 17:29";
+            return "18:00";
         case 20:
-            return "17:30 - 17:59";
+            return "18:30";
         case 21:
-            return "18:00 - 18:29";
+            return "19:00";
         case 22:
-            return "18:30 - 18:59";
+            return "19:30";
         case 23:
-            return "19:00 - 19:29";
+            return "20:00";
         case 24:
-            return "19:30 - 19:59";
+            return "20:30";
         default:
             return "Unknown";
     }

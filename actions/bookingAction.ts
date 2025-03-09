@@ -385,7 +385,7 @@ export async function getDailySessions(studioId: string, bookingDate: string) {
         if (targetDate.toDateString() === today.toDateString()) {
             const currentHour = today.getHours();
             const currentMinute = today.getMinutes();
-            currentSession = Math.ceil(((currentHour - 8) * 60 + currentMinute) / 30) + 1;
+            currentSession = Math.ceil(((currentHour - 9) * 60 + currentMinute) / 30) + 1;
             currentSession = Math.max(1, currentSession);
         }
 
