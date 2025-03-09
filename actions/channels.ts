@@ -3,6 +3,8 @@
 
 import cloudinary from "@/lib/cloudinary";
 import { db } from "@/lib/db";
+import { subDays } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 export const retrieve = async () => {
   try {
@@ -117,6 +119,32 @@ export const update = async (
     });
 
     return channels;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
+export const deleteOldChannels = async () => {
+  try {
+    const oneWeekAgoJakarta = subDays(new Date(), 7);
+    const oneWeekAgoUTC = toZonedTime(oneWeekAgoJakarta, "Asia/Jakarta");
+
+    const channels = await db.channels.findMany({
+      where: {
+        createdAt: {
+          lt: oneWeekAgoUTC
+        }
+      }
+    });
+
+    await Promise.all(
+      channels.map(async (channel) => {
+        await destroy(channel.id);
+      })
+    );
+
+    return true;
   } catch (err) {
     console.log(err);
     return null;
