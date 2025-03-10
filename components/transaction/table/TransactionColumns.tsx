@@ -6,6 +6,7 @@ import { formatRupiah } from "@/utils/Rupiah";
 import { CellApprove } from "./CellApprove";
 import { convertBookingSession } from "@/utils/convertBookingSession";
 import { useEffect, useState } from "react";
+import { ArrowUpDown } from "lucide-react";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const TransactionColumns = (
@@ -40,7 +41,16 @@ export const TransactionColumns = (
   },
   {
     accessorKey: "bookingDate",
-    header: "Tanggal Booking",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 px-0 py-2"
+        >
+          Tanggal Booking <ArrowUpDown />
+        </button>
+      );
+    },
     cell: ({ row }) => {
       const [formattedDate, setFormattedDate] = useState<string>("");
 
@@ -87,7 +97,16 @@ export const TransactionColumns = (
   },
   {
     accessorKey: "totalPrice",
-    header: "Total Harga",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 px-0 py-2"
+        >
+          Total Harga <ArrowUpDown />
+        </button>
+      );
+    },
     cell: ({ row }) => <span>Rp{formatRupiah(row.original.totalPrice)}</span>
   },
   {

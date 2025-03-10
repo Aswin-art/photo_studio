@@ -18,7 +18,7 @@ export async function getTransactions() {
                 }
             },
             orderBy: {
-                createdAt: 'desc' 
+                bookingDate: 'desc' 
             }
         });
         return transactions.map(transaction => ({
