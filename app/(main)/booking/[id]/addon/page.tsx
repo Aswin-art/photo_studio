@@ -238,14 +238,13 @@ export default function BookingAddon() {
       (sum, item) => sum + item.quantity * item.price,
       0
     );
-    const subtotal = (studio?.price || 0) + addonsTotal;
 
     if (appliedVoucher) {
-      const discount = subtotal * (appliedVoucher.discount / 100);
-      return subtotal - discount;
+      const discount = (studio?.price || 0) * (appliedVoucher.discount / 100);
+      return (studio?.price || 0) - discount + addonsTotal;
     }
 
-    return subtotal;
+    return (studio?.price || 0) + addonsTotal;
   };
 
   const handleContinue = () => {

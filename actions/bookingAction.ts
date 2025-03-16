@@ -238,9 +238,8 @@ export async function createBooking(
             discountPercentage = voucher.discount ? Number(voucher.discount) : 0;
         }
 
-        const subtotal = studio.price + addonsPrice;
-        const discount = (subtotal * discountPercentage) / 100;
-        const totalPrice = subtotal - discount;
+        const discount = (studio.price * discountPercentage) / 100;
+        const totalPrice = studio.price - discount + addonsPrice;
 
         const booking = await db.customertransaction.create({
             data: {
