@@ -419,7 +419,7 @@ export default function BookingAddon() {
                       }
                       {totalPriceAddon ? 
                           <div className="flex justify-between">
-                            <p className="text-gray-600 text-sm">Subtotal addon</p>
+                            <p className="text-gray-600 text-sm">Tambahan Layanan</p>
                             <p className="text-gray-600 text-sm">Rp{formatRupiah(totalPriceAddon)}</p>
                           </div>
                         : <></>
@@ -496,9 +496,32 @@ export default function BookingAddon() {
           </Button>
         </div>
         <hr className="border-t border-gray-200" />
+        <p className="text-gray-500 text-sm">Rincian Pembayaran</p>
+        <div className="flex flex-col gap-y-2">
+          <div className="flex justify-between">
+            <p className="text-gray-600 text-sm">Harga Studio</p>
+            <p className="text-gray-600 text-sm">Rp{ formatRupiah(studio?.price || 0) }</p>
+          </div>
+          {appliedVoucher ? 
+              <div className="flex justify-between">
+                <p className="text-gray-600 text-sm">Diskon Studio</p>
+                <p className="text-gray-600 text-sm">-Rp{formatRupiah((studio?.price || 0) * (appliedVoucher.discount / 100))}</p>
+              </div>
+            : <></>
+          }
+          {totalPriceAddon ? 
+              <div className="flex justify-between">
+                <p className="text-gray-600 text-sm">Tambahan Layanan</p>
+                <p className="text-gray-600 text-sm">Rp{formatRupiah(totalPriceAddon)}</p>
+              </div>
+            : <></>
+          }
+        </div>
         <div className="flex justify-between">
           <p className="text-gray-800">Total Biaya</p>
-          <p className="text-gray-800">Rp {formatRupiah(calculateTotal())}</p>
+          <p className="text-gray-800">
+            Rp {formatRupiah(calculateTotal())}
+          </p>
         </div>
         <Button className="w-full" onClick={handleContinue}>
           Selanjutnya
