@@ -24,18 +24,23 @@ import Image from "next/image";
 import Link from "next/link";
 import Wrapper from "@/components/wrapper";
 import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 
 const Canvas = dynamic(() => import("@/components/canvas"), {
   ssr: false
 });
 
+const halvePx = (value: string, divider: number = 2): string => {
+  const num = parseFloat(value); // Extract numeric part
+  if (isNaN(num)) return value; // Return null if not a valid number
+  return `${num / divider}px`; // Halve the number and add "px"
+};
+
 const Page = () => {
   const params = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState<any>({
-    id: null,
-    url: null
-  });
+  const [selectedTemplate, setSelectedTemplate] = useState<any>();
+  const [selectedFrame, setSelectedFrame] = useState<number | null>(null);
   const [templateOpacityValue, setTemplateOpacityValue] = useState(0.5);
   const [toggleOpacityTemplate, setToggleOpacityTemplate] = useState(false);
   const [loadingUpload, setLoadingUpload] = useState(false);
@@ -46,7 +51,7 @@ const Page = () => {
     setIsMobile(window.innerWidth <= 768);
   }, []);
 
-  const { addPhoto } = usePhotoStore();
+  const { addPhoto, deletePhoto } = usePhotoStore();
 
   const { data: templates, isLoading: templateLoading } = TemplateQuery();
   const { data: photos, isLoading: photosLoading } = ChannelImageQuery(
@@ -54,6 +59,15 @@ const Page = () => {
   );
 
   const canvasRef = useRef<any>(null);
+
+  const handleFinishEdit = (image: string) => {
+    if (selectedFrame != null) {
+      selectedTemplate.content.element[selectedFrame].src = image;
+
+      setSelectedFrame(null);
+      deletePhoto("0");
+    }
+  };
 
   const handleUpload = async () => {
     if (canvasRef.current) {
@@ -85,15 +99,15 @@ const Page = () => {
   }, [handleResize]);
 
   return (
-    <div className="min-h-screen w-full">
+    <div className="min-h-screen w-full h-[100vh]">
       {!isMobile ? (
         <div className="grid grid-cols-12">
           <div className="hidden md:block col-span-12 md:col-span-4 shadow-2xl h-screen">
             <h3 className="font-bold text-2xl mb-5 text-center bg-primary text-white p-4">
               Pilih Asset Foto / Template
             </h3>
-            <div className="p-2 h-[800px]">
-              <Tabs defaultValue="photo" className="w-full h-full">
+            <div className="p-2 ">
+              <Tabs defaultValue="photo" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="photo">Pilih Foto</TabsTrigger>
                   <TabsTrigger value="template">Pilih Template</TabsTrigger>
@@ -162,40 +176,61 @@ const Page = () => {
                   ) : (
                     <ScrollArea className="h-full">
                       <div className="grid grid-cols-2 gap-2">
-                        {templates?.map((template) => (
-                          <Card
-                            key={template.id}
-                            className={`cursor-pointer hover:border-primary transition-all p-1 ${
-                              selectedTemplate.url === template.image_url
-                                ? "border-2 border-primary"
-                                : ""
-                            }`}
-                            onClick={() => {
-                              if (template.image_url === selectedTemplate.url) {
-                                setSelectedTemplate({
-                                  url: null,
-                                  id: null
-                                });
-                              } else {
-                                setSelectedTemplate({
-                                  url: template.image_url,
-                                  id: template.id
-                                });
-                              }
-                            }}
-                          >
-                            <div className="relative h-auto">
-                              <CldImage
-                                width="960"
-                                height="600"
-                                sizes="100vw"
-                                src={template.public_id}
-                                alt="image-cloud"
-                                className="rounded-md"
-                              />
-                            </div>
-                          </Card>
-                        ))}
+                        {templates?.map(
+                          (template, i) =>
+                            template.content && (
+                              <div
+                                key={i}
+                                className="flex justify-center w-full"
+                                onClick={() => setSelectedTemplate(template)}
+                              >
+                                <div
+                                  key={template}
+                                  className=""
+                                  style={{
+                                    width: halvePx(
+                                      template.content.canvas.width
+                                    ),
+                                    height: halvePx(
+                                      template.content.canvas.height
+                                    ),
+                                    position: "relative"
+                                  }}
+                                >
+                                  {template.content.element
+                                    .sort((a, b) => a.layer - b.layer)
+                                    .map((shape, index) => (
+                                      <div
+                                        key={index}
+                                        style={{
+                                          width: halvePx(shape.width),
+                                          height: halvePx(shape.height),
+                                          position: "absolute",
+                                          left: halvePx(shape.x),
+                                          top: halvePx(shape.y),
+                                          transform: `rotate(${shape.angle}deg)`,
+                                          borderRadius:
+                                            shape.type === "circle"
+                                              ? "50%"
+                                              : `${shape.borderRadius / 2}px`,
+                                          cursor: "grab",
+                                          backgroundColor:
+                                            shape.type === "image"
+                                              ? "transparent"
+                                              : shape.color,
+                                          backgroundImage:
+                                            shape.type === "image"
+                                              ? `url(${shape.src})`
+                                              : "none",
+                                          backgroundSize: "cover",
+                                          zIndex: shape.layer
+                                        }}
+                                      />
+                                    ))}
+                                </div>
+                              </div>
+                            )
+                        )}
                       </div>
                     </ScrollArea>
                   )}
@@ -203,13 +238,13 @@ const Page = () => {
               </Tabs>
             </div>
           </div>
-          <div className="col-span-12 md:col-span-8 p-2 bg-gray-50">
-            <div className="flex flex-col justify-center items-center w-full h-full">
+          <div className="col-span-12 md:col-span-8 p-2 ">
+            <div className="flex flex-col justify-center items-center w-full">
               <div className="flex w-full justify-between">
                 <Button onClick={() => router.push("/")}>
-                      <ArrowLeft /> Back
+                  <ArrowLeft /> Back
                 </Button>
-                <div className="flex w-full justify-end gap-4 mb-10">
+                <div className="flex w-full justify-end gap-4">
                   <div className="flex flex-col gap-2">
                     <Button
                       onClick={() => setToggleOpacityTemplate((prev) => !prev)}
@@ -242,13 +277,129 @@ const Page = () => {
                   </Button>
                 </div>
               </div>
-              <Canvas
-                ref={canvasRef}
-                channelId={params.id as string}
-                templateId={selectedTemplate.id}
-                templateImage={selectedTemplate.url ?? ""}
-                templateOpacity={templateOpacity}
-              />
+            </div>
+            <div className="grid grid-cols-12 gap-3 ">
+              <div className="flex justify-center w-full col-span-9 pt-10">
+                {selectedTemplate && selectedFrame == null && (
+                  <div
+                    className="outline outline-2 outline-blue-500 outline-offset-2"
+                    style={{
+                      width: selectedTemplate.content.canvas.width,
+                      height: selectedTemplate.content.canvas.height,
+                      position: "relative",
+                      margin: "20px auto"
+                    }}
+                  >
+                    {selectedTemplate.content.element
+                      .sort((a, b) => a.layer - b.layer)
+                      .map((shape, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            width: shape.width,
+                            height: shape.height,
+                            position: "absolute",
+                            left: shape.x,
+                            top: shape.y,
+                            transform: `rotate(${shape.angle}deg)`,
+                            borderRadius:
+                              shape.type === "circle"
+                                ? "50%"
+                                : `${shape.borderRadius}px`,
+                            cursor: "grab",
+                            backgroundColor:
+                              shape.type === "image"
+                                ? "transparent"
+                                : shape.color,
+                            backgroundImage:
+                              shape.type === "image"
+                                ? `url(${shape.src})`
+                                : "none",
+                            backgroundSize: "cover",
+                            zIndex: shape.layer
+                          }}
+                        >
+                          {shape.src && shape.type !== "image" ? (
+                            <img
+                              src={shape.src}
+                              alt="shape"
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                                borderRadius:
+                                  shape.type === "circle"
+                                    ? "50%"
+                                    : `${shape.borderRadius}px`
+                              }}
+                            />
+                          ) : null}
+                        </div>
+                      ))}
+                  </div>
+                )}
+                {selectedFrame != null && (
+                  //   <div
+                  //     className="outline outline-2 outline-gray-500 outline-offset-2 rounded flex justify-center items-center"
+                  //     style={{
+                  //       width:
+                  //         selectedTemplate.content.element[selectedFrame].width,
+                  //       height:
+                  //         selectedTemplate.content.element[selectedFrame].height
+                  //     }}
+                  //   >
+                  //     <Plus />
+                  //   </div>
+                  <Canvas
+                    ref={canvasRef}
+                    channelId={params.id as string}
+                    templateId={selectedTemplate.id}
+                    templateImage={selectedTemplate.url ?? ""}
+                    templateOpacity={templateOpacity}
+                    frame={selectedTemplate.content.element[selectedFrame]}
+                    handleFinish={handleFinishEdit}
+                  />
+                )}
+              </div>
+              {selectedTemplate && (
+                <div className="col-span-3 bg-white px-3 py-2.5 pt-10">
+                  {selectedTemplate.content.element
+                    // .filter((q) => q.type != "image")
+                    .map((element, i: number) =>
+                      element.type != "image" ? (
+                        <div
+                          key={i}
+                          className="flex justify-center gap-4 my-4 cursor-pointer"
+                          onClick={() => setSelectedFrame(i)}
+                        >
+                          {element.src ? (
+                            <img
+                              src={element.src}
+                              loading="lazy"
+                              alt="Frame Preview"
+                              className="outline outline-2 outline-gray-500 outline-offset-2 rounded"
+                              style={{
+                                width: halvePx(element.width, 3),
+                                height: halvePx(element.height, 3),
+                                objectFit: "cover"
+                              }}
+                            />
+                          ) : (
+                            <div
+                              className="outline outline-2 outline-gray-500 outline-offset-2 rounded flex justify-center items-center"
+                              style={{
+                                width: halvePx(element.width, 3),
+                                height: halvePx(element.height, 3)
+                              }}
+                            >
+                              <Plus />
+                            </div>
+                          )}
+                        </div>
+                      ) : null
+                    )}
+                </div>
+              )}
             </div>
           </div>
         </div>

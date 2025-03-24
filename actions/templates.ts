@@ -37,6 +37,18 @@ export const update = async (id: string, label?: string) => {
   }
 };
 
+export const setContent = async (jsonText: any, id: string) => {
+  await db.templates.update({
+    where: {
+      id
+    },
+    data: {
+      label: "tes",
+      content: jsonText
+    }
+  });
+};
+
 export const create = async (images: any[]) => {
   try {
     await Promise.all(
@@ -53,6 +65,22 @@ export const create = async (images: any[]) => {
     return true;
   } catch (err) {
     console.log(err);
+    return null;
+  }
+};
+
+export const findUnique = async (id: string) => {
+  try {
+    const template = await db.templates.findUnique({
+      where: { id }
+    });
+
+    return template;
+  } catch (err) {
+    console.error(
+      "Error during retrieval:",
+      err instanceof Error ? err.message : err
+    );
     return null;
   }
 };

@@ -53,10 +53,10 @@ model customertransaction {
 }
 
 model holiday {
-  id          String          @id @default(cuid())
-  date        DateTime        @db.Date
-  description String          @db.VarChar(255)
-  createdAt   DateTime        @default(now())
+  id          String   @id @default(cuid())
+  date        DateTime @db.Date
+  description String   @db.VarChar(255)
+  createdAt   DateTime @default(now())
   updatedAt   DateTime
 }
 
@@ -73,10 +73,10 @@ model studio {
 }
 
 model users {
-  id        String          @id @default(cuid())
-  email     String          @db.VarChar(255)
-  password  String          @db.VarChar(255)
-  createdAt DateTime        @default(now())
+  id        String   @id @default(cuid())
+  email     String   @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now())
   updatedAt DateTime
 }
 
@@ -103,22 +103,23 @@ model Channels {
 }
 
 model ChannelImages {
-  id         String           @id @default(cuid())
-  image_url  String           @db.VarChar(255)
-  public_id  String           @unique @db.VarChar(255)
+  id         String   @id @default(cuid())
+  image_url  String   @db.VarChar(255)
+  public_id  String   @unique @db.VarChar(255)
   channel_id String
-  channels   Channels         @relation(fields: [channel_id], references: [id], onDelete: Cascade)
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
+  channels   Channels @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Templates {
-  id        String            @id @default(cuid())
-  image_url String            @db.VarChar(255)
-  label     String?           @db.VarChar(255)
-  public_id String            @db.VarChar(255)
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  id        String    @id @default(cuid())
+  image_url String    @db.VarChar(255)
+  label     String?   @db.VarChar(255)
+  public_id String    @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  content   Json?
   Results   Results[]
 }
 

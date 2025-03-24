@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { RetrieveQuery } from "@/queries/templateQuery";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 
 interface CellActionProps {
@@ -151,9 +152,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
+          <DropdownMenuItem
+            onClick={() => redirect(`/dashboard/layers/${data.id}`)}
+          >
+            <Edit className="mr-2 h-4 w-4" /> Edit Layer
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpenUpdate(true)}>
-            <Edit className="mr-2 h-4 w-4" /> Update
+            <Edit className="mr-2 h-4 w-4" /> Update Label
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete
