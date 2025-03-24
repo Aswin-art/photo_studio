@@ -44,6 +44,7 @@ export default function BookingAddon() {
   const [phone, setPhone] = useState("");
   const [displayPhone, setDisplayPhone] = useState("");
   const [addonQuantities, setAddonQuantities] = useState<AddonQuantity[]>([]);
+  const [totalPriceAddon, setTotalPriceAddon] = useState<number>(0);
   const [selectedVoucher, setSelectedVoucher] = useState("");
   const [appliedVoucher, setAppliedVoucher] = useState<{
     id: string;
@@ -219,14 +220,6 @@ export default function BookingAddon() {
         description: "Terjadi kesalahan saat booking studio",
         type: "foreground"
       });
-      // toast({
-      //   title: "Error",
-      //   description:
-      //     error instanceof Error
-      //       ? error.message
-      //       : "Terjadi kesalahan saat membuat booking",
-      //   type: "foreground"
-      // });
     } finally {
       setIsSubmitting(false);
       setIsOpen(false);
@@ -234,18 +227,12 @@ export default function BookingAddon() {
   };
 
   const calculateTotal = () => {
-    const addonsTotal = addonQuantities.reduce(
-      (sum, item) => sum + item.quantity * item.price,
-      0
-    );
-    const subtotal = (studio?.price || 0) + addonsTotal;
-
     if (appliedVoucher) {
-      const discount = subtotal * (appliedVoucher.discount / 100);
-      return subtotal - discount;
+      const discount = (studio?.price || 0) * (appliedVoucher.discount / 100);
+      return (studio?.price || 0) - discount + totalPriceAddon;
     }
 
-    return subtotal;
+    return (studio?.price || 0) + totalPriceAddon;
   };
 
   const handleContinue = () => {
@@ -273,6 +260,15 @@ export default function BookingAddon() {
       fetchVoucher();
     }
   }, []);
+
+  useEffect(() => {
+    const addonsTotal = addonQuantities.reduce(
+      (sum, item) => sum + item.quantity * item.price,
+      0
+    );
+
+    setTotalPriceAddon(addonsTotal);
+  }, [addonQuantities]);
 
   useEffect(() => {
     fetchStudios();
@@ -408,6 +404,27 @@ export default function BookingAddon() {
                       </div>
                     )}
                     <hr className="border-t border-gray-200" />
+                    <p className="text-gray-500 text-sm">Rincian Pembayaran</p>
+                    <div className="flex flex-col gap-y-2">
+                      <div className="flex justify-between">
+                        <p className="text-gray-600 text-sm">Harga Studio</p>
+                        <p className="text-gray-600 text-sm">Rp{ formatRupiah(studio?.price || 0) }</p>
+                      </div>
+                      {appliedVoucher ? 
+                          <div className="flex justify-between">
+                            <p className="text-gray-600 text-sm">Diskon Studio</p>
+                            <p className="text-gray-600 text-sm">-Rp{formatRupiah((studio?.price || 0) * (appliedVoucher.discount / 100))}</p>
+                          </div>
+                        : <></>
+                      }
+                      {totalPriceAddon ? 
+                          <div className="flex justify-between">
+                            <p className="text-gray-600 text-sm">Tambahan Layanan</p>
+                            <p className="text-gray-600 text-sm">Rp{formatRupiah(totalPriceAddon)}</p>
+                          </div>
+                        : <></>
+                      }
+                    </div>
                     <div className="flex justify-between">
                       <p className="text-gray-800">Total Biaya</p>
                       <p className="text-gray-800">
@@ -479,9 +496,32 @@ export default function BookingAddon() {
           </Button>
         </div>
         <hr className="border-t border-gray-200" />
+        <p className="text-gray-500 text-sm">Rincian Pembayaran</p>
+        <div className="flex flex-col gap-y-2">
+          <div className="flex justify-between">
+            <p className="text-gray-600 text-sm">Harga Studio</p>
+            <p className="text-gray-600 text-sm">Rp{ formatRupiah(studio?.price || 0) }</p>
+          </div>
+          {appliedVoucher ? 
+              <div className="flex justify-between">
+                <p className="text-gray-600 text-sm">Diskon Studio</p>
+                <p className="text-gray-600 text-sm">-Rp{formatRupiah((studio?.price || 0) * (appliedVoucher.discount / 100))}</p>
+              </div>
+            : <></>
+          }
+          {totalPriceAddon ? 
+              <div className="flex justify-between">
+                <p className="text-gray-600 text-sm">Tambahan Layanan</p>
+                <p className="text-gray-600 text-sm">Rp{formatRupiah(totalPriceAddon)}</p>
+              </div>
+            : <></>
+          }
+        </div>
         <div className="flex justify-between">
           <p className="text-gray-800">Total Biaya</p>
-          <p className="text-gray-800">Rp {formatRupiah(calculateTotal())}</p>
+          <p className="text-gray-800">
+            Rp {formatRupiah(calculateTotal())}
+          </p>
         </div>
         <Button className="w-full" onClick={handleContinue}>
           Selanjutnya
