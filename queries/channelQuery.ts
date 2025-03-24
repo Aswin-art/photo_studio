@@ -5,7 +5,9 @@ import { useQuery } from "react-query";
 export const RetrieveQuery = () => {
   return useQuery({
     queryKey: ["retrieve-channels"],
-    queryFn: () => retrieve()
+    queryFn: () => retrieve(),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
   });
 };
 

@@ -7,9 +7,9 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET
   });
 
-  // if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  // }
+  if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 
   if (!token && request.nextUrl.pathname.startsWith("/profile")) {
     return NextResponse.redirect(new URL("/login", request.url));
