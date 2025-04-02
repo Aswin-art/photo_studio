@@ -23,10 +23,19 @@ type Props = {
   templateOpacity: number;
   channelId: string;
   templateId: string;
+  frame: any;
+  handleFinish: any;
 };
 
 const Canvas = forwardRef(function Canvas(
-  { templateImage, templateOpacity, channelId, templateId }: Props,
+  {
+    templateImage,
+    templateOpacity,
+    channelId,
+    templateId,
+    frame,
+    handleFinish
+  }: Props,
   ref
 ) {
   const [templateUrl] = useImage(templateImage, "anonymous");
@@ -66,6 +75,18 @@ const Canvas = forwardRef(function Canvas(
     setCroppingId(null);
   };
 
+  const handleSave = async () => {
+    if (stageRef.current) {
+      const uri = stageRef.current.toDataURL({
+        pixelRatio: 3
+      });
+
+      const base64Response = await fetch(uri);
+
+      handleFinish(base64Response.url);
+    }
+  };
+
   useImperativeHandle(
     ref,
     () => ({
@@ -88,6 +109,7 @@ const Canvas = forwardRef(function Canvas(
           formData.append("file", blob);
           formData.append("upload_preset", "results");
           formData.append("folder", "results");
+          formData.append("public_id", "f51f695f-353a-491a-b530-58c0cab9d1b5");
           formData.append(
             "api_key",
             process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ?? ""
@@ -151,9 +173,9 @@ const Canvas = forwardRef(function Canvas(
     <div className="grid grid-cols-12 gap-2">
       <Stage
         ref={stageRef}
-        width={800}
-        height={800}
-        className="bg-gray-200 shadow-2xl col-span-11"
+        width={parseFloat(frame.width)}
+        height={parseFloat(frame.height)}
+        className="bg-gray-200 shadow-2xl col-span-11 w-fit h-fit"
         onMouseDown={checkDeselect}
         onTouchStart={checkDeselect}
       >
@@ -162,8 +184,8 @@ const Canvas = forwardRef(function Canvas(
             <Rect
               x={0}
               y={0}
-              width={800}
-              height={800}
+              width={parseFloat(frame.width)}
+              height={parseFloat(frame.height)}
               fill="black"
               opacity={0.5}
               onClick={checkDeselect}
@@ -195,8 +217,8 @@ const Canvas = forwardRef(function Canvas(
               image={templateUrl}
               x={0}
               y={0}
-              width={800}
-              height={800}
+              width={parseFloat(frame.width)}
+              height={parseFloat(frame.height)}
               listening={false}
               opacity={templateOpacity}
             />
@@ -213,7 +235,12 @@ const Canvas = forwardRef(function Canvas(
             <Trash2 size={32} />
           </Button>
         )}
-
+        <Button
+          onClick={() => handleSave()}
+          className="col-span-1 bg-green-500 p-0 text-white w-10 h-10 flex items-center justify-center shadow-lg hover:bg-green-600 transition duration-200"
+        >
+          <Check size={32} />
+        </Button>
         {croppingId && (
           <Button
             onClick={() => setCroppingId(null)}
