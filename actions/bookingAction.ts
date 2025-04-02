@@ -17,9 +17,10 @@ export async function getTransactions() {
                     }
                 }
             },
-            orderBy: {
-                bookingDate: 'desc' 
-            }
+            orderBy: [
+                { bookingDate: 'desc' },
+                { bookingTime: 'desc' }
+            ]
         });
         return transactions.map(transaction => ({
             ...transaction,
