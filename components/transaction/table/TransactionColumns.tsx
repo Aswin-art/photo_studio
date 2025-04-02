@@ -80,7 +80,7 @@ export const TransactionColumns = (
     header: "Layanan Tambahan",
     cell: ({ row }) => {
       const addonNames = row.original.customeraddon
-        .map((item: any) => item.addon.name)
+        .map((item: any) => item.addon.name + ` (${item.quantity})`)
         .join(", ");
       return <span>{addonNames}</span>;
     }
