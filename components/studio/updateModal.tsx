@@ -1,15 +1,11 @@
 "use client";
-import {
-  CldUploadWidget,
-  CloudinaryUploadWidgetResults
-} from "next-cloudinary";
 import { useEffect, useState } from "react";
 import { getStudioById, updateStudio } from "@/actions/studioAction";
-import Image from "next/image";
 import Swal from "sweetalert2";
 import ReactQuill from "react-quill-new";
 import { parseRupiah, formatRupiah } from "@/utils/Rupiah";
 import "react-quill-new/dist/quill.snow.css";
+import { uploadImage, deleteImage } from "@/utils/imageApi";
 
 interface CreateStudioFormProps {
   refreshStudios: () => void;
@@ -25,6 +21,7 @@ export default function UpdateStudioForm({
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+  const [oldImage, setOldImage] = useState("");
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/\D/g, "");
@@ -53,19 +50,32 @@ export default function UpdateStudioForm({
     }
   };
 
-  const handleUpload = (result: CloudinaryUploadWidgetResults) => {
-    if (
-      result.info &&
-      typeof result.info !== "string" &&
-      result.info.secure_url
-    ) {
-      const imagePath = result.info.secure_url;
-      setImage(imagePath);
-      console.log("Uploaded image path:", imagePath);
-    } else {
-      console.error("Upload result does not contain a valid image URL.");
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (oldImage) {
+      try {
+        await deleteImage(oldImage);
+      } catch (error) {
+        console.error("Gagal hapus gambar lama:", error);
+      }
     }
-  };
+
+    try {
+      const imageUrl = await uploadImage(file, "studio");
+      setImage(imageUrl);
+      setOldImage(imageUrl);
+    } catch (error) {
+      console.error("Upload gagal:", error);
+      Swal.fire({
+        title: "Gagal!",
+        text: "Gagal mengupload gambar!",
+        icon: "error"
+      });
+    }
+};
+  
 
   const fetchStudio = async () => {
     console.log("Fetching studio with id:", id);
@@ -76,6 +86,7 @@ export default function UpdateStudioForm({
         setName(fetchedStudio.name);
         setDescription(fetchedStudio.description ?? "");
         setImage(fetchedStudio.image ?? "");
+        setOldImage(fetchedStudio.image ?? "");
         setPrice(formatRupiah(fetchedStudio.price.toString()) ?? "");
       }
     }
@@ -133,27 +144,18 @@ export default function UpdateStudioForm({
                 <label className="block text-sm font-medium text-gray-700">
                   Gambar
                 </label>
-                <CldUploadWidget uploadPreset="studio" onSuccess={handleUpload}>
-                  {({ open }) => {
-                    return (
-                      <button
-                        type="button"
-                        onClick={() => open()}
-                        className="px-3 mt-2 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200"
-                      >
-                        Upload an Image
-                      </button>
-                    );
-                  }}
-                </CldUploadWidget>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="mt-2"
+                />
                 {image && (
                   <div className="mt-2">
-                    <Image
-                      src={image}
-                      alt="Studio Image"
-                      width={200}
-                      height={200}
-                      className="rounded-md"
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_IMAGE_API}${image}`}
+                      alt="Studio Image Preview"
+                      className="w-[300px] h-auto rounded-md"
                     />
                   </div>
                 )}
