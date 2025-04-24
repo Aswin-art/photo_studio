@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import AddonCard from "@/components/booking/AddonCard";
 import Wrapper from "@/components/wrapper";
 import { getStudioById } from "@/actions/studioAction";
-import { getAddons } from "@/actions/addonAction";
+import { getNonBackgroundAddons, getBackgroundAddons } from "@/actions/addonAction";
 import { Studio, Addon, AddonQuantity } from "@/types";
 import { Card } from "@/components/ui/card";
 import { dateConvert } from "@/utils/dateConvert";
@@ -28,6 +28,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { createBooking } from "@/actions/bookingAction";
 import { formatPhoneNumber } from "@/utils/FormatPhoneNumber";
+import AddonColorCard from "@/components/booking/AddonColorCard";
 
 export default function BookingAddon() {
   const { id } = useParams();
@@ -46,6 +47,8 @@ export default function BookingAddon() {
   const [addonQuantities, setAddonQuantities] = useState<AddonQuantity[]>([]);
   const [totalPriceAddon, setTotalPriceAddon] = useState<number>(0);
   const [selectedVoucher, setSelectedVoucher] = useState("");
+  const [selectedBackgroundAddon, setSelectedBackgroundAddon] = useState<Addon | null>(null);
+  const [addonBackground, setAddonBackground] = useState<Addon[]>([]);
   const [appliedVoucher, setAppliedVoucher] = useState<{
     id: string;
     name: string;
@@ -77,17 +80,23 @@ export default function BookingAddon() {
 
   const fetchAddon = async () => {
     try {
-      const data = await getAddons();
+      const data = await getNonBackgroundAddons();
+      const backgroundData = await getBackgroundAddons();
       if (data) {
         setAddon(data);
       } else {
         console.error("No Addon data found");
       }
+      if (backgroundData) setAddonBackground(backgroundData);
     } catch (error) {
       console.error("Failed to fetch addons:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSelectBackgroundAddon = (addon: Addon) => {
+    setSelectedBackgroundAddon((prev) => (prev?.id === addon.id ? null : addon));
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,6 +201,13 @@ export default function BookingAddon() {
           quantity: addon.quantity
         }));
 
+      if (selectedBackgroundAddon) {
+        selectedAddons.push({
+          addonId: selectedBackgroundAddon.id,
+          quantity: 1
+        });
+      }
+
       const booking = await createBooking(
         id as string,
         storedBookingDate,
@@ -227,12 +243,17 @@ export default function BookingAddon() {
   };
 
   const calculateTotal = () => {
-    if (appliedVoucher) {
-      const discount = (studio?.price || 0) * (appliedVoucher.discount / 100);
-      return (studio?.price || 0) - discount + totalPriceAddon;
-    }
+    let total = studio?.price || 0;
 
-    return (studio?.price || 0) + totalPriceAddon;
+    if (appliedVoucher) {
+      const discount = total * (appliedVoucher.discount / 100);
+      total -= discount;
+    }
+  
+    total += totalPriceAddon;
+    total += selectedBackgroundAddon ? selectedBackgroundAddon.price : 0;
+  
+    return total;
   };
 
   const handleContinue = () => {
@@ -336,6 +357,17 @@ export default function BookingAddon() {
                       Pilih layanan Tambahan
                     </p>
                     <div className="flex flex-col gap-y-2">
+                      {addonBackground.map((item) => (
+                        <AddonColorCard
+                          id={item.id}
+                          key={item.id}
+                          title={item.name}
+                          price={item.price}
+                          colorHex={item.colorHex || "#FFFFFF"}
+                          isSelected={selectedBackgroundAddon?.id === item.id}
+                          onSelected={() => handleSelectBackgroundAddon(item)}
+                        />
+                      ))}
                       {addon ? (
                         addon.map((item) => (
                           <AddonCard
@@ -417,6 +449,14 @@ export default function BookingAddon() {
                           </div>
                         : <></>
                       }
+                      {selectedBackgroundAddon && (
+                        <div className="flex justify-between">
+                          <p className="text-gray-600 text-sm">{selectedBackgroundAddon.name}</p>
+                          <p className="text-gray-600 text-sm">
+                            Rp{formatRupiah(selectedBackgroundAddon.price)}
+                          </p>
+                        </div>
+                      )}
                       {totalPriceAddon ? 
                           <div className="flex justify-between">
                             <p className="text-gray-600 text-sm">Tambahan Layanan</p>
@@ -444,6 +484,17 @@ export default function BookingAddon() {
       <div className="p-6 flex flex-col gap-y-4 border-t rounded-t-md md:hidden">
         <p className="text-gray-600 text-sm">Pilih layanan Tambahan</p>
         <div className="flex flex-col gap-y-2">
+        {addonBackground.map((item) => (
+            <AddonColorCard
+              id={item.id}
+              key={item.id}
+              title={item.name}
+              price={item.price}
+              colorHex={item.colorHex || "#FFFFFF"}
+              isSelected={selectedBackgroundAddon?.id === item.id}
+              onSelected={() => handleSelectBackgroundAddon(item)}
+            />
+          ))}
           {addon ? (
             addon.map((item) => (
               <AddonCard
@@ -509,6 +560,14 @@ export default function BookingAddon() {
               </div>
             : <></>
           }
+          {selectedBackgroundAddon && (
+            <div className="flex justify-between">
+              <p className="text-gray-600 text-sm">{selectedBackgroundAddon.name}</p>
+              <p className="text-gray-600 text-sm">
+                Rp{formatRupiah(selectedBackgroundAddon.price)}
+              </p>
+            </div>
+          )}
           {totalPriceAddon ? 
               <div className="flex justify-between">
                 <p className="text-gray-600 text-sm">Tambahan Layanan</p>

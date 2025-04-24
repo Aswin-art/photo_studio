@@ -32,6 +32,11 @@ export const AddonColumns = (refreshAddons: () => void): ColumnDef<any>[] => [
     cell: ({ row }) => <span>Rp{formatRupiah(row.original.price)}</span>
   },
   {
+    accessorKey: "colorHex",
+    header: "Kode Heksa",
+    cell: ({ row }) => <span>{row.original.colorHex ? row.original.colorHex : "-"}</span>
+  },
+  {
     id: "actions",
     header: "ACTIONS",
     cell: ({ row }) => (

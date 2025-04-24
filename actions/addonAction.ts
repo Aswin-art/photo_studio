@@ -4,7 +4,9 @@ import { db } from "@/lib/db";
 export async function getAddons() {
     try {
         const addons = await db.addon.findMany({
-            where: { is_deleted: false },
+            where: { 
+                is_deleted: false,
+             },
         });
         return addons;
     } catch (err) {
@@ -12,12 +14,42 @@ export async function getAddons() {
     }
 }
 
-export async function createAddon(name: string, price: number) {
+export async function getNonBackgroundAddons() {
+    try {
+        const addons = await db.addon.findMany({
+            where: { 
+                is_deleted: false,
+                isBackground: false,
+             },
+        });
+        return addons;
+    } catch (err) {
+        throw new Error(`Failed to get addons: ${err}`);
+    }
+}
+
+export async function getBackgroundAddons() {
+    try {
+        const addons = await db.addon.findMany({
+            where: { 
+                is_deleted: false,
+                isBackground: true,
+             },
+        });
+        return addons;
+    } catch (err) {
+        throw new Error(`Failed to get addons: ${err}`);
+    }
+}
+
+export async function createAddon(name: string, price: number, isBackground: boolean, colorHex?: string | null) {
     try {
         const addon = await db.addon.create({
             data: {
                 name,
                 price,
+                isBackground,
+                colorHex: colorHex || null,
                 updatedAt: new Date()
             },
         });
@@ -53,7 +85,7 @@ export async function getAddonById(id: string) {
     }
 }
 
-export async function updateAddon(id: string, data: { name: string; price: number }) {
+export async function updateAddon(id: string, data: { name: string; price: number, isBackground: boolean, colorHex?: string | null }) {
     try {
         const addon = await db.addon.update({
             where: {

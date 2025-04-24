@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { formatRupiah, parseRupiah } from "@/utils/Rupiah";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface ListAddonProps {
   addon: Addon[];
@@ -34,18 +35,25 @@ export default function ListAddon({
 }: ListAddonProps) {
   const [formData, setFormData] = useState({
     name: "",
-    price: ""
+    price: "",
+    isBackground: false,
+    colorHex: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
 
     if (name === "price") {
       const rawValue = value.replace(/\D/g, "");
       setFormData({ ...formData, price: formatRupiah(rawValue) });
+    } else if (type === "radio") {
+      setFormData({ ...formData, isBackground: value === "true"});
+    } else if (name === "colorHex") {
+      const hexValue = value.replace(/[^0-9A-Fa-f]/g, "");
+      setFormData({ ...formData, colorHex: hexValue });
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -60,13 +68,23 @@ export default function ListAddon({
     setIsSubmitting(true);
 
     try {
-      await createAddon(formData.name, parseRupiah(formData.price));
+      await createAddon(
+        formData.name,
+        parseRupiah(formData.price),
+        formData.isBackground,
+        formData.isBackground ? '#' + formData.colorHex : null
+      );
       toast({
         title: "Berhasil",
         description: "Addon berhasil dibuat",
         type: "foreground"
       });
-      setFormData({ name: "", price: "" });
+      setFormData({    
+        name: "",
+        price: "",
+        isBackground: false,
+        colorHex: ""
+      });
       refreshAddons();
       setIsDialogOpen(false);
     } catch (error: any) {
@@ -87,11 +105,11 @@ export default function ListAddon({
           <DialogTrigger asChild>
             <Button>Buat Addon</Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[625px]">
             <DialogHeader>
               <DialogTitle>Buat Addon</DialogTitle>
               <DialogDescription>
-                Masukkan detail addon diskon yang baru.
+                Masukkan detail addon yang baru.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="grid gap-4 py-4">
@@ -123,6 +141,49 @@ export default function ListAddon({
                   required
                 />
               </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Apakah Custom Background?</Label>
+                <RadioGroup
+                  defaultValue={formData.isBackground ? "true" : "false"}
+                  onValueChange={(value) => setFormData({ ...formData, isBackground: value === "true" })}
+                  className="col-span-3 flex gap-4"
+                >
+                  <div className="flex gap-x-2">
+                    <Label htmlFor="yes" className="mr-2">Ya</Label>
+                    <RadioGroupItem value="true" id="yes" />
+                    <Label htmlFor="no" className="mr-2">Tidak</Label>
+                    <RadioGroupItem value="false" id="no" />
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {formData.isBackground && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="colorHex" className="text-right">
+                    Kode Heksa
+                  </Label>
+                  <div className="flex items-center gap-1 col-span-3 border border-gray-200 rounded-md shadow-sm">
+                    <Label
+                      htmlFor="colorHex"
+                      className="text-center p-[10px] border-r border-gray-200"
+                    >
+                      #
+                    </Label>
+                    <Input
+                      id="colorHex"
+                      name="colorHex"
+                      value={formData.colorHex}
+                      onChange={handleInputChange}
+                      placeholder={`000000`}
+                      className="col-span-3 border-0 shadow-none"
+                      minLength={3}
+                      maxLength={6}
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+
               <DialogFooter>
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "Menyimpan..." : "Simpan"}

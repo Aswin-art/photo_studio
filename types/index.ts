@@ -31,6 +31,8 @@ export type Addon = {
   id: string;
   name: string;
   price: number;
+  isBackground: boolean;
+  colorHex: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -85,4 +87,13 @@ export interface AddonCardProps {
   price: number;
   quantity: number;
   onQuantityChange: (quantity: number) => void;
+}
+
+export interface AddonColorCardProps {
+  id: string;
+  title: string;
+  price: number;
+  colorHex: string;
+  isSelected: boolean;
+  onSelected: (quantity: boolean) => void;
 }

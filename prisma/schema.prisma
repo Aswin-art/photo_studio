@@ -11,9 +11,11 @@ model addon {
   id            String          @id @default(cuid())
   name          String          @db.VarChar(255)
   price         Int
-  is_deleted    Boolean         @default(false)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime
+  is_deleted    Boolean         @default(false)
+  colorHex      String?         @db.VarChar(7)
+  isBackground  Boolean         @default(false)
   customeraddon customeraddon[]
 }
 
