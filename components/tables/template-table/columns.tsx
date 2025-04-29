@@ -5,8 +5,8 @@ import { CellAction } from "./cell-action";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { CldImage } from "next-cloudinary";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const columns: ColumnDef<any>[] = [
@@ -33,12 +33,13 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: "image",
     header: "Gambar Template",
     cell: ({ row }) => (
-      <CldImage
+      <Image
+        unoptimized
         width="200"
         height="200"
         sizes="100vw"
-        src={row.original.public_id}
         alt="image-cloud"
+        src={process.env.NEXT_PUBLIC_IMAGE_API + row.original.image_url}
       />
     )
   },

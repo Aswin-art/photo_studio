@@ -13,25 +13,34 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
 import React from "react";
-import { CldUploadWidget } from "next-cloudinary";
-import { create } from "@/actions/templates";
 import { toast } from "@/hooks/use-toast";
 import { RetrieveQuery } from "@/queries/templateQuery";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { uploadImage } from "@/utils/imageApi";
 
 const Page = () => {
-  const photos: any[] = [];
-
+  const [photos, setPhotos] = React.useState<any>([]);
+  const [open, setOpen] = React.useState<boolean>(false);
   const { data, refetch } = RetrieveQuery();
 
-  const handleUploadSuccess = async (results: any) => {
-    if (results) {
-      photos.push({
-        image_url: results.url,
-        public_id: results.public_id
-      });
-    } else {
-      console.log(results);
+  const handleUploadSuccess = async (files: any) => {
+    if (files.length > 0) {
+      setPhotos(files);
     }
+
+    return toast({
+      title: "Failed",
+      description: "Upload minimal 1 gambar!"
+    });
   };
 
   const handleInsertDataToDatabase = async () => {
@@ -44,7 +53,7 @@ const Page = () => {
     }
 
     try {
-      const result = await create(photos as any[]);
+      const result = await uploadImage(photos, "Templates");
 
       if (result) {
         refetch();
@@ -61,6 +70,8 @@ const Page = () => {
       });
       return null;
     }
+
+    setOpen(false);
   };
   return (
     <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
@@ -88,23 +99,47 @@ const Page = () => {
           </p>
         </div>
 
-        <CldUploadWidget
-          options={{ sources: ["local"] }}
-          uploadPreset="templates"
-          onSuccess={(result) => {
-            handleUploadSuccess(result?.info);
-          }}
-          onClose={() => handleInsertDataToDatabase()}
-        >
-          {({ open }) => {
-            return (
-              <Button onClick={() => open()}>
-                <Plus />
+        <div className="flex items-center gap-2">
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
                 Tambah Template
               </Button>
-            );
-          }}
-        </CldUploadWidget>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Upload Template Baru</DialogTitle>
+                <DialogDescription>
+                  Minimal upload 1 gambar ynag ingin dijadikan template.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="flex flex-col gap-4">
+                  <Input
+                    id="images"
+                    type="file"
+                    multiple
+                    className="col-span-3"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const files = e.target.files;
+                      if (files) {
+                        const fileArray = Array.from(files);
+                        handleUploadSuccess(fileArray);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button onClick={handleInsertDataToDatabase}>
+                  Save changes
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <Separator />

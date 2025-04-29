@@ -9,8 +9,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "http",
-        hostname: "localhost",
-        port: "8000"
+        hostname: "*"
       }
     ]
   },
@@ -28,6 +27,5 @@ const nextConfig: NextConfig = {
     ];
   }
 };
-
 
 export default nextConfig;
