@@ -17,6 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "@/components/ui/alert-dialog";
+import { deleteImage } from "@/utils/imageApi";
 
 export default function StudioCard({
   studio,
@@ -34,6 +35,9 @@ export default function StudioCard({
     setIsDeleting(true);
     try {
       await deleteStudio(id);
+      if (studio.image) {
+        await deleteImage(studio.image);
+      }
       refreshStudios();
     } catch (error) {
       alert("Failed to delete studio.");
@@ -73,7 +77,7 @@ export default function StudioCard({
       <div className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
         {studio.image ? (
           <Image
-            src={studio.image}
+            src={`${process.env.NEXT_PUBLIC_IMAGE_API}${studio.image}`}
             alt={studio.name}
             width={400}
             height={400}

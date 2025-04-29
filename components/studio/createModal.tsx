@@ -1,15 +1,11 @@
 "use client";
-import {
-  CldUploadWidget,
-  CloudinaryUploadWidgetResults
-} from "next-cloudinary";
 import { useState } from "react";
 import { createStudio } from "@/actions/studioAction";
-import Image from "next/image";
 import Swal from "sweetalert2";
 import ReactQuill from "react-quill-new";
 import { formatRupiah, parseRupiah } from "@/utils/Rupiah";
 import "react-quill-new/dist/quill.snow.css";
+import { uploadImage, deleteImage } from "@/utils/imageApi";
 
 export default function CreateStudioForm({
   refreshStudios
@@ -50,14 +46,25 @@ export default function CreateStudioForm({
     }
   };
 
-  const handleUpload = (result: CloudinaryUploadWidgetResults) => {
-    const info = result.info as { secure_url: string };
-
-    if (info && info.secure_url) {
-      setImage(info.secure_url);
-      console.log("Uploaded image path:", info.secure_url);
-    } else {
-      console.error("Upload result does not contain a valid image URL.");
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+  
+    try {
+      if (image) {
+        await deleteImage(image);
+        setImage("");
+      }
+  
+      const imageUrl = await uploadImage(file, "studio");
+      setImage(imageUrl);
+    } catch (error) {
+      console.error("Upload error:", error);
+      Swal.fire({
+        title: "Gagal!",
+        text: "Gagal mengupload gambar!",
+        icon: "error"
+      });
     }
   };
 
@@ -76,7 +83,6 @@ export default function CreateStudioForm({
             <div className="text-center mb-6">
               <h2 className="text-2xl font-semibold mb-2">Buat Studio</h2>
               <p className="text-gray-500">
-                Isi form untuk membuat studio baru
               </p>
             </div>
 
@@ -115,33 +121,19 @@ export default function CreateStudioForm({
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Gambar
-                </label>
-                <CldUploadWidget
-                  uploadPreset="studio"
-                  onSuccess={(result) => handleUpload(result)}
-                >
-                  {({ open }) => {
-                    return (
-                      <button
-                        type="button"
-                        onClick={() => open()}
-                        className="px-3 mt-2 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200"
-                      >
-                        Upload an Image
-                      </button>
-                    );
-                  }}
-                </CldUploadWidget>
+                <label className="block text-sm font-medium text-gray-700">Gambar</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="mt-2"
+                />
                 {image && (
                   <div className="mt-2">
-                    <Image
-                      src={image}
-                      alt="Studio Image"
-                      width={200}
-                      height={200}
-                      className="rounded-md"
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_IMAGE_API}${image}`}
+                      alt="Studio Image Preview"
+                      className="w-[300px] h-auto rounded-md"
                     />
                   </div>
                 )}

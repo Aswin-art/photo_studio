@@ -27,7 +27,7 @@ export default function StudioCard({
             <div className="flex flex-col border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                 {studio.image ? (
                     <Image
-                    src={studio.image}
+                    src={`${process.env.NEXT_PUBLIC_IMAGE_API}${studio.image}`}
                     alt={studio.name}
                     width={400}
                     height={400}

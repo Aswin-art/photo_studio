@@ -6,15 +6,18 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "*"
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8000"
       }
     ]
   },
   eslint: {
     ignoreDuringBuilds: true
   },
-
   reactStrictMode: false,
-
   async redirects() {
     return [
       {
@@ -25,5 +28,6 @@ const nextConfig: NextConfig = {
     ];
   }
 };
+
 
 export default nextConfig;
