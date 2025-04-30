@@ -2,7 +2,7 @@
 export async function uploadImage(
   files: File | File[],
   type: string,
-  id?: number
+  id?: string
 ): Promise<string> {
   const formData = new FormData();
   const filesArray = Array.isArray(files) ? files : [files];
@@ -11,7 +11,7 @@ export async function uploadImage(
     formData.append("images[]", file);
   });
   formData.append("type", type);
-  if (id) formData.append("id", id.toString());
+  if (id) formData.append("id", id);
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_IMAGE_API}/api/image-upload`,
@@ -20,6 +20,8 @@ export async function uploadImage(
       body: formData
     }
   );
+
+  console.log("res", res);
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Upload failed");

@@ -67,8 +67,7 @@ export const insertImages = async (
         await db.channelImages.create({
           data: {
             channel_id,
-            image_url: image.image_url,
-            public_id: image.public_id
+            image_url: image.image_url
           }
         });
       })
@@ -81,7 +80,7 @@ export const insertImages = async (
   }
 };
 
-export const create = async (images: any[]) => {
+export const create = async () => {
   try {
     const code = await generateChannelCode();
 
@@ -91,11 +90,7 @@ export const create = async (images: any[]) => {
       }
     });
 
-    if (channels) {
-      const channelImages = await insertImages(channels.id, images);
-
-      return channelImages;
-    }
+    return channels;
   } catch (err) {
     console.log(err);
     return null;
@@ -167,7 +162,7 @@ export const destroy = async (id: string) => {
     }
 
     for (const image of channel.ChannelImages) {
-      const public_id = image.public_id;
+      const public_id = image.id;
 
       try {
         await cloudinary.uploader.destroy(
@@ -219,7 +214,7 @@ export const deleteChannelImage = async (public_id: string) => {
 
     const image = await db.channelImages.findFirst({
       where: {
-        public_id
+        id: public_id
       }
     });
 

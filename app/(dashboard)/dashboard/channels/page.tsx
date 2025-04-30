@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import React, { useState } from "react";
 import { columns } from "@/components/tables/channel-table/columns";
 import DataTable from "@/components/tables/channel-table/data-table";
 import {
@@ -12,56 +13,77 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
-import React from "react";
-import { CldUploadWidget } from "next-cloudinary";
-import { create } from "@/actions/channels";
 import { toast } from "@/hooks/use-toast";
 import { RetrieveQuery } from "@/queries/channelQuery";
 
-const Page = () => {
-  const photos: any[] = [];
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { create } from "@/actions/channels";
+import { uploadImage } from "@/utils/imageApi";
 
+const Page = () => {
   const { data, refetch } = RetrieveQuery();
 
-  const handleUploadSuccess = async (results: any) => {
-    if (results) {
-      photos.push({
-        image_url: results.url,
-        public_id: results.public_id
-      });
-    } else {
-      console.log(results);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | File[] | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      setSelectedFile(fileArray);
     }
   };
 
   const handleInsertDataToDatabase = async () => {
-    if (!photos || photos.length <= 0) {
+    if (!selectedFile) {
       return toast({
         title: "Failed",
-        description:
-          "Data channel gagal dibuat, harap periksa data kembali sebelum submit!"
+        description: "Silakan pilih file gambar sebelum submit!"
       });
     }
 
+    setIsUploading(true);
     try {
-      const result = await create(photos as any[]);
+      const channel = await create();
 
-      if (result) {
-        refetch();
-        toast({
-          title: "Success",
-          description: "Channel baru telah berhasil dibuat!"
-        });
+      if (channel) {
+        const req = await uploadImage(
+          selectedFile,
+          "ChannelImages",
+          channel.id
+        );
+
+        if (req) {
+          refetch();
+          toast({
+            title: "Success",
+            description: "Channel baru telah berhasil dibuat!"
+          });
+          setIsOpen(false);
+          setSelectedFile(null);
+        }
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast({
         title: "Failed",
-        description: "Server mengalami masalah!"
+        description: "Server mengalami masalah saat upload!"
       });
-      return null;
+    } finally {
+      setIsUploading(false);
     }
   };
+
   return (
     <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
       <Breadcrumb>
@@ -86,23 +108,44 @@ const Page = () => {
           </p>
         </div>
 
-        <CldUploadWidget
-          options={{ sources: ["local"] }}
-          uploadPreset="channels"
-          onSuccess={(result) => {
-            handleUploadSuccess(result?.info);
-          }}
-          onClose={() => handleInsertDataToDatabase()}
-        >
-          {({ open }) => {
-            return (
-              <Button onClick={() => open()}>
-                <Plus />
-                Tambah Channel
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button onClick={() => setIsOpen(true)}>
+              <Plus /> Tambah Channel
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Upload Gambar Channel</DialogTitle>
+              <DialogDescription>Upload minimal 1 gambar.</DialogDescription>
+            </DialogHeader>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              multiple
+              disabled={isUploading}
+            />
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsOpen(false);
+                  setSelectedFile(null);
+                }}
+                disabled={isUploading}
+              >
+                Batal
               </Button>
-            );
-          }}
-        </CldUploadWidget>
+              <Button
+                onClick={handleInsertDataToDatabase}
+                disabled={isUploading || !selectedFile}
+              >
+                {isUploading ? "Uploading..." : "Submit"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Separator />
