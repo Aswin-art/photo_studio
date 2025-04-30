@@ -26,10 +26,20 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { Loader2, Plus, Trash } from "lucide-react";
-import { deleteChannelImage, insertImages, update } from "@/actions/channels";
+import { deleteChannelImage, update } from "@/actions/channels";
 import { toast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import Image from "next/image";
+import { uploadImage } from "@/utils/imageApi";
 
 const formSchema = z.object({
   email: z
@@ -44,7 +54,9 @@ const formSchema = z.object({
 
 const Page = () => {
   const params = useParams();
-  const photos: any[] = [];
+  const [isOpen, setIsOpen] = useState(false);
+  const [images, setImages] = useState<File | File[] | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema)
@@ -56,30 +68,32 @@ const Page = () => {
 
   const { data, isLoading, refetch } = FindQuery(params.id as string);
 
-  const handleUploadSuccess = async (results: any) => {
-    if (results) {
-      photos.push({
-        image_url: results.url,
-        public_id: results.public_id
-      });
-    } else {
-      console.log("Unexpected result format:", results);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      setImages(fileArray);
     }
   };
 
   const handleInsertDataToDatabase = async () => {
-    if (!photos || photos.length <= 0) {
+    if (!images) {
       return toast({
         title: "Failed",
         description: "Data gambar gagal ditambahkan!"
       });
     }
 
-    try {
-      const result = await insertImages(params.id as string, photos as any[]);
-      console.log(result);
+    setIsUploading(true);
 
-      if (result) {
+    try {
+      const req = await uploadImage(
+        images,
+        "ChannelImages",
+        params.id as string
+      );
+
+      if (req) {
         refetch();
         toast({
           title: "Success",
@@ -93,12 +107,16 @@ const Page = () => {
         description: "Server mengalami masalah!"
       });
       return null;
+    } finally {
+      setIsUploading(false);
+      setIsOpen(false);
+      setImages(null);
     }
   };
 
-  const handleDeleteImage = async (public_id: string) => {
+  const handleDeleteImage = async (id: string) => {
     setLoadingDelete(true);
-    const deleteImage = await deleteChannelImage(public_id);
+    const deleteImage = await deleteChannelImage(id);
 
     if (deleteImage) {
       toast({
@@ -156,7 +174,7 @@ const Page = () => {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink href="/dashboard/channels">
-                Detail Channel
+                Channel
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -239,22 +257,46 @@ const Page = () => {
 
               <div className="flex justify-between items-center">
                 <p className="font-bold text-xl">Daftar Gambar</p>
-                <CldUploadWidget
-                  options={{ sources: ["local"] }}
-                  uploadPreset="channels"
-                  onSuccess={(result) => {
-                    handleUploadSuccess(result?.info);
-                  }}
-                  onClose={() => handleInsertDataToDatabase()}
-                >
-                  {({ open }) => {
-                    return (
-                      <Button type="button" onClick={() => open()}>
-                        <Plus className="mr-2 h-4 w-4" /> Tambah Gambar
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogTrigger asChild>
+                    <Button onClick={() => setIsOpen(true)}>
+                      <Plus /> Tambah Gambar
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Upload Gambar Channel</DialogTitle>
+                      <DialogDescription>
+                        Upload minimal 1 gambar.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      multiple
+                      disabled={isUploading}
+                    />
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setImages(null);
+                        }}
+                        disabled={isUploading}
+                      >
+                        Batal
                       </Button>
-                    );
-                  }}
-                </CldUploadWidget>
+                      <Button
+                        onClick={handleInsertDataToDatabase}
+                        disabled={isUploading || !images}
+                      >
+                        {isUploading ? "Uploading..." : "Submit"}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
 
               <Separator />
@@ -262,11 +304,11 @@ const Page = () => {
               <div className="relative grid grid-cols-2 gap-4">
                 {data?.ChannelImages.map((image) => (
                   <div key={image.id} className="relative">
-                    <CldImage
+                    <Image
                       width="960"
                       height="600"
                       sizes="100vw"
-                      src={image.public_id}
+                      src={process.env.NEXT_PUBLIC_IMAGE_API + image.image_url}
                       alt="image-cloud"
                       className="hover:opacity-75 transition-opacity duration-300"
                     />
@@ -276,7 +318,7 @@ const Page = () => {
                         size={"lg"}
                         type="button"
                         disabled={loadingDelete}
-                        onClick={() => handleDeleteImage(image.public_id)}
+                        onClick={() => handleDeleteImage(image.id)}
                       >
                         {loadingDelete ? (
                           <div className="flex gap-2 items-center justify-center">

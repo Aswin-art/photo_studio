@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import cloudinary from "@/lib/cloudinary";
 import { db } from "@/lib/db";
 import { subDays } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
@@ -161,32 +160,6 @@ export const destroy = async (id: string) => {
       return null;
     }
 
-    for (const image of channel.ChannelImages) {
-      const public_id = image.id;
-
-      try {
-        await cloudinary.uploader.destroy(
-          public_id,
-          {
-            invalidate: true
-          },
-          (error, result) => {
-            if (error) {
-              console.log(error);
-
-              return null;
-            } else {
-              console.log(result);
-
-              return true;
-            }
-          }
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
     await db.channels.delete({
       where: {
         id
@@ -200,35 +173,15 @@ export const destroy = async (id: string) => {
   }
 };
 
-export const deleteChannelImage = async (public_id: string) => {
+export const deleteChannelImage = async (id: string) => {
   try {
-    const cloudinaryResult = await cloudinary.uploader.destroy(public_id, {
-      invalidate: true
-    });
-
-    if (cloudinaryResult.result !== "ok") {
-      console.log("masuk sini");
-      console.log(cloudinaryResult);
-      return null;
-    }
-
-    const image = await db.channelImages.findFirst({
+    const deleteAction = await db.channelImages.delete({
       where: {
-        id: public_id
+        id
       }
     });
 
-    if (image) {
-      const deleteAction = await db.channelImages.delete({
-        where: {
-          id: image.id
-        }
-      });
-
-      return deleteAction;
-    } else {
-      return null;
-    }
+    return deleteAction;
   } catch (err: any) {
     console.log("error", err.result);
     return null;
