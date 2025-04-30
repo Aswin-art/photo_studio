@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import cloudinary from "@/lib/cloudinary";
 import { db } from "@/lib/db";
 
 export const retrieve = async () => {
@@ -55,8 +54,7 @@ export const create = async (images: any[]) => {
       images.map(async (image) => {
         await db.templates.create({
           data: {
-            image_url: image.image_url,
-            public_id: image.public_id
+            image_url: image.image_url
           }
         });
       })
@@ -96,30 +94,32 @@ export const destroy = async (id: string) => {
     if (!templates) {
       return null;
     }
-    await cloudinary.uploader.destroy(
-      templates.public_id,
+
+    const deleteImage = await fetch(
+      process.env.NEXT_PUBLIC_IMAGE_API + "/api/image-delete",
       {
-        invalidate: true
-      },
-      async (error, result) => {
-        if (error) {
-          console.log(error);
-
-          return null;
-        } else {
-          await db.templates.delete({
-            where: {
-              id
-            }
-          });
-          console.log(result.result);
-
-          return true;
+        method: "POST",
+        body: JSON.stringify({
+          path: templates.image_url
+        }),
+        headers: {
+          "Content-Type": "application/json"
         }
       }
     );
 
-    return true;
+    if (deleteImage.ok) {
+      const deleteTemplate = await db.templates.delete({
+        where: {
+          id
+        }
+      });
+
+      return deleteTemplate;
+    } else {
+      console.log("Failed to delete image from server");
+      return null;
+    }
   } catch (err) {
     console.log(err);
     return null;
