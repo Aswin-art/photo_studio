@@ -33,7 +33,7 @@ export async function deleteImage(path: string) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_IMAGE_API}/api/image-delete`,
     {
-      method: "DELETE",
+      method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
