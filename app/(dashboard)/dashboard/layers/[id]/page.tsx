@@ -9,10 +9,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Trash, Upload } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { FindUniqueQuery } from "@/queries/templateQuery";
-import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { setContent } from "@/actions/templates";

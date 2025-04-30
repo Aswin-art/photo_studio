@@ -16,15 +16,13 @@ import dynamic from "next/dynamic";
 import { Slider } from "@/components/ui/slider";
 import { RetrieveQuery as TemplateQuery } from "@/queries/templateQuery";
 import { FindQuery as ChannelImageQuery } from "@/queries/channelQuery";
-import { ArrowLeft, Loader2 } from "lucide-react";
-import { CldImage } from "next-cloudinary";
-import { useParams } from "next/navigation";
+import { ArrowLeft, Loader2, Plus } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { usePhotoStore } from "@/stores/usePhotoStore";
 import Image from "next/image";
 import Link from "next/link";
 import Wrapper from "@/components/wrapper";
-import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Canvas = dynamic(() => import("@/components/canvas"), {
   ssr: false
@@ -75,7 +73,10 @@ const Page = () => {
       await canvasRef.current.uploadImage();
       setLoadingUpload(false);
     } else {
-      console.log("func not ready");
+      return toast({
+        title: "Failed",
+        description: "Ulangi lagi, fungsi belum siap!"
+      });
     }
   };
 
@@ -140,11 +141,14 @@ const Page = () => {
                             }}
                           >
                             <div className="relative h-auto">
-                              <CldImage
+                              <Image
                                 width="960"
                                 height="600"
                                 sizes="100vw"
-                                src={photo.public_id}
+                                src={
+                                  process.env.NEXT_PUBLIC_IMAGE_API +
+                                  photo.image_url
+                                }
                                 alt="image-cloud"
                                 className="rounded-md"
                               />
@@ -338,18 +342,7 @@ const Page = () => {
                       ))}
                   </div>
                 )}
-                {selectedFrame != null && (
-                  //   <div
-                  //     className="outline outline-2 outline-gray-500 outline-offset-2 rounded flex justify-center items-center"
-                  //     style={{
-                  //       width:
-                  //         selectedTemplate.content.element[selectedFrame].width,
-                  //       height:
-                  //         selectedTemplate.content.element[selectedFrame].height
-                  //     }}
-                  //   >
-                  //     <Plus />
-                  //   </div>
+                {selectedFrame != null && selectedTemplate && (
                   <Canvas
                     ref={canvasRef}
                     channelId={params.id as string}
@@ -363,41 +356,39 @@ const Page = () => {
               </div>
               {selectedTemplate && (
                 <div className="col-span-3 bg-white px-3 py-2.5 pt-10">
-                  {selectedTemplate.content.element
-                    // .filter((q) => q.type != "image")
-                    .map((element, i: number) =>
-                      element.type != "image" ? (
-                        <div
-                          key={i}
-                          className="flex justify-center gap-4 my-4 cursor-pointer"
-                          onClick={() => setSelectedFrame(i)}
-                        >
-                          {element.src ? (
-                            <img
-                              src={element.src}
-                              loading="lazy"
-                              alt="Frame Preview"
-                              className="outline outline-2 outline-gray-500 outline-offset-2 rounded"
-                              style={{
-                                width: halvePx(element.width, 3),
-                                height: halvePx(element.height, 3),
-                                objectFit: "cover"
-                              }}
-                            />
-                          ) : (
-                            <div
-                              className="outline outline-2 outline-gray-500 outline-offset-2 rounded flex justify-center items-center"
-                              style={{
-                                width: halvePx(element.width, 3),
-                                height: halvePx(element.height, 3)
-                              }}
-                            >
-                              <Plus />
-                            </div>
-                          )}
-                        </div>
-                      ) : null
-                    )}
+                  {selectedTemplate.content.element.map((element, i: number) =>
+                    element.type != "image" ? (
+                      <div
+                        key={i}
+                        className="flex justify-center gap-4 my-4 cursor-pointer"
+                        onClick={() => setSelectedFrame(i)}
+                      >
+                        {element.src ? (
+                          <img
+                            src={element.src}
+                            loading="lazy"
+                            alt="Frame Preview"
+                            className="outline outline-2 outline-gray-500 outline-offset-2 rounded"
+                            style={{
+                              width: halvePx(element.width, 3),
+                              height: halvePx(element.height, 3),
+                              objectFit: "cover"
+                            }}
+                          />
+                        ) : (
+                          <div
+                            className="outline outline-2 outline-gray-500 outline-offset-2 rounded flex justify-center items-center"
+                            style={{
+                              width: halvePx(element.width, 3),
+                              height: halvePx(element.height, 3)
+                            }}
+                          >
+                            <Plus />
+                          </div>
+                        )}
+                      </div>
+                    ) : null
+                  )}
                 </div>
               )}
             </div>

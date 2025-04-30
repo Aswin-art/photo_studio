@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { FindQuery } from "@/queries/resultQuery";
-import { CldImage } from "next-cloudinary";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import FsLightbox from "fslightbox-react";
@@ -13,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { sentEmail } from "@/actions/results";
 import { toast } from "@/hooks/use-toast";
 import JSZip from "jszip";
+import Image from "next/image";
 
 const Page = () => {
   const params = useParams();
@@ -72,23 +72,16 @@ const Page = () => {
 
     setDownloadLoading(true);
 
-    // Kumpulan URL foto yang akan didownload
     const imageUrls: string[] = [];
 
-    // Tambahkan foto utama (menggunakan image_url jika ada, jika tidak gunakan public_id)
     if (data.image_url) {
-      imageUrls.push(data.image_url);
-    } else if (data.public_id) {
-      imageUrls.push(data.public_id);
+      imageUrls.push(process.env.NEXT_PUBLIC_IMAGE_API + data.image_url);
     }
 
-    // Tambahkan foto dari ChannelImages
     if (data.channels && data.channels.ChannelImages) {
       data.channels.ChannelImages.forEach((image: any) => {
         if (image.image_url) {
-          imageUrls.push(image.image_url);
-        } else if (image.public_id) {
-          imageUrls.push(image.public_id);
+          imageUrls.push(process.env.NEXT_PUBLIC_IMAGE_API + image.image_url);
         }
       });
     }
@@ -186,21 +179,34 @@ const Page = () => {
               </div>
             </div>
             <div className="flex justify-center items-center mt-10">
-              <CldImage
-                width="700"
-                height="0"
-                sizes="100vw"
-                src={data?.public_id ?? ""}
-                alt="image-result"
-                className="hover:cursor-pointer"
-                onClick={() => setLightboxResultToggler((prev) => !prev)}
-                draggable={false}
-              />
+              {data?.image_url && (
+                <>
+                  <Image
+                    unoptimized
+                    width="700"
+                    height="0"
+                    sizes="100vw"
+                    src={
+                      data?.image_url && process.env.NEXT_PUBLIC_IMAGE_API
+                        ? process.env.NEXT_PUBLIC_IMAGE_API + data.image_url
+                        : ""
+                    }
+                    alt="image-result"
+                    className="hover:cursor-pointer"
+                    onClick={() => setLightboxResultToggler((prev) => !prev)}
+                    draggable={false}
+                  />
 
-              <FsLightbox
-                toggler={lightboxResultToggler}
-                sources={data?.image_url ? [data.image_url] : []}
-              />
+                  <FsLightbox
+                    toggler={lightboxResultToggler}
+                    sources={
+                      data?.image_url && process.env.NEXT_PUBLIC_IMAGE_API
+                        ? [process.env.NEXT_PUBLIC_IMAGE_API + data.image_url]
+                        : []
+                    }
+                  />
+                </>
+              )}
             </div>
 
             <h3 className="text-2xl mb-5 pt-20 font-bold">Daftar Semua Foto</h3>
@@ -208,11 +214,11 @@ const Page = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
               {data?.channels?.ChannelImages?.map((image, index) => (
                 <div className="relative" key={image.id}>
-                  <CldImage
+                  <Image
                     width="600"
                     height="600"
                     sizes="100vw"
-                    src={image.public_id}
+                    src={process.env.NEXT_PUBLIC_IMAGE_API + image.image_url}
                     alt="image-cloud"
                     className="hover:cursor-pointer"
                     onClick={() => openLightbox(index)}
@@ -223,8 +229,13 @@ const Page = () => {
               <FsLightbox
                 toggler={lightboxToggler}
                 sources={
-                  lightboxIndex !== null && data?.channels?.ChannelImages
-                    ? [data.channels.ChannelImages[lightboxIndex].image_url]
+                  lightboxIndex !== null &&
+                  data?.channels?.ChannelImages &&
+                  process.env.NEXT_PUBLIC_IMAGE_API
+                    ? [
+                        process.env.NEXT_PUBLIC_IMAGE_API +
+                          data.channels.ChannelImages[lightboxIndex].image_url
+                      ]
                     : []
                 }
               />

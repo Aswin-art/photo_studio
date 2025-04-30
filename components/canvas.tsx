@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { Check, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { uploadImage } from "@/utils/imageApi";
 
 type Props = {
   templateImage: string;
@@ -87,6 +88,13 @@ const Canvas = forwardRef(function Canvas(
     }
   };
 
+  function blobToImageFile(blob, fileName = "image.png") {
+    return new File([blob], fileName, {
+      type: blob.type || "image/png",
+      lastModified: Date.now()
+    });
+  }
+
   useImperativeHandle(
     ref,
     () => ({
@@ -104,47 +112,37 @@ const Canvas = forwardRef(function Canvas(
           });
           const base64Response = await fetch(uri);
           const blob = await base64Response.blob();
+          const file = blobToImageFile(blob);
 
-          const formData = new FormData();
-          formData.append("file", blob);
-          formData.append("upload_preset", "results");
-          formData.append("folder", "results");
-          formData.append("public_id", "f51f695f-353a-491a-b530-58c0cab9d1b5");
-          formData.append(
-            "api_key",
-            process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ?? ""
-          );
+          const req = await uploadImage(file, "Results");
 
-          try {
-            const response = await fetch(
-              `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-              {
-                method: "POST",
-                body: formData
+          console.log("req image", req);
+
+          if (req) {
+            try {
+              const res = await create(req, templateIdRef.current, channelId);
+
+              if (res) {
+                toast({
+                  title: "Success",
+                  description: "Image berhasil di download"
+                });
+
+                return router.push("/results/" + res?.id);
               }
-            );
 
-            if (!response.ok) {
-              throw new Error(
-                `Cloudinary upload failed: ${response.statusText}`
-              );
+              return toast({
+                title: "Failed",
+                description: "Tidak dapat mendownload image"
+              });
+            } catch (error) {
+              toast({
+                title: "Failed",
+                description: "Tidak bisa menyimpan foto!"
+              });
+              console.log("Upload failed:", error);
+              return null;
             }
-
-            const data = await response.json();
-            const res = await create(
-              data.public_id,
-              data.url,
-              templateIdRef.current,
-              channelId
-            );
-            router.push("/results/" + res?.id);
-          } catch (error) {
-            toast({
-              title: "Failed",
-              description: "Tidak bisa menyimpan foto!"
-            });
-            console.log("Upload failed:", error);
-            return null;
           }
         }
       }

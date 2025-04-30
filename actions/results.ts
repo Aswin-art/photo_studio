@@ -20,7 +20,6 @@ const checkIfAlreadyCreated = async (channel_id: string) => {
 };
 
 export const create = async (
-  public_id: string,
   image_url: string,
   template_id: string,
   channel_id: string
@@ -32,11 +31,27 @@ export const create = async (
       return null;
     }
 
+    const templateExists = await db.templates.findUnique({
+      where: { id: template_id }
+    });
+    const channelExists = await db.channels.findUnique({
+      where: { id: channel_id }
+    });
+
+    if (!templateExists || !channelExists) {
+      throw new Error(
+        "Relasi tidak ditemukan: template_id atau channel_id tidak valid"
+      );
+    }
+
     const results = await db.results.create({
       data: {
-        template_id,
-        channel_id,
-        public_id,
+        templates: {
+          connect: { id: template_id }
+        },
+        channels: {
+          connect: { id: channel_id }
+        },
         image_url
       }
     });
@@ -79,19 +94,18 @@ export const sentEmail = async (id: string) => {
       include: {
         channels: {
           include: {
-            ChannelImages: true,
-            Results: true
+            ChannelImages: true
           }
         }
       }
     });
 
-    if (!result || !result.channels?.Results) return null;
+    if (!result || !result.channels || !result.image_url) return null;
 
     const mail = await sendResult(
       result.channels.email ?? "",
       result.channels.ChannelImages as any[],
-      result.channels.Results[0].image_url
+      result.image_url
     );
 
     return mail;

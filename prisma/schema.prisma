@@ -125,7 +125,9 @@ model Results {
   id          String     @id @default(cuid())
   template_id String?
   channel_id  String?
-  image_url   String     @db.VarChar(255)
+  image_url   String?
   templates   Templates? @relation(fields: [template_id], references: [id], onDelete: Cascade)
   channels    Channels?  @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }

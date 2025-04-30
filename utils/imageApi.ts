@@ -21,8 +21,6 @@ export async function uploadImage(
     }
   );
 
-  console.log("res", res);
-
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Upload failed");
 
