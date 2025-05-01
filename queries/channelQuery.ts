@@ -19,19 +19,10 @@ export const FindQuery = (id: string) => {
   });
 };
 
-export const CreateQuery = (images: any[]) => {
+export const CreateQuery = () => {
   return useQuery({
     queryKey: ["create-channels"],
-    queryFn: () => create(images),
-    enabled: images && images.length > 0
-  });
-};
-
-export const UpdateQuery = (images: any[]) => {
-  return useQuery({
-    queryKey: ["update-channels"],
-    queryFn: () => create(images),
-    enabled: images && images.length > 0
+    queryFn: () => create()
   });
 };
 
