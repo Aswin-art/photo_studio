@@ -34,7 +34,7 @@ const Page = () => {
 
   const handleUploadSuccess = async (files: any) => {
     if (files.length > 0) {
-      setPhotos(files);
+      return setPhotos(files);
     }
 
     return toast({
@@ -111,7 +111,7 @@ const Page = () => {
               <DialogHeader>
                 <DialogTitle>Upload Template Baru</DialogTitle>
                 <DialogDescription>
-                  Minimal upload 1 gambar ynag ingin dijadikan template.
+                  Minimal upload 1 gambar yang ingin dijadikan template.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
