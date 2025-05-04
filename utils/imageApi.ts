@@ -14,7 +14,7 @@ export async function uploadImage(
   if (id) formData.append("id", id);
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_IMAGE_API}/api/image-upload`,
+    `${process.env.NEXT_PUBLIC_BE_API}/api/image-upload`,
     {
       method: "POST",
       body: formData
@@ -29,7 +29,7 @@ export async function uploadImage(
 
 export async function deleteImage(path: string) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_IMAGE_API}/api/image-delete`,
+    `${process.env.NEXT_PUBLIC_BE_API}/api/image-delete`,
     {
       method: "POST",
       headers: {

@@ -96,7 +96,7 @@ export const destroy = async (id: string) => {
     }
 
     const deleteImage = await fetch(
-      process.env.NEXT_PUBLIC_IMAGE_API + "/api/image-delete",
+      process.env.NEXT_PUBLIC_BE_API + "/api/image-delete",
       {
         method: "POST",
         body: JSON.stringify({
